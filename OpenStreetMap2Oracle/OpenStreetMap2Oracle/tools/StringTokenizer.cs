@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace OpenStreetMap2Oracle.tools
 {
@@ -28,28 +29,22 @@ namespace OpenStreetMap2Oracle.tools
     /// </summary>
     public class StringTokenizer
     {
-        private int CurrIndex;
-        private int NumTokens;
-        private ArrayList tokens;
-        private string StrSource;
-        private string StrDelimiter;
+        private int _enumeratorIndex;
+        private int _tokenCount;
+        private List<string> _tokens;
+        private string _source;
+        private string _delimiter;
 
         /// <summary>
-        /// Constructor for StringTokenizer Class.
+        /// Creates a new instance of StringTokenizer
         /// </summary>
-        /// <param name="source">The Source String.</param>
-        /// <param name="delimiter">The Delimiter String. If a 0 length delimiter is given, " " (space) is used by default.</param>
-        public StringTokenizer(string source, string delimiter)
+        /// <param name="source"></param>
+        /// <param name="delimiter"></param>
+        public StringTokenizer(string source, string delimiter = " ")
         {
-            this.tokens = new ArrayList(10);
-            this.StrSource = source;
-            this.StrDelimiter = delimiter;
-
-            if (delimiter.Length == 0)
-            {
-                this.StrDelimiter = " ";
-            }
-            this.Tokenize();
+            this._tokens = new List<string>();
+            this._source = source;
+            this._delimiter = (delimiter.Length > 0) ? (delimiter) : (" ");
         }
 
         /// <summary>
@@ -83,36 +78,54 @@ namespace OpenStreetMap2Oracle.tools
         {
         }
 
+
+        /// <summary>
+        /// Tokenizes the string with the given delimiter
+        /// </summary>
         private void Tokenize()
         {
-            string TempSource = this.StrSource;
-            string Tok = "";
-            this.NumTokens = 0;
-            this.tokens.Clear();
-            this.CurrIndex = 0;
+            this._enumeratorIndex = 0;
+            this._tokens.Clear();
 
-            if (TempSource.IndexOf(this.StrDelimiter) < 0 && TempSource.Length > 0)
+            string[] token_array = this.Source.Split(new string[] { this._delimiter }, StringSplitOptions.RemoveEmptyEntries);
+            
+            this._tokens.AddRange(token_array);
+            this._tokenCount = this._tokens.Count;
+        }
+
+
+
+        [Obsolete("Use Tokenize instead of this old version")]
+        private void __deprecated_Tokenize()
+        {
+          /*  string TempSource = this._source;
+            string Tok = "";
+            this._tokenCount = 0;
+            this.tokens.Clear();
+            this._enumeratorIndex = 0;
+
+            if (TempSource.IndexOf(this._delimiter) < 0 && TempSource.Length > 0)
             {
-                this.NumTokens = 1;
-                this.CurrIndex = 0;
+                this._tokenCount = 1;
+                this._enumeratorIndex = 0;
                 this.tokens.Add(TempSource);
                 this.tokens.TrimToSize();
                 TempSource = "";
             }
-            else if (TempSource.IndexOf(this.StrDelimiter) < 0 && TempSource.Length <= 0)
+            else if (TempSource.IndexOf(this._delimiter) < 0 && TempSource.Length <= 0)
             {
-                this.NumTokens = 0;
-                this.CurrIndex = 0;
+                this._tokenCount = 0;
+                this._enumeratorIndex = 0;
                 this.tokens.TrimToSize();
             }
-            while (TempSource.IndexOf(this.StrDelimiter) >= 0)
+            while (TempSource.IndexOf(this._delimiter) >= 0)
             {
                 //Delimiter at beginning of source String.
-                if (TempSource.IndexOf(this.StrDelimiter) == 0)
+                if (TempSource.IndexOf(this._delimiter) == 0)
                 {
-                    if (TempSource.Length > this.StrDelimiter.Length)
+                    if (TempSource.Length > this._delimiter.Length)
                     {
-                        TempSource = TempSource.Substring(this.StrDelimiter.Length);
+                        TempSource = TempSource.Substring(this._delimiter.Length);
                     }
                     else
                     {
@@ -121,11 +134,11 @@ namespace OpenStreetMap2Oracle.tools
                 }
                 else
                 {
-                    Tok = TempSource.Substring(0, TempSource.IndexOf(this.StrDelimiter));
+                    Tok = TempSource.Substring(0, TempSource.IndexOf(this._delimiter));
                     this.tokens.Add(Tok);
-                    if (TempSource.Length > (this.StrDelimiter.Length + Tok.Length))
+                    if (TempSource.Length > (this._delimiter.Length + Tok.Length))
                     {
-                        TempSource = TempSource.Substring(this.StrDelimiter.Length + Tok.Length);
+                        TempSource = TempSource.Substring(this._delimiter.Length + Tok.Length);
                     }
                     else
                     {
@@ -139,7 +152,7 @@ namespace OpenStreetMap2Oracle.tools
                 this.tokens.Add(TempSource);
             }
             this.tokens.TrimToSize();
-            this.NumTokens = this.tokens.Count;
+            this._tokenCount = this.tokens.Count; */
         }
 
         /// <summary>
@@ -150,7 +163,7 @@ namespace OpenStreetMap2Oracle.tools
         /// <param name="newSrc">The new Source String.</param>
         public void NewSource(string newSrc)
         {
-            this.StrSource = newSrc;
+            this._source = newSrc;
             this.Tokenize();
         }
 
@@ -163,14 +176,7 @@ namespace OpenStreetMap2Oracle.tools
         /// <param name="newDel">The new Delimiter String.</param>
         public void NewDelim(string newDel)
         {
-            if (newDel.Length == 0)
-            {
-                this.StrDelimiter = " ";
-            }
-            else
-            {
-                this.StrDelimiter = newDel;
-            }
+            this._delimiter = (newDel.Length > 0) ? newDel : " ";
             this.Tokenize();
         }
 
@@ -184,15 +190,7 @@ namespace OpenStreetMap2Oracle.tools
         /// expects Unicode encoded chars.</param>
         public void NewDelim(char[] newDel)
         {
-            string temp = new String(newDel);
-            if (temp.Length == 0)
-            {
-                this.StrDelimiter = " ";
-            }
-            else
-            {
-                this.StrDelimiter = temp;
-            }
+            this._delimiter = (newDel.Length > 0) ? (new string(newDel)) : " ";
             this.Tokenize();
         }
 
@@ -202,7 +200,7 @@ namespace OpenStreetMap2Oracle.tools
         /// <returns>The number of Tokens in the internal ArrayList.</returns>
         public int CountTokens()
         {
-            return this.tokens.Count;
+            return this._tokens.Count;
         }
 
         /// <summary>
@@ -211,14 +209,18 @@ namespace OpenStreetMap2Oracle.tools
         /// <returns>true if there are more tokens; false otherwise.</returns>
         public bool HasMoreTokens()
         {
-            if (this.CurrIndex <= (this.tokens.Count - 1))
+            return (this._enumeratorIndex < (this._tokens.Count));
+            
+            // @note: performance optimized return
+            /*
+            if (this._enumeratorIndex <= (this._tokens.Count - 1))
             {
                 return true;
             }
             else
             {
                 return false;
-            }
+            }*/
         }
 
         /// <summary>
@@ -227,17 +229,7 @@ namespace OpenStreetMap2Oracle.tools
         /// <returns>A string representing the next token; null if no tokens or no more tokens.</returns>
         public string NextToken()
         {
-            String RetString = "";
-            if (this.CurrIndex <= (this.tokens.Count - 1))
-            {
-                RetString = (string)tokens[CurrIndex];
-                this.CurrIndex++;
-                return RetString;
-            }
-            else
-            {
-                return null;
-            }
+            return (this.HasMoreTokens() ? _tokens[_enumeratorIndex++] : null);
         }
 
         /// <summary>
@@ -248,7 +240,7 @@ namespace OpenStreetMap2Oracle.tools
         {
             get
             {
-                return this.StrSource;
+                return this._source;
             }
         }
 
@@ -260,7 +252,7 @@ namespace OpenStreetMap2Oracle.tools
         {
             get
             {
-                return this.StrDelimiter;
+                return this._delimiter;
             }
         }
 
