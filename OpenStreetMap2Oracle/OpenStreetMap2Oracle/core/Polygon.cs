@@ -286,12 +286,5 @@ namespace OpenStreetMap2Oracle.core
         }
     }
 
-    /// <summary>
-    /// Enum for the polygon orientation
-    /// </summary>
-    public enum PolygonOrientation
-    {
-        clockwise,
-        counterclockwise
-    }
+  
 }
