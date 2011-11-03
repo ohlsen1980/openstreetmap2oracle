@@ -69,7 +69,7 @@ namespace OpenStreetMap2Oracle.oracle
         {
             while (_cleanUp)
             {
-                Thread.Yield();  
+                Thread.Sleep(10); 
             }
 
             if (_connectionPool.ContainsKey(connection))
@@ -85,7 +85,7 @@ namespace OpenStreetMap2Oracle.oracle
             {
                 while (_cleanUp)
                 {
-                    Thread.Yield();
+                    Thread.Sleep(10);
                 }
                 Parallel.ForEach(_connectionPool.Keys, handle =>
                 {
@@ -154,7 +154,7 @@ namespace OpenStreetMap2Oracle.oracle
                         return tmpConn;
                     }
 
-                    Thread.Yield();
+                    Thread.Sleep(10);
                 }
                 
 
