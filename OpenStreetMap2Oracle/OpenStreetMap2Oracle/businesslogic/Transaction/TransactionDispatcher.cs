@@ -37,7 +37,7 @@ namespace OpenStreetMap2Oracle.businesslogic.Transaction
 
                     using (OracleCommand sql_cmd = dbHandle.DbConnection.CreateCommand())
                     {
-                        sql_cmd.Transaction = OracleConnectionFactory.Transaction;
+                        sql_cmd.Transaction = dbHandle.Transaction;
                         sql_cmd.UpdatedRowSource = System.Data.UpdateRowSource.None;
                         dbHandle.execSqlCmd(osmObject.Query, sql_cmd);
                     }
