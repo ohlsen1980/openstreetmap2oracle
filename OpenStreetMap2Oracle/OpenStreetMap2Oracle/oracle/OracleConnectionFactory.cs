@@ -113,13 +113,19 @@ namespace OpenStreetMap2Oracle.oracle
                 while (true) {
                     lock (_connectionPool)
                     {
+                        DbExport tmpConn = null;
                         foreach (DbExport conn in _connectionPool.Keys)
                         {
                             if (!_connectionPool[conn])
                             {
-                                _connectionPool[conn] = true;
-                                return conn;
+                                tmpConn = conn;
                             }
+                        }
+
+                        if (tmpConn != null)
+                        {
+                            _connectionPool[tmpConn] = true;
+                            return tmpConn;
                         }
                     }
                     Thread.Yield();
