@@ -66,7 +66,7 @@ namespace OpenStreetMap2Oracle.oracle
             DbExport _handle = new DbExport(_user, _password, _service);
             _handle.openDbConnection();
             _handle.Transaction = _handle.DbConnection.BeginTransaction();
-            return exportConnection;
+            return _handle;
         }
 
      }
