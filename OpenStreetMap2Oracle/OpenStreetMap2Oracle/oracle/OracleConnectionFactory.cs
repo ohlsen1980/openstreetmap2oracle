@@ -153,8 +153,10 @@ namespace OpenStreetMap2Oracle.oracle
                         _connectionPool[tmpConn] = true;
                         return tmpConn;
                     }
+
+                    Thread.Yield();
                 }
-                Thread.Yield();
+                
 
             }
         }
