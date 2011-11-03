@@ -29,6 +29,7 @@ using OpenStreetMap2Oracle.gui;
 using OpenStreetMap2Oracle.oracle;
 using System.Data.OracleClient;
 using System.Windows.Threading;
+using OpenStreetMap2Oracle.businesslogic.Transaction;
 
 namespace OpenStreetMap2Oracle
 {
@@ -54,11 +55,16 @@ namespace OpenStreetMap2Oracle
                         displayPolygonCount = 1000, 
                         multipolygonCount   = 0;
 
-    
+        private const int DISPATCHER_FLUSH_THRESHOLD = 100;
+
+        private TransactionDispatcher _mTransactionDisp;
+        private TransactionQueue _mTransactionQueue;
 
         public MainWindow()
         {
             InitializeComponent();
+            this._mTransactionDisp = new TransactionDispatcher();
+            this._mTransactionQueue = new TransactionQueue();
             this.Closed += new EventHandler(MainWindow_Closed);          
         }
 
@@ -139,11 +145,20 @@ namespace OpenStreetMap2Oracle
                     using (OracleCommand dbSqlCmd = OracleConnectionFactory.Connection.DbConnection.CreateCommand())
                     {
 
-                        dbSqlCmd.Transaction = OracleConnectionFactory.Transaction;
-                        dbSqlCmd.UpdatedRowSource = System.Data.UpdateRowSource.None;
+                        //dbSqlCmd.Transaction = OracleConnectionFactory.Transaction;
+                        //dbSqlCmd.UpdatedRowSource = System.Data.UpdateRowSource.None;
                         try
                         {
-                            OracleConnectionFactory.Connection.execSqlCmd(SQL, dbSqlCmd);
+
+                            this._mTransactionQueue.Add(new OSMTransactionObject(SQL));
+
+                            if (this._mTransactionQueue.Data.Count >= DISPATCHER_FLUSH_THRESHOLD)
+                            {
+                                this._mTransactionDisp.Queue = this._mTransactionQueue;
+                                this._mTransactionDisp.ProcessQueue();
+                            }
+                            //OracleConnectionFactory.Connection.execSqlCmd(SQL, dbSqlCmd);
+
 
                             if (element.GetType() == typeof(Node))
                             {
