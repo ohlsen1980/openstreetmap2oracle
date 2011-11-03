@@ -57,6 +57,7 @@ namespace OpenStreetMap2Oracle.gui
         }
 
 
+
         public DbLoginWindow()
         {
             InitializeComponent();
