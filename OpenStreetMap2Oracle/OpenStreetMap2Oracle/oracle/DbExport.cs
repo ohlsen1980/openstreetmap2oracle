@@ -42,10 +42,14 @@ namespace OpenStreetMap2Oracle.oracle
             oConnectionBuilder.DataSource = sDataSource.Replace("/", @"\"); //Replace the / with a \ (standard path);           
             oConnectionBuilder.Add("Password", sPwd);
             oConnectionBuilder.Add("User ID", schemaName);
+            oConnectionBuilder.Pooling = true;
+            oConnectionBuilder.MaxPoolSize = 30;
+            oConnectionBuilder.MinPoolSize = 20;
             //!!!!!!!!!!!!!!!!!!!!!!!!
             //Unicode=true is much important, so all characters from OSM data are exported right
             //!!!!!!!!!!!!!!!!!!!!!!!!
-            m_sConnectionString = oConnectionBuilder.ConnectionString+";Unicode=true";
+            oConnectionBuilder.Unicode = true;
+            m_sConnectionString = oConnectionBuilder.ConnectionString;            
         }
 
         /// <summary>
