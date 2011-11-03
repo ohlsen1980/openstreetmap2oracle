@@ -105,12 +105,15 @@ namespace OpenStreetMap2Oracle.oracle
             else
             {
                 while (true) {
-                    foreach (DbExport conn in _connectionPool.Keys)
+                    lock (_connectionPool)
                     {
-                        if (!_connectionPool[conn])
+                        foreach (DbExport conn in _connectionPool.Keys)
                         {
-                            _connectionPool[conn] = true;
-                            return conn;
+                            if (!_connectionPool[conn])
+                            {
+                                _connectionPool[conn] = true;
+                                return conn;
+                            }
                         }
                     }
                     Thread.Yield();
