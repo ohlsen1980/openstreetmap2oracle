@@ -31,21 +31,21 @@ namespace OpenStreetMap2Oracle.businesslogic.Transaction
         {
             lock (_queue)
             {
+                
                 Parallel.ForEach(this._queue.Data, osmObject =>
                 {
                     DbExport dbHandle = OracleConnectionFactory.CreateConnection();
+                    OracleCommand sql_cmd = dbHandle.DbConnection.CreateCommand();
 
-                    using (OracleCommand sql_cmd = dbHandle.DbConnection.CreateCommand())
-                    {
-                        sql_cmd.Transaction = dbHandle.Transaction;
-                        sql_cmd.UpdatedRowSource = System.Data.UpdateRowSource.None;
-                        dbHandle.execSqlCmd(osmObject.Query, sql_cmd);
-                        dbHandle.Transaction.Commit();
-                        //dbHandle.DbConnection.Close();
+                    sql_cmd.Transaction = dbHandle.Transaction;
+                    sql_cmd.UpdatedRowSource = System.Data.UpdateRowSource.None;
+                    dbHandle.execSqlCmd(osmObject.Query, sql_cmd);
 
-                        OracleConnectionFactory.FreeConnection(dbHandle);
-                    }
+                    OracleConnectionFactory.FreeConnection(dbHandle);
                 });
+
+                OracleConnectionFactory.CommitAll();
+
             }
         }
     }

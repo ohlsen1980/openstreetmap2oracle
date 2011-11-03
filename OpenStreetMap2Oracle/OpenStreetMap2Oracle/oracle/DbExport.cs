@@ -119,6 +119,7 @@ namespace OpenStreetMap2Oracle.oracle
             {
                 dbSqlCmd.CommandText = sSqlCmd;
                 dbSqlCmd.ExecuteNonQuery();
+                dbSqlCmd.Dispose();
             }
         }
 
@@ -132,6 +133,7 @@ namespace OpenStreetMap2Oracle.oracle
         {
             dbSqlCmd.CommandText = sSqlCmd;           
             dbSqlCmd.ExecuteNonQuery();
+            dbSqlCmd.Dispose();
         }
 
         /// <summary>
