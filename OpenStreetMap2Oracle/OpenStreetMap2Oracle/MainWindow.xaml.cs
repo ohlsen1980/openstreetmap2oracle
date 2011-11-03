@@ -221,6 +221,7 @@ namespace OpenStreetMap2Oracle
                                 _failedCount++;                                
                                 if (this.DisplayMessagesChckBox.IsChecked == true)
                                 {
+                                    this.SQLTextBox.Text = SQLTextBox.Text + ex.Message + "\n";
                                     this.SQLTextBox.Text = SQLTextBox.Text + "\n" + SQL + "\n" + "Fehler Knoten: " + _failedCount.ToString();
                                     this.SQLTextBox.UpdateLayout();
                                 }

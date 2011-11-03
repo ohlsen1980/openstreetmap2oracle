@@ -151,7 +151,7 @@ namespace OpenStreetMap2Oracle.oracle
                 string sql = string.Format("select m.ora_geometry.sdo_point.X as X, m." + TableNames.GeomColumName + ".sdo_point.Y as Y, m." + TableNames.GeomColumName + ".sdo_srid as srid from {0} m where m.osm_id = {1}", TableNames.PointTable, id.ToString());
                 dbSqlCmd.CommandText = sql;
                 
-                OracleDataReader rdr = dbSqlCmd.ExecuteReader(System.Data.CommandBehavior.SingleRow);
+                OracleDataReader rdr = dbSqlCmd.ExecuteReader(System.Data.CommandBehavior.Default);
                 rdr.Read();
                 string x = rdr[0].ToString();
                 string y = rdr[1].ToString();
@@ -176,7 +176,7 @@ namespace OpenStreetMap2Oracle.oracle
                 string sql = string.Format("select SDO_UTIL.TO_GMLGEOMETRY(m."+TableNames.GeomColumName +") from {0} m where m.osm_id = {1}", TableNames.LineTable, id.ToString());
                 dbSqlCmd.CommandText = sql;
 
-                OracleDataReader rdr = dbSqlCmd.ExecuteReader(System.Data.CommandBehavior.SingleRow);
+                OracleDataReader rdr = dbSqlCmd.ExecuteReader(System.Data.CommandBehavior.Default);
                 rdr.Read();
                 if (rdr.HasRows)
                 {
@@ -189,7 +189,7 @@ namespace OpenStreetMap2Oracle.oracle
                     sql = string.Format("select SDO_UTIL.TO_GMLGEOMETRY(m." + TableNames.GeomColumName + ") from {0} m where m.osm_id = {1}", TableNames.PolygonTable, id.ToString());
                     dbSqlCmd.CommandText = sql;
 
-                    rdr = dbSqlCmd.ExecuteReader(System.Data.CommandBehavior.SingleRow);
+                    rdr = dbSqlCmd.ExecuteReader(System.Data.CommandBehavior.Default);
                     rdr.Read();
                     if (rdr.HasRows)
                         gml = rdr[0].ToString();
@@ -199,7 +199,7 @@ namespace OpenStreetMap2Oracle.oracle
                         rdr.Dispose();
                         sql = string.Format("select SDO_UTIL.TO_GMLGEOMETRY(m." + TableNames.GeomColumName + ") from {0} m where m.osm_id = {1}", TableNames.RoadTable, id.ToString());
                         dbSqlCmd.CommandText = sql;                      
-                        rdr = dbSqlCmd.ExecuteReader(System.Data.CommandBehavior.SingleRow);
+                        rdr = dbSqlCmd.ExecuteReader(System.Data.CommandBehavior.Default);
                         rdr.Read();
                         if (rdr.HasRows)
                             gml = rdr[0].ToString();
@@ -210,7 +210,7 @@ namespace OpenStreetMap2Oracle.oracle
                             sql = string.Format("select SDO_UTIL.TO_GMLGEOMETRY(m." + TableNames.GeomColumName + ") from {0} m where m.osm_id = {1}", TableNames.PointTable, id.ToString());
                             dbSqlCmd.CommandText = sql;
 
-                            rdr = dbSqlCmd.ExecuteReader(System.Data.CommandBehavior.SingleRow);
+                            rdr = dbSqlCmd.ExecuteReader(System.Data.CommandBehavior.Default);
                             rdr.Read();
                             if (rdr.HasRows)
                                 gml = rdr[0].ToString();

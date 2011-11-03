@@ -267,7 +267,9 @@ namespace OpenStreetMap2Oracle.businesslogic
                                     using (OracleCommand dbSqlCmd = conn.DbConnection.CreateCommand())
                                     {
                                         dbSqlCmd.Transaction = conn.Transaction;
-                                        way.Line.AddVertice(conn.GetNode(nodeRef, dbSqlCmd));
+                                        Point p = conn.GetNode(nodeRef, dbSqlCmd);
+                                        if (p != null)
+                                            way.Line.AddVertice(p);
                                     }
                                     OracleConnectionFactory.FreeConnection(conn);
                                 }
