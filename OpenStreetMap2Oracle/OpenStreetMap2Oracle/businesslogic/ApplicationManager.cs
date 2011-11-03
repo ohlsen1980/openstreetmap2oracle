@@ -24,6 +24,8 @@ using OpenStreetMap2Oracle.eventArgs;
 using OpenStreetMap2Oracle.oracle;
 using System.Data.OracleClient;
 using OpenStreetMap2Oracle.core;
+using OpenStreetMap2Oracle.businesslogic.Xml;
+using System.Threading.Tasks;
 
 namespace OpenStreetMap2Oracle.businesslogic
 {
@@ -34,7 +36,6 @@ namespace OpenStreetMap2Oracle.businesslogic
     /// </summary>
     public class ApplicationManager : Singleton<ApplicationManager>
     {
-        //static ApplicationManager _instance;
         private OSMElement _currentElement;
              
 
@@ -51,17 +52,6 @@ namespace OpenStreetMap2Oracle.businesslogic
         {
         }
 
-      /*  /// <summary>
-        /// Singleton Instance of Application Manager
-        /// </summary>
-        /// <returns></returns>
-        public static ApplicationManager Instance()
-        {
-            if (_instance == null)
-                _instance = new ApplicationManager();
-            return _instance;
-        }*/
-
         /// <summary>
         /// Parses the OSM - File 
         /// </summary>
@@ -71,254 +61,302 @@ namespace OpenStreetMap2Oracle.businesslogic
             //Use XMLTextReader, this class dos not validate XML, so it is recommended in use of large XML files
             XmlTextReader xmlreader = new XmlTextReader(File);
             
+            
             while (xmlreader.Read())
             {
                 switch (xmlreader.NodeType)
                 {
+
                     case XmlNodeType.Element: // Der Knoten ist ein Element.
-                        if(xmlreader.Name.Equals("node"))
+                        #region NodeType Element
+                        switch (xmlreader.Name)
                         {
-                            bool isEmty = false;
-                            if (xmlreader.IsEmptyElement == true)
-                                isEmty = true;
-                            Node node = new Node();                            
-                            _currentElement = node;                                                        
-                            long tempLong = 0;                          
-                            
-                            while (xmlreader.MoveToNextAttribute()) // Lesen der Attribute.
-                            {                                
-                                if (xmlreader.Name.Equals("id"))
+                            case XmlNodeNames.NODE:
+                                #region NodeName "node"
+
+                                bool isEmty = (xmlreader.IsEmptyElement) ? true : false;
+                                Node node = new Node();
+                                _currentElement = node;
+                                long tempLong = 0;
+
+                                while (xmlreader.MoveToNextAttribute()) // Lesen der Attribute.
                                 {
-                                    Int64.TryParse(xmlreader.Value, out tempLong);
-                                    node.Id = tempLong;                                  
+                                    switch (xmlreader.Name)
+                                    {
+                                        case "id":
+                                            Int64.TryParse(xmlreader.Value, out tempLong);
+                                            node.Id = tempLong;
+                                            break;
+                                        
+                                        case "lat":
+                                            //Double.TryParse(xmlreader.Value, System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.CultureInfo.InvariantCulture, out tempDouble );
+                                            node.Point.Y = xmlreader.Value;
+                                            break;
+                                        
+                                        case "lon":
+                                            //Double.TryParse(xmlreader.Value, System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.CultureInfo.InvariantCulture, out tempDouble);
+                                            node.Point.X = xmlreader.Value;
+                                            break;
+                                        
+                                        case "timestamp":
+                                            node.Timestamp = DateTime.Parse(xmlreader.Value, System.Globalization.CultureInfo.InvariantCulture);
+                                            break;
+
+                                        default:
+                                            break;
+                                    }
+
+                                    #region :: unused tags
+
+                                    // This Tags will not be used in database
+
+                                    //if (xmlreader.Name.Equals("version"))
+                                    //{
+                                    //    Int32.TryParse(xmlreader.Value, out tempInt);
+                                    //    node.Version = tempInt;
+                                    //}
+
+                                    //if (xmlreader.Name.Equals("changeset"))
+                                    //{
+                                    //    Int64.TryParse(xmlreader.Value, out tempLong);
+                                    //    node.Changeset = tempLong;
+                                    //}
+
+                                    //if (xmlreader.Name.Equals("user"))
+                                    //{
+                                    //    node.User = xmlreader.Value;
+                                    //}
+
+                                    //if (xmlreader.Name.Equals("uid"))
+                                    //{
+                                    //    Int64.TryParse(xmlreader.Value, out tempLong);
+                                    //    node.Uid = tempLong;
+                                    //}
+
+                                    #endregion
+
                                 }
 
-                                if (xmlreader.Name.Equals("lat"))
+                                if (isEmty)
                                 {
-                                    //Double.TryParse(xmlreader.Value, System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.CultureInfo.InvariantCulture, out tempDouble );
-                                    node.Point.Y = xmlreader.Value;
+                                    if (OnOSMElementAdded != null)
+                                        OnOSMElementAdded(this, new OSMAddedEventArg(_currentElement));
                                 }
 
-                                if (xmlreader.Name.Equals("lon"))
+                                #endregion
+                                break;
+
+                            case XmlNodeNames.TAG:
+                                #region NodeName "tag"
+                                
+                                String key = String.Empty, 
+                                       value = String.Empty;
+                                
+                                while (xmlreader.MoveToNextAttribute()) // Lesen der Attribute.
                                 {
-                                    //Double.TryParse(xmlreader.Value, System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.CultureInfo.InvariantCulture, out tempDouble);
-                                    node.Point.X = xmlreader.Value;
+                                    switch (xmlreader.Name)
+                                    {
+                                        case "k":
+                                            key = xmlreader.Value;
+                                            break;
+
+                                        case "v":
+                                            value = xmlreader.Value;
+                                            break;
+
+                                        default:
+                                            break;
+                                    }
+                                }
+                                TagKey tagkey = new TagKey(key);
+                                //ein Relationstyp muss herausgefunden werden
+                                //which relation is it? currently only multipolygon and boundary supported
+                                //see http://wiki.openstreetmap.org/wiki/Relations
+
+                                if (((string)tagkey) == "type" && _currentElement.GetType() == typeof(Relation))
+                                {
+                                    if (value == "multipolygon")
+                                    {
+                                        (_currentElement as Relation).RelationType = RelationType.MultiPolygon;
+                                    }
+                                    if (value == "boundary")
+                                    {
+                                        (_currentElement as Relation).RelationType = RelationType.Boundary;
+                                    }
+                                }
+                                if (tagkey.IsValid())
+                                {
+                                    Tag tag = new Tag(tagkey, value);
+                                    if (((string)tagkey) == "NAME")
+                                    {
+                                        Tag tag1 = new Tag(tagkey, value);
+                                    }
+                                    _currentElement.tagList.Add(tag);
+                                }
+                                #endregion
+                                break;
+
+                            case XmlNodeNames.WAY:
+                                #region NodeName "way"
+                                Way _way = new Way();
+                                _currentElement = _way;
+                                tempLong = 0;
+
+                                while (xmlreader.MoveToNextAttribute()) // Lesen der Attribute.
+                                {
+                                    switch (xmlreader.Name)
+                                    {
+                                        case "id":
+                                             Int64.TryParse(xmlreader.Value, out tempLong);
+                                            _way.Id = tempLong;
+                                            break;
+
+                                        case "timestamp":
+                                            _way.Timestamp = DateTime.Parse(xmlreader.Value, System.Globalization.CultureInfo.InvariantCulture);
+                                            break;
+
+                                        default:
+                                            break;
+                                    }
+                                 
+                                    // This Tags will not be used in database
+
+                                    //if (xmlreader.Name.Equals("version"))
+                                    //{
+                                    //    Int32.TryParse(xmlreader.Value, out tempInt);
+                                    //    way.Version = tempInt;
+                                    //}
+
+                                    //if (xmlreader.Name.Equals("changeset"))
+                                    //{
+                                    //    Int64.TryParse(xmlreader.Value, out tempLong);
+                                    //    way.Changeset = tempLong;
+                                    //}
+
+                                    //if (xmlreader.Name.Equals("user"))
+                                    //{
+                                    //    way.User = xmlreader.Value;
+                                    //}
+
+                                    //if (xmlreader.Name.Equals("uid"))
+                                    //{
+                                    //    Int64.TryParse(xmlreader.Value, out tempLong);
+                                    //    way.Uid = tempLong;
+                                    //}
+
+                                    
+                                }
+                                #endregion
+                                break;
+
+                            case XmlNodeNames.ND:
+                                #region NodeName "nd"
+                                long nodeRef = 0;
+                                while (xmlreader.MoveToNextAttribute()) // Lesen der Attribute.
+                                {
+                                    if (xmlreader.Name == "ref")
+                                    {
+                                        Int64.TryParse(xmlreader.Value, out nodeRef);
+                                    }
                                 }
 
-                                // This Tags will not be used in database
-
-                                //if (xmlreader.Name.Equals("version"))
-                                //{
-                                //    Int32.TryParse(xmlreader.Value, out tempInt);
-                                //    node.Version = tempInt;
-                                //}
-
-                                //if (xmlreader.Name.Equals("changeset"))
-                                //{
-                                //    Int64.TryParse(xmlreader.Value, out tempLong);
-                                //    node.Changeset = tempLong;
-                                //}
-
-                                //if (xmlreader.Name.Equals("user"))
-                                //{
-                                //    node.User = xmlreader.Value;
-                                //}
-
-                                //if (xmlreader.Name.Equals("uid"))
-                                //{
-                                //    Int64.TryParse(xmlreader.Value, out tempLong);
-                                //    node.Uid = tempLong;
-                                //}
-
-                                if (xmlreader.Name.Equals("timestamp"))
-                                {                                   
-                                    node.Timestamp = DateTime.Parse(xmlreader.Value, System.Globalization.CultureInfo.InvariantCulture);
+                                if (_currentElement.GetType() == typeof(Way))
+                                {
+                                    Way way = _currentElement as Way;
+                                    using (OracleCommand dbSqlCmd = OpenStreetMap2Oracle.oracle.OracleConnectionFactory.Connection.DbConnection.CreateCommand())
+                                    {
+                                        dbSqlCmd.Transaction = OracleConnectionFactory.Transaction;
+                                        way.Line.AddVertice(OpenStreetMap2Oracle.oracle.OracleConnectionFactory.Connection.GetNode(nodeRef, dbSqlCmd));
+                                    }
                                 }
-                            }
-                           
-                            if (isEmty == true)
-                            {
+                                #endregion
+                                break;
+
+                            case XmlNodeNames.RELATION:
+                                #region NodeName "relation"
+                                Relation relation = new Relation();
+                                _currentElement = relation;
+                                tempLong = 0;
+
+                                while (xmlreader.MoveToNextAttribute()) // Lesen der Attribute.
+                                {
+                                    switch (xmlreader.Name)
+                                    {
+                                        case "id":
+                                            Int64.TryParse(xmlreader.Value, out tempLong);
+                                            relation.Id = tempLong;
+                                            break;
+
+                                        case "timestamp":
+                                            relation.Timestamp = DateTime.Parse(xmlreader.Value, System.Globalization.CultureInfo.InvariantCulture);
+                                            break;
+
+                                        default:
+                                            break;
+                                    }
+                                }
+                                #endregion
+                                break;
+
+                            case XmlNodeNames.MEMBER:
+                                #region NodeName "member"
+                                RelationMember member = new RelationMember();
+                                tempLong = 0;
+
+                                while (xmlreader.MoveToNextAttribute()) // Lesen der Attribute.
+                                {
+                                    switch (xmlreader.Name)
+                                    {
+                                        case "type":
+                                            member.Type = xmlreader.Value;
+                                            break;
+
+                                        case "ref":
+                                            Int64.TryParse(xmlreader.Value, out tempLong);
+                                            member.Ref = tempLong;
+                                            break;
+
+                                        case "role":
+                                            member.Role = xmlreader.Value;
+                                            break;
+
+                                        default:
+                                            break;
+                                    }
+                                }
+                                if (_currentElement.GetType() == typeof(Relation))
+                                {
+                                    (_currentElement as Relation).RelationMembers.Add(member);
+                                }
+                                #endregion
+                                break;
+
+                            default:
+                                break;
+                        }
+                        #endregion
+                        break;
+
+                    case XmlNodeType.EndElement: //Anzeigen des Endes des Elements.
+                        #region NodeType EndElement
+                        switch (xmlreader.Name)
+                        {
+                            case XmlNodeNames.NODE:
                                 if (OnOSMElementAdded != null)
                                     OnOSMElementAdded(this, new OSMAddedEventArg(_currentElement));
-                            }
+                                break;
+                            case XmlNodeNames.WAY:
+                                if (OnOSMElementAdded != null)
+                                    OnOSMElementAdded(this, new OSMAddedEventArg(_currentElement));
+                                break;
+                            case XmlNodeNames.RELATION:
+                                if (OnOSMElementAdded != null)
+                                    OnOSMElementAdded(this, new OSMAddedEventArg(_currentElement));
+                                break;
                         }
-
-                        if (xmlreader.Name.Equals("tag"))
-                        {
-                            String key = String.Empty, value = String.Empty;                            
-                            while (xmlreader.MoveToNextAttribute()) // Lesen der Attribute.
-                            {
-
-                                if (xmlreader.Name.Equals("k"))
-                                {
-                                    key = xmlreader.Value;
-                                }
-                                if (xmlreader.Name.Equals("v"))
-                                {
-                                    value = xmlreader.Value;
-                                }                                
-                            }
-                            TagKey tagkey = new TagKey(key);
-                            //ein Relationstyp muss herausgefunden werden
-                            //which relation is it? currently only multipolygon and boundary supported
-                            //see http://wiki.openstreetmap.org/wiki/Relations
-
-                            if (tagkey.ToString().Equals("type")&& _currentElement.GetType()==typeof(Relation))
-                            {
-                                if (value.Equals("multipolygon"))
-                                {
-                                    (_currentElement as Relation).RelationType = RelationType.MultiPolygon;
-                                }
-                                if (value.Equals("boundary"))
-                                {
-                                    (_currentElement as Relation).RelationType = RelationType.Boundary;
-                                }
-                            }
-                            if (tagkey.IsValid())
-                            {
-                                Tag tag = new Tag(tagkey, value);
-                                if (tagkey.ToString().Equals("NAME"))
-                                {
-                                    Tag tag1 = new Tag(tagkey, value);
-                                }
-                                _currentElement.tagList.Add(tag);
-                            }
-                        }
-
-                        if (xmlreader.Name.Equals("way"))
-                        {
-                            Way way = new Way();
-                            _currentElement = way;                          
-                            long tempLong = 0;                           
-                            
-                            while (xmlreader.MoveToNextAttribute()) // Lesen der Attribute.
-                            {
-                                if (xmlreader.Name.Equals("id"))
-                                {
-                                    Int64.TryParse(xmlreader.Value, out tempLong);
-                                    way.Id = tempLong;
-                                }                        
-
-                                // This Tags will not be used in database
-
-                                //if (xmlreader.Name.Equals("version"))
-                                //{
-                                //    Int32.TryParse(xmlreader.Value, out tempInt);
-                                //    way.Version = tempInt;
-                                //}
-
-                                //if (xmlreader.Name.Equals("changeset"))
-                                //{
-                                //    Int64.TryParse(xmlreader.Value, out tempLong);
-                                //    way.Changeset = tempLong;
-                                //}
-
-                                //if (xmlreader.Name.Equals("user"))
-                                //{
-                                //    way.User = xmlreader.Value;
-                                //}
-
-                                //if (xmlreader.Name.Equals("uid"))
-                                //{
-                                //    Int64.TryParse(xmlreader.Value, out tempLong);
-                                //    way.Uid = tempLong;
-                                //}
-
-                                if (xmlreader.Name.Equals("timestamp"))
-                                {
-                                    way.Timestamp = DateTime.Parse(xmlreader.Value, System.Globalization.CultureInfo.InvariantCulture);
-                                }
-                            }                      
-                        }
-
-                        if (xmlreader.Name.Equals("nd"))
-                        {
-                            long nodeRef = 0;                            
-                            while (xmlreader.MoveToNextAttribute()) // Lesen der Attribute.
-                            {
-                                if (xmlreader.Name.Equals("ref"))
-                                {
-                                    Int64.TryParse(xmlreader.Value, out nodeRef);                                    
-                                }  
-                            }
-
-                            if(_currentElement.GetType() == typeof(Way))
-                            {
-                                Way way = _currentElement as Way;
-                                using (OracleCommand dbSqlCmd = OpenStreetMap2Oracle.oracle.OracleConnectionFactory.Connection.DbConnection.CreateCommand())
-                                {
-                                    dbSqlCmd.Transaction = OracleConnectionFactory.Transaction;
-                                    way.Line.AddVertice(OpenStreetMap2Oracle.oracle.OracleConnectionFactory.Connection.GetNode(nodeRef, dbSqlCmd));
-                                }
-                            }
-
-                        }
-
-                        if (xmlreader.Name.Equals("relation"))
-                        {
-                            Relation relation = new Relation();
-                            _currentElement = relation;
-                            long tempLong = 0;
-                            while (xmlreader.MoveToNextAttribute()) // Lesen der Attribute.
-                            {
-                                if (xmlreader.Name.Equals("id"))
-                                {
-                                    Int64.TryParse(xmlreader.Value, out tempLong);
-                                    relation.Id = tempLong;                                    
-                                }
-                                if (xmlreader.Name.Equals("timestamp"))
-                                {
-                                    relation.Timestamp = DateTime.Parse(xmlreader.Value, System.Globalization.CultureInfo.InvariantCulture);
-                                }
-                            }
-                        }
-
-                        if (xmlreader.Name.Equals("member"))
-                        {
-                            RelationMember member = new RelationMember();
-                            long tempLong = 0;
-                            while (xmlreader.MoveToNextAttribute()) // Lesen der Attribute.
-                            {
-                                if (xmlreader.Name.Equals("type"))
-                                {
-                                    member.Type = xmlreader.Value;
-                                }
-                                if (xmlreader.Name.Equals("ref"))
-                                {
-                                    Int64.TryParse(xmlreader.Value, out tempLong);
-                                    member.Ref = tempLong;
-                                }
-                                if (xmlreader.Name.Equals("role"))
-                                {
-                                    member.Role = xmlreader.Value;
-                                }
-                            }
-                            if (_currentElement.GetType() == typeof(Relation))
-                            {
-                                (_currentElement as Relation).RelationMembers.Add(member);
-                            }
-                        }
+                        #endregion
                         break;
-                  
-                    case XmlNodeType.EndElement: //Anzeigen des Endes des Elements.
-                        if (xmlreader.Name.Equals("node"))
-                        {
-                            if (OnOSMElementAdded != null)
-                                OnOSMElementAdded(this, new OSMAddedEventArg(_currentElement));
-                        }
-                        if (xmlreader.Name.Equals("way"))
-                        {
-                            if (OnOSMElementAdded != null)
-                                OnOSMElementAdded(this, new OSMAddedEventArg(_currentElement));
-                        }
 
-                        if (xmlreader.Name.Equals("relation"))
-                        {
-                            if (OnOSMElementAdded != null)
-                                OnOSMElementAdded(this, new OSMAddedEventArg(_currentElement));
-                        }
-                        
-                        break;
                 }              
 
             }

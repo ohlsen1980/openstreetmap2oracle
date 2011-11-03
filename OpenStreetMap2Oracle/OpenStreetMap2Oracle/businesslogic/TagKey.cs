@@ -54,6 +54,11 @@ namespace OpenStreetMap2Oracle.businesslogic
             return this._key;
         }
 
+        public static implicit operator string(TagKey k)
+        {
+            return k.ToString();
+        }
+
         /// <summary>
         /// Checks, if the key is in the enum AllowedTagKeys
         /// </summary>
