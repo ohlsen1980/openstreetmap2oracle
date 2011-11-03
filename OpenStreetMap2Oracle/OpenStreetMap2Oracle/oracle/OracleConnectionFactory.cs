@@ -20,6 +20,9 @@
 
 using System;
 using System.Data.OracleClient;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace OpenStreetMap2Oracle.oracle
 {
@@ -40,12 +43,15 @@ namespace OpenStreetMap2Oracle.oracle
 
         private static int _poolSize;
 
-        public static void Init(string user, string password, string service, int poolSize)
+        private static Dictionary<DbExport, bool> _connectionPool;
+
+        public static void Init(string user, string password, string service, int poolSize = 30)
         {
             _user = user;
             _password = password;
             _service = service;
             _poolSize = poolSize;
+            _connectionPool = new Dictionary<DbExport, bool>();
         }
 
         public static DbExport Connection
@@ -55,6 +61,15 @@ namespace OpenStreetMap2Oracle.oracle
                 return exportConnection;
             }
         }
+
+        public static void FreeConnection(DbExport connection)
+        {
+            if (_connectionPool.ContainsKey(connection))
+            {
+                _connectionPool[connection] = false;
+            }
+        }
+
 
         
         /// <summary>
@@ -66,11 +81,28 @@ namespace OpenStreetMap2Oracle.oracle
         /// <returns></returns>
         public static DbExport CreateConnection()
         {
-            DbExport _handle = new DbExport(_user, _password, _service);
-            _handle.openDbConnection();
-            _handle.Transaction = _handle.DbConnection.BeginTransaction();
-            return _handle;
-        }
+            DbExport _handle;
 
+            if (_connectionPool.Count < _poolSize)
+            {
+                _handle = new DbExport(_user, _password, _service);
+                _handle.openDbConnection();
+                _handle.Transaction = _handle.DbConnection.BeginTransaction();
+                _connectionPool.Add(_handle, true);
+                return _handle;
+            }
+            else
+            {
+                while (true) {
+                    foreach (DbExport conn in _connectionPool.Keys)
+                    {
+                        if (!_connectionPool[conn])
+                            _connectionPool[conn] = true;
+                            return conn;
+                    }
+                    Thread.Yield();
+                }
+            }
+        }
      }
 }

@@ -42,8 +42,9 @@ namespace OpenStreetMap2Oracle.businesslogic.Transaction
                         dbHandle.execSqlCmd(osmObject.Query, sql_cmd);
                         dbHandle.Transaction.Commit();
                         dbHandle.DbConnection.Close();
-                    }
 
+                        OracleConnectionFactory.FreeConnection(dbHandle);
+                    }
                 });
             }
         }
