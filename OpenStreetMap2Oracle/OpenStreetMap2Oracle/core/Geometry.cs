@@ -27,8 +27,18 @@ namespace OpenStreetMap2Oracle.core
     /// </summary>
     public abstract class Geometry
     {
+        public Geometry()
+        { 
+            this.SRID = "8307";
+        }
+
+        public Geometry(string srid)
+        {
+            this.SRID = srid;
+        }
+
         //SRID of the geometry
-        public abstract string SRID{ get; set;}
+        public string SRID{ get; set;}
 
         //Implement the MDSYS Geometry String
         public abstract String ToMDSYSGeometry();
