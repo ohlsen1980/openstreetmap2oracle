@@ -40,6 +40,8 @@ namespace OpenStreetMap2Oracle.businesslogic.Transaction
                         sql_cmd.Transaction = dbHandle.Transaction;
                         sql_cmd.UpdatedRowSource = System.Data.UpdateRowSource.None;
                         dbHandle.execSqlCmd(osmObject.Query, sql_cmd);
+                        dbHandle.Transaction.Commit();
+                        dbHandle.DbConnection.Close();
                     }
 
                 });
