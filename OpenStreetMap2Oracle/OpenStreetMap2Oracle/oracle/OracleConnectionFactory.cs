@@ -71,6 +71,14 @@ namespace OpenStreetMap2Oracle.oracle
         }
 
 
+        public static void CommitAll()
+        {
+            Parallel.ForEach(_connectionPool.Keys, dbConnection =>
+            {
+                dbConnection.Transaction.Commit();
+            });
+        }
+
         
         /// <summary>
         /// Creates a new Oracle Connection
@@ -98,7 +106,6 @@ namespace OpenStreetMap2Oracle.oracle
                     {
                         if (!_connectionPool[conn])
                         {
-                            conn.Transaction = conn.DbConnection.BeginTransaction();
                             _connectionPool[conn] = true;
                             return conn;
                         }
