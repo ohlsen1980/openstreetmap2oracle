@@ -112,14 +112,12 @@ namespace OpenStreetMap2Oracle.oracle
             else
             {
                     _iterator++;
-                    if ((_iterator) < (_connectionPool.Count - 1))
+                    if ((_iterator) > (_connectionPool.Count - 1))
                     {
-                        return _connectionPool[_iterator];
+                        _iterator = 0;                        
                     }
-                    else
-                    {
-                        _iterator = 0;
-                    }
+
+                    return _connectionPool[_iterator];
 
                    /* DbExport tmpConn = null;
                     foreach (DbExport conn in _connectionPool.Keys)
