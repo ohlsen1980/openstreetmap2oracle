@@ -30,7 +30,7 @@ namespace OpenStreetMap2Oracle.tools
     {
         private static String _path = "C:\\";
 
-        private PathProvider()
+        public PathProvider()
         {
         }
 
