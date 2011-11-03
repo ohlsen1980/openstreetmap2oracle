@@ -68,7 +68,7 @@ namespace OpenStreetMap2Oracle.businesslogic
             bool retVal = false;
              foreach (string s in Enum.GetNames(typeof(AllowedTagKeys)))
             {
-                if (_key.ToUpper().Equals(s))
+                if (_key.ToUpper() == s)
                     retVal = true;
             }
             return retVal;
@@ -81,7 +81,7 @@ namespace OpenStreetMap2Oracle.businesslogic
         public bool IsString()
         {
             bool retVal = true;
-            if (this._key.ToUpper().Equals(AllowedTagKeys.Z_ORDER.ToString()) || this._key.ToUpper().Equals(AllowedTagKeys.WAY_AREA.ToString()))
+            if (this._key.ToUpper() == AllowedTagKeys.Z_ORDER.ToString() || this._key.ToUpper() == AllowedTagKeys.WAY_AREA.ToString())
                 retVal = false;
             return retVal;
         }

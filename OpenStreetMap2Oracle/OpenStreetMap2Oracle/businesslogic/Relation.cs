@@ -154,7 +154,7 @@ namespace OpenStreetMap2Oracle.businesslogic
                                 {
                                     Polygon pol = new Polygon();
                                     
-                                    if (member.Role.Equals("inner"))
+                                    if (member.Role == "inner")
                                         pol.PolygonType = PolygonType.interior;
                                     pol.BuildFromLineString(forPolygon);
                                     forPolygon = null;
@@ -165,7 +165,7 @@ namespace OpenStreetMap2Oracle.businesslogic
                             if (g.GetType() == typeof(Polygon))
                             {
                                 Polygon pol = g as Polygon;
-                                if (member.Role.Equals("inner"))
+                                if (member.Role == "inner")
                                     pol.PolygonType = PolygonType.interior;
                                 pol.CheckIntegrity();
                                 multiPol.Polygons.Add(pol);

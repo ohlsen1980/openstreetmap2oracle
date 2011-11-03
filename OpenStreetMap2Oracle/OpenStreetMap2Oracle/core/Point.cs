@@ -124,7 +124,7 @@ namespace OpenStreetMap2Oracle.core
             bool retVal = false;
             if (p != null)
             {
-                if (this._X.Equals(p.X) && this._Y.Equals(p.Y))
+                if (this._X == p.X && this._Y == p.Y)
                     retVal = true;
             }
             return retVal;
