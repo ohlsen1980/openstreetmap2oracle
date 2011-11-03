@@ -73,13 +73,16 @@ namespace OpenStreetMap2Oracle.oracle
 
         public static void CommitAll()
         {
-            Parallel.ForEach(_connectionPool.Keys, handle =>
+            lock (_connectionPool)
             {
-                handle.Transaction.Commit();
-                handle.closeDbConnection();
-                handle.openDbConnection();
-                handle.Transaction = handle.DbConnection.BeginTransaction();
-            });
+                Parallel.ForEach(_connectionPool.Keys, handle =>
+                {
+                    handle.Transaction.Commit();
+                    handle.closeDbConnection();
+                    handle.openDbConnection();
+                    handle.Transaction = handle.DbConnection.BeginTransaction();
+                });
+            }
         }
 
         
@@ -96,10 +99,13 @@ namespace OpenStreetMap2Oracle.oracle
 
             if (_connectionPool.Count < (_poolSize - 1) )
             {
-                _handle = new DbExport(_user, _password, _service);
-                _handle.openDbConnection();
-                _handle.Transaction = _handle.DbConnection.BeginTransaction();
-                _connectionPool.Add(_handle, true);
+                lock (_connectionPool)
+                {
+                    _handle = new DbExport(_user, _password, _service);
+                    _handle.openDbConnection();
+                    _handle.Transaction = _handle.DbConnection.BeginTransaction();
+                    _connectionPool.Add(_handle, true);
+                }
                 return _handle;
             }
             else
