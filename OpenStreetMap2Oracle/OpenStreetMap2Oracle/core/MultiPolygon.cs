@@ -29,7 +29,13 @@ namespace OpenStreetMap2Oracle.core
     /// </summary>
     public class MultiPolygon : Geometry
     {
-        private string _srid = "8307";
+
+        public MultiPolygon() :
+            base()
+        {
+        }
+
+        /*private string _srid = "8307";
         /// <summary>
         /// The SRID (Spatial Reference ID)
         /// </summary>
@@ -43,7 +49,7 @@ namespace OpenStreetMap2Oracle.core
             {
                 this._srid = value;
             }
-        }
+        }*/
 
         private List<Polygon> _polygons = new List<Polygon>();
         /// <summary>

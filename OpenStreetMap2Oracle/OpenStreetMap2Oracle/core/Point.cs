@@ -29,7 +29,7 @@ namespace OpenStreetMap2Oracle.core
     /// </summary>
     public class Point : Geometry
     {
-        private string _srid = "8307";
+       /* private string _srid = "8307";
         /// <summary>
         /// The SRID (Spatial Reference ID)
         /// </summary>
@@ -43,7 +43,7 @@ namespace OpenStreetMap2Oracle.core
             {
                 this._srid = value;
             }
-        }
+        }*/
 
 
         private string _X = "0";
@@ -102,7 +102,7 @@ namespace OpenStreetMap2Oracle.core
         {
             StringBuilder builder = new StringBuilder();
             builder.Append("MDSYS.SDO_GEOMETRY(3001,");
-            builder.Append(_srid);
+            builder.Append(SRID);
             builder.Append(",MDSYS.SDO_POINT_TYPE(");
             builder.Append(X);
             builder.Append(",");
@@ -130,20 +130,23 @@ namespace OpenStreetMap2Oracle.core
             return retVal;
         }
 
-        public Point(string X, string Y)
+        public Point(string X, string Y) :
+            base()
         {
             this._X = X;
             this._Y = Y;
         }
 
         public Point(string X, string Y, string srid)
+            :base(srid)
         {
             this._X = X;
             this._Y = Y;
-            this._srid = srid;
+            this.SRID = srid;
         }
 
-        public Point()
+        public Point() :
+            base()
         {
         }
 

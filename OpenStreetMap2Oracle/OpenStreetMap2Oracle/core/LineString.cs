@@ -31,11 +31,12 @@ namespace OpenStreetMap2Oracle.core
     /// </summary>
     public class LineString : Geometry
     {
-        public LineString()
+        public LineString() : 
+            base()
         {
         }
 
-        private string _srid = "8307";
+       /* private string _srid = "8307";
         /// <summary>
         /// The SRID (Spatial Reference ID)
         /// </summary>
@@ -49,7 +50,7 @@ namespace OpenStreetMap2Oracle.core
             {
                 this._srid = value;
             }
-        }
+        }*/
 
         /// <summary>
         /// Start point of the Line
@@ -134,7 +135,7 @@ namespace OpenStreetMap2Oracle.core
             if (this.IsPolygon() == false)
             {
                 builder.Append("MDSYS.SDO_GEOMETRY(3002,");
-                builder.Append(_srid);
+                builder.Append(SRID);
                 builder.Append(",null,MDSYS.SDO_ELEM_INFO_ARRAY(1,2,1),MDSYS.SDO_ORDINATE_ARRAY(");
                 foreach (Point p in _pointList)
                 {
@@ -149,7 +150,7 @@ namespace OpenStreetMap2Oracle.core
                 Polygon pol = new Polygon();
                 pol.BuildFromLineString(this);
                 builder.Append("MDSYS.SDO_GEOMETRY(3003,");
-                builder.Append(_srid);
+                builder.Append(SRID);
                 builder.Append(",null,MDSYS.SDO_ELEM_INFO_ARRAY(1,1003,1),MDSYS.SDO_ORDINATE_ARRAY(");
                 foreach (Point p in pol.PointList)
                 {

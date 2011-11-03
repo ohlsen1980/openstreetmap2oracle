@@ -44,7 +44,12 @@ namespace OpenStreetMap2Oracle.core
             set { _orientation = value; }
         }
 
-        private string _srid = "8307";
+        public Polygon() :
+            base()
+        {
+        }
+
+        /*private string _srid = "8307";
         /// <summary>
         /// The SRID (Spatial Reference ID)
         /// </summary>
@@ -58,7 +63,7 @@ namespace OpenStreetMap2Oracle.core
             {
                 _srid = value;
             }
-        }
+        }*/
 
         //private PolygonType _polygonType = PolygonType.exterior;
         /// <summary>
@@ -132,7 +137,7 @@ namespace OpenStreetMap2Oracle.core
         {
             StringBuilder builder = new StringBuilder();
             builder.Append("MDSYS.SDO_GEOMETRY(3003,");
-            builder.Append(_srid);
+            builder.Append(SRID);
             builder.Append(",null,MDSYS.SDO_ELEM_INFO_ARRAY(1," + (int)this.PolygonType + ",1),MDSYS.SDO_ORDINATE_ARRAY(");           
 
             foreach (Point p in _pointList)
