@@ -35,6 +35,14 @@ namespace OpenStreetMap2Oracle.tools
         private string _source;
         private string _delimiter;
 
+        public List<string> Tokens
+        {
+            get
+            {
+                return _tokens;
+            }
+        }
+
         /// <summary>
         /// Creates a new instance of StringTokenizer
         /// </summary>
