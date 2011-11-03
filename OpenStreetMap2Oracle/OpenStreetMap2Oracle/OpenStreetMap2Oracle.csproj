@@ -113,6 +113,7 @@
     <Compile Include="core\PointComparer.cs" />
     <Compile Include="core\Polygon.cs" />
     <Compile Include="core\PolygonComparer.cs" />
+    <Compile Include="core\PolygonOrientation.cs" />
     <Compile Include="core\PolygonType.cs" />
     <Compile Include="eventArgs\OSMAddedEventArg.cs" />
     <Compile Include="eventArgs\XMLFinishedEventArgs.cs" />
