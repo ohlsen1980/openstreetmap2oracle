@@ -43,9 +43,9 @@ namespace OpenStreetMap2Oracle.oracle
 
         private static int _poolSize;
 
-        private static Dictionary<DbExport, bool> _connectionPool;
-        private static List<DbExport> _markedForFree;
-        private static bool _cleanUp = false;
+        private static List<DbExport> _connectionPool;
+
+        private static int _iterator;
 
         public static void Init(string user, string password, string service, int poolSize = 30)
         {
@@ -53,8 +53,8 @@ namespace OpenStreetMap2Oracle.oracle
             _password = password;
             _service = service;
             _poolSize = poolSize;
-            _connectionPool = new Dictionary<DbExport, bool>();
-            _markedForFree = new List<DbExport>();
+            _connectionPool = new List<DbExport>();
+
         }
 
         public static DbExport Connection
@@ -67,15 +67,7 @@ namespace OpenStreetMap2Oracle.oracle
 
         public static void FreeConnection(DbExport connection)
         {
-            while (_cleanUp)
-            {
-                Thread.Sleep(10); 
-            }
 
-            if (_connectionPool.ContainsKey(connection))
-            {
-                _markedForFree.Add(connection);
-            }
         }
 
 
@@ -83,11 +75,8 @@ namespace OpenStreetMap2Oracle.oracle
         {
             lock (_connectionPool)
             {
-                while (_cleanUp)
-                {
-                    Thread.Sleep(10);
-                }
-                Parallel.ForEach(_connectionPool.Keys, handle =>
+
+                Parallel.ForEach(_connectionPool, handle =>
                 {
                     handle.Transaction.Commit();
                     handle.closeDbConnection();
@@ -116,7 +105,7 @@ namespace OpenStreetMap2Oracle.oracle
                     _handle = new DbExport(_user, _password, _service);
                     _handle.openDbConnection();
                     _handle.Transaction = _handle.DbConnection.BeginTransaction();
-                    _connectionPool.Add(_handle, true);
+                    _connectionPool.Add(_handle);
                 }
                 return _handle;
             }
@@ -124,8 +113,12 @@ namespace OpenStreetMap2Oracle.oracle
             {
                 while (true)
                 {
+                    if ((++_iterator) < _connectionPool.Count)
+                    {
+                        return _connectionPool[_iterator];
+                    }
 
-                    DbExport tmpConn = null;
+                   /* DbExport tmpConn = null;
                     foreach (DbExport conn in _connectionPool.Keys)
                     {
                         if (!_connectionPool[conn])
@@ -136,17 +129,13 @@ namespace OpenStreetMap2Oracle.oracle
 
                     _cleanUp = true;
 
-
                     foreach (DbExport free in _markedForFree)
                     {
                         _connectionPool[free] = true;
                     }
                     _markedForFree.Clear();
 
-
                     _cleanUp = false;
-
-
 
                     if (tmpConn != null)
                     {
@@ -154,7 +143,9 @@ namespace OpenStreetMap2Oracle.oracle
                         return tmpConn;
                     }
 
-                    Thread.Sleep(10);
+                    Thread.Sleep(10);*/
+
+
                 }
                 
 
