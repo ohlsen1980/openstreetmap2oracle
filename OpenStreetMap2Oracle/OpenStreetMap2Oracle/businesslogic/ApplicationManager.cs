@@ -266,7 +266,7 @@ namespace OpenStreetMap2Oracle.businesslogic
                                     DbExport conn = OpenStreetMap2Oracle.oracle.OracleConnectionFactory.CreateConnection();
                                     using (OracleCommand dbSqlCmd = conn.DbConnection.CreateCommand())
                                     {
-                                        //dbSqlCmd.Transaction = conn.DbConnection.BeginTransaction();
+                                        dbSqlCmd.Transaction = conn.Transaction;
                                         way.Line.AddVertice(conn.GetNode(nodeRef, dbSqlCmd));
                                     }
                                     OracleConnectionFactory.FreeConnection(conn);
