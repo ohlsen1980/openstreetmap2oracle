@@ -49,8 +49,8 @@ namespace OpenStreetMap2Oracle.oracle
             oConnectionBuilder.Add("Password", sPwd);
             oConnectionBuilder.Add("User ID", schemaName);
             oConnectionBuilder.Pooling = true;
-            oConnectionBuilder.MaxPoolSize = 30;
-            oConnectionBuilder.MinPoolSize = 20;
+            oConnectionBuilder.MaxPoolSize = 50;
+            oConnectionBuilder.MinPoolSize = 50;
             //!!!!!!!!!!!!!!!!!!!!!!!!
             //Unicode=true is much important, so all characters from OSM data are exported right
             //!!!!!!!!!!!!!!!!!!!!!!!!
