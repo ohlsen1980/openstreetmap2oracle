@@ -142,7 +142,7 @@ namespace OpenStreetMap2Oracle
                 String SQL = element.ToSQL();
                 if(!String.IsNullOrEmpty(SQL))
                 {
-                    using (OracleCommand dbSqlCmd = OracleConnectionFactory.Connection.DbConnection.CreateCommand())
+                    //using (OracleCommand dbSqlCmd = OracleConnectionFactory.Connection.DbConnection.CreateCommand())
                     {
 
                         //dbSqlCmd.Transaction = OracleConnectionFactory.Transaction;
