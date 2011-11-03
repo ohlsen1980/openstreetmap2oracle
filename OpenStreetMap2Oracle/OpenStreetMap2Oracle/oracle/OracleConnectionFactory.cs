@@ -97,8 +97,11 @@ namespace OpenStreetMap2Oracle.oracle
                     foreach (DbExport conn in _connectionPool.Keys)
                     {
                         if (!_connectionPool[conn])
+                        {
+                            conn.Transaction = conn.DbConnection.BeginTransaction();
                             _connectionPool[conn] = true;
                             return conn;
+                        }
                     }
                     Thread.Yield();
                 }
