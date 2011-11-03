@@ -1,0 +1,45 @@
+﻿<Window
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
+	x:Class="OpenStreetMap2Oracle.MainWindow2"
+	x:Name="Window"
+	Title="Osm2Oracle"
+	Width="846" Height="610">
+
+	<Grid x:Name="LayoutRoot">
+		<Grid.Background>
+			<LinearGradientBrush EndPoint="0.932,0.916" StartPoint="0.92,0.122">
+				<GradientStop Color="White"/>
+				<GradientStop Color="#FF6B7B81" Offset="1"/>
+			</LinearGradientBrush>
+		</Grid.Background>
+		<Menu Height="26" VerticalAlignment="Top">
+			<Menu.Background>
+				<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+					<GradientStop Color="#FFC8C8C8" Offset="0"/>
+					<GradientStop Color="White" Offset="1"/>
+				</LinearGradientBrush>
+			</Menu.Background>
+			<MenuItem Header="Datei">
+				<MenuItem x:Name="menuBtnOpen" Header="Öffnen"/>
+				<MenuItem x:Name="menuBtnExit" Header="Beenden"/>
+			</MenuItem>
+			<MenuItem Header="Tools">
+				<MenuItem x:Name="menuBtnConnect" Header="Verbinden"/>
+			</MenuItem>
+		</Menu>
+		<Label Content="Anzahl der Knoten" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" Foreground="Black"/>
+		<TextBox x:Name="NodesCount" Width="228" Height="25" TextAlignment="Right" Text="0" HorizontalAlignment="Left" Margin="140,52,0,0" VerticalAlignment="Top"/>
+		<Label Content="Anzahl der Linien" HorizontalAlignment="Left" Margin="10,79.96,0,0" VerticalAlignment="Top" Foreground="Black"/>
+		<TextBox x:Name="LinesCount" Width="228" Height="25" TextAlignment="Right" Text="0" HorizontalAlignment="Left" Margin="140,81.96,0,0" VerticalAlignment="Top"/>
+		<Label Content="Anzahl der Polygone" HorizontalAlignment="Left" Margin="10,109.92,0,0" VerticalAlignment="Top" Foreground="Black"/>
+		<TextBox x:Name="PolygonsCount" Width="228" Height="25" TextAlignment="Right" Text="0" HorizontalAlignment="Left" Margin="140,111.92,0,0" VerticalAlignment="Top"/>
+		<TextBox x:Name="SQLTextBox" VerticalScrollBarVisibility="Auto" Margin="10,228,8,8"/>
+		<Label Content="Relationen" Margin="372,50,381,0" VerticalAlignment="Top" d:LayoutOverrides="Width" Foreground="Black"/>
+		<Label Content="Multipolygone:" HorizontalAlignment="Left" Margin="10,139.88,0,0" VerticalAlignment="Top" Foreground="Black"/>
+		<TextBox x:Name="MultiPolCount" Width="228" Height="25" TextAlignment="Right" Text="0" HorizontalAlignment="Left" Margin="140,141.88,0,0" VerticalAlignment="Top"/>
+		<Label Content="Ausgabe:" HorizontalAlignment="Left" Height="27" Margin="10,197,0,0" VerticalAlignment="Top" Width="194"/>
+		<Image HorizontalAlignment="Right" Height="27" Margin="0,26,0,0" VerticalAlignment="Top" Width="133" Source="oralogo-small.gif"/>
+	</Grid>
+</Window>

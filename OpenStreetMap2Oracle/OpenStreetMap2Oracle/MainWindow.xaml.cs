@@ -28,6 +28,7 @@ using System.ComponentModel;
 using OpenStreetMap2Oracle.gui;
 using OpenStreetMap2Oracle.oracle;
 using System.Data.OracleClient;
+using System.Windows.Threading;
 
 namespace OpenStreetMap2Oracle
 {
@@ -37,11 +38,23 @@ namespace OpenStreetMap2Oracle
     public partial class MainWindow : Window
     {
         private BackgroundWorker parseXMLWorker;
-        string xmlPath = String.Empty;
+        string xmlPath      = String.Empty;
+        private String sql  = String.Empty;    
+
         // some longs to count the elements, report only every 1000 points lines and polygons progress, this is much faster
-        private long _elementCount = 0, _failedCount = 0, _refreshCount = 0, lineCount = 0, failedLines = 0, polygonCount = 0, 
-            failedPolygons = 0, displayPointCount = 1000, displayLineCount = 1000, displayPolygonCount = 1000, multipolygonCount = 0;
-        private String sql = String.Empty;        
+        private long    _elementCount   = 0, 
+                        _failedCount    = 0, 
+                        _refreshCount   = 0, 
+                        lineCount       = 0, 
+                        failedLines     = 0, 
+                        polygonCount    = 0, 
+                        failedPolygons  = 0, 
+                        displayPointCount   = 1000, 
+                        displayLineCount    = 1000, 
+                        displayPolygonCount = 1000, 
+                        multipolygonCount   = 0;
+
+    
 
         public MainWindow()
         {
@@ -67,6 +80,7 @@ namespace OpenStreetMap2Oracle
             dialog.Filter = "OpenStreetMap Dateien (*.osm)|*.OSM|" +
                             "Alle Dateien (*.*)|*.*";
             dialog.InitialDirectory = PathProvider.Path;
+
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 parseXMLWorker = new BackgroundWorker();
@@ -76,7 +90,6 @@ namespace OpenStreetMap2Oracle
                 parseXMLWorker.RunWorkerAsync();               
                 xmlPath = dialog.FileName;
                 PathProvider.Path = new FileInfo(dialog.FileName).DirectoryName;                
-                
             }
         }
      
@@ -117,20 +130,20 @@ namespace OpenStreetMap2Oracle
         /// </summary>       
         void MainWindow_OnOSMElementAdded(object sender, eventArgs.OSMAddedEventArg e)
         {
-            this.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Send, new System.Windows.Threading.DispatcherOperationCallback(delegate
+            this.Dispatcher.Invoke(DispatcherPriority.Send, new DispatcherOperationCallback(delegate
             {
                 OSMElement element = e.Element;
                 String SQL = element.ToSQL();
-                if(String.IsNullOrEmpty(SQL)== false)
+                if(!String.IsNullOrEmpty(SQL))
                 {
-                    using (OracleCommand dbSqlCmd = OpenStreetMap2Oracle.oracle.OracleConnectionFactory.Connection.DbConnection.CreateCommand())
+                    using (OracleCommand dbSqlCmd = OracleConnectionFactory.Connection.DbConnection.CreateCommand())
                     {
 
                         dbSqlCmd.Transaction = OracleConnectionFactory.Transaction;
                         dbSqlCmd.UpdatedRowSource = System.Data.UpdateRowSource.None;
                         try
                         {
-                            OpenStreetMap2Oracle.oracle.OracleConnectionFactory.Connection.execSqlCmd(SQL, dbSqlCmd);
+                            OracleConnectionFactory.Connection.execSqlCmd(SQL, dbSqlCmd);
 
                             if (element.GetType() == typeof(Node))
                             {
