@@ -76,6 +76,8 @@ namespace OpenStreetMap2Oracle.oracle
             Parallel.ForEach(_connectionPool.Keys, dbConnection =>
             {
                 dbConnection.Transaction.Commit();
+                dbConnection.closeDbConnection();
+                dbConnection.openDbConnection();
             });
         }
 
