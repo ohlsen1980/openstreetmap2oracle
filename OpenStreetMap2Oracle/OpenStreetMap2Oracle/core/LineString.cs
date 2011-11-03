@@ -195,7 +195,13 @@ namespace OpenStreetMap2Oracle.core
             StringTokenizer tok = new StringTokenizer(coords, " ");
             int i = 0;
             String X = String.Empty, Y = String.Empty;
-            
+            /*
+            foreach (string coordPair in tok.Tokens)
+            {
+                StringTokenizer tok1 = new StringTokenizer(coordPair, ",");
+                
+            }*/
+
             while (tok.HasMoreTokens())
             {
                 StringTokenizer tok1 = new StringTokenizer(tok.NextToken(), ",");

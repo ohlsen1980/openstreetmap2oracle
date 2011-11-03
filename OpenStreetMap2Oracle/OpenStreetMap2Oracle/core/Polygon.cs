@@ -60,15 +60,15 @@ namespace OpenStreetMap2Oracle.core
             }
         }
 
-        private PolygonType _polygonType = PolygonType.exterior;
+        //private PolygonType _polygonType = PolygonType.exterior;
         /// <summary>
         /// The type of the polygon, standard as single it is a exterior
         /// if it is part of a multipolygon, it can be a interior
         /// </summary>
         public PolygonType PolygonType
         {
-            get { return _polygonType; }
-            set { _polygonType = value; }
+            get;
+            set;
         }
 
         private List<Point> _pointList = new List<Point>();
@@ -240,7 +240,7 @@ namespace OpenStreetMap2Oracle.core
             _pointList.Add(end);
             //check orientation            
             //exterior counter clockwise orientation
-            if (this._polygonType == PolygonType.exterior)
+            if (this.PolygonType == PolygonType.exterior)
             {
                 if (this.Orientation == PolygonOrientation.clockwise)
                     _pointList.Reverse();
