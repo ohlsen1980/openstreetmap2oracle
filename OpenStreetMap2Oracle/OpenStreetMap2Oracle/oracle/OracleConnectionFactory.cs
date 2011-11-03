@@ -123,7 +123,11 @@ namespace OpenStreetMap2Oracle.oracle
             }
             else
             {
-                _iterator = ((_iterator >  (_connectionPool.Count - 1) ) ? 0 : (_iterator + 1));
+                _iterator++;
+                if ((_iterator) > (_connectionPool.Count - 1))
+                {
+                    _iterator = 0;
+                }
 
                 return _connectionPool[_iterator];
 
