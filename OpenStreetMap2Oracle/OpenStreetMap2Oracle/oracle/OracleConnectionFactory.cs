@@ -33,19 +33,16 @@ namespace OpenStreetMap2Oracle.oracle
     public static class OracleConnectionFactory
     {
         private static DbExport exportConnection = null;
-        /// <summary>
-        /// Transaction object for Oracle
-        /// </summary>
-        public static OracleTransaction Transaction = null;
+        
         private static string _user,
                               _password,
                               _service;
 
         private static int _poolSize;
+        private static int _iterator;
 
         private static List<DbExport> _connectionPool;
 
-        private static int _iterator;
 
         public static void Init(string user, string password, string service, int poolSize = 30)
         {
@@ -70,7 +67,9 @@ namespace OpenStreetMap2Oracle.oracle
 
         }
 
-
+        /// <summary>
+        /// Commits all current pending data on all connections
+        /// </summary>
         public static void CommitAll()
         {
             lock (_connectionPool)
@@ -84,6 +83,19 @@ namespace OpenStreetMap2Oracle.oracle
                     handle.Transaction = handle.DbConnection.BeginTransaction();
                 });
             }
+        }
+
+
+        /// <summary>
+        /// Disconnects all connections
+        /// </summary>
+        public static void DisconnectAll()
+        {
+            Parallel.ForEach(_connectionPool, handle =>
+                {
+                    handle.Transaction.Dispose();
+                    handle.closeDbConnection();
+                });
         }
 
         
@@ -111,41 +123,10 @@ namespace OpenStreetMap2Oracle.oracle
             }
             else
             {
-                    _iterator++;
-                    if ((_iterator) > (_connectionPool.Count - 1))
-                    {
-                        _iterator = 0;                        
-                    }
+                _iterator = ((_iterator >  (_connectionPool.Count - 1) ) ? 0 : (_iterator + 1));
 
-                    return _connectionPool[_iterator];
+                return _connectionPool[_iterator];
 
-                   /* DbExport tmpConn = null;
-                    foreach (DbExport conn in _connectionPool.Keys)
-                    {
-                        if (!_connectionPool[conn])
-                        {
-                            tmpConn = conn;
-                        }
-                    }
-
-                    _cleanUp = true;
-
-                    foreach (DbExport free in _markedForFree)
-                    {
-                        _connectionPool[free] = true;
-                    }
-                    _markedForFree.Clear();
-
-                    _cleanUp = false;
-
-                    if (tmpConn != null)
-                    {
-                        _connectionPool[tmpConn] = true;
-                        return tmpConn;
-                    }
-
-                    Thread.Sleep(10);*/
-                
             }
         }
      }
