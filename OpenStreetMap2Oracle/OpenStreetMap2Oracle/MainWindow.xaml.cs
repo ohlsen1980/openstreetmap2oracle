@@ -195,39 +195,47 @@ namespace OpenStreetMap2Oracle
                         catch (Exception ex)
                         {                    
                             //NOTICE: If you export multiple osm extracts in 1 schema, there can be errors in primary key OSM_ID because
-                            //the extracts in boundary regions are never exact, there can be double elements, for this case the error reports 
-                            //have to be uncommented in code, because the application crashes at about 10000 error messages in SQLTextBox!!!
+                            //the extracts in boundary regions are never exact, there can be double elements, for this case there is
+                            //the DisplayMessagesChkBox, because the application crashes when there are about 10000 error messages in the SQLTextBox!!!
                             if (element.GetType() == typeof(Node))
                             {
-                                _failedCount++;
-                                //The next line can be uncommented
-                                //this.SQLTextBox.Text = SQLTextBox.Text + "\n" + SQL + "\n" + "Fehler Knoten: " + _failedCount.ToString();
-                                //this.SQLTextBox.UpdateLayout();
+                                _failedCount++;                                
+                                if (this.DisplayMessagesChckBox.IsChecked == true)
+                                {
+                                    this.SQLTextBox.Text = SQLTextBox.Text + "\n" + SQL + "\n" + "Fehler Knoten: " + _failedCount.ToString();
+                                    this.SQLTextBox.UpdateLayout();
+                                }
                             }
                             if (element.GetType() == typeof(Way))
                             {
                                 Way way = element as Way;
                                 if (way.Line.IsPolygon() == false)
                                 {
-                                    failedLines++;
-                                    //The next line can be uncommented
-                                    //this.SQLTextBox.Text = SQLTextBox.Text + "\n" + SQL + "\n" + "Fehler Linien: " + failedLines.ToString();
-                                    //this.SQLTextBox.UpdateLayout();
+                                    failedLines++;                                    
+                                    if (this.DisplayMessagesChckBox.IsChecked == true)
+                                    {
+                                        this.SQLTextBox.Text = SQLTextBox.Text + "\n" + SQL + "\n" + "Fehler Linien: " + failedLines.ToString();
+                                        this.SQLTextBox.UpdateLayout();
+                                    }
                                 }
                                 else
                                 {
-                                    failedPolygons++;
-                                    //The next line can be uncommented
-                                    //this.SQLTextBox.Text = SQLTextBox.Text + "\n" + SQL + "\n" + "Fehler Polygone: " + failedLines.ToString();
-                                    //this.SQLTextBox.UpdateLayout();
+                                    failedPolygons++;                                    
+                                    if (this.DisplayMessagesChckBox.IsChecked == true)
+                                    {
+                                        this.SQLTextBox.Text = SQLTextBox.Text + "\n" + SQL + "\n" + "Fehler Polygone: " + failedLines.ToString();
+                                        this.SQLTextBox.UpdateLayout();
+                                    }
                                 }
                             }
                             if (element.GetType() == typeof(Relation))
                             {
-                                _failedCount++;
-                                //The next line can be uncommented
-                                //this.SQLTextBox.Text = SQLTextBox.Text + "\n" + SQL + "\n" + "Fehler Relation: " + _failedCount.ToString();
-                                //this.SQLTextBox.UpdateLayout();
+                                _failedCount++;                               
+                                if (this.DisplayMessagesChckBox.IsChecked == true)
+                                {
+                                    this.SQLTextBox.Text = SQLTextBox.Text + "\n" + SQL + "\n" + "Fehler Relation: " + _failedCount.ToString();
+                                    this.SQLTextBox.UpdateLayout();
+                                }
                             }
                         }
                     }

@@ -25,6 +25,7 @@
                 <Label Canvas.Top="50" Canvas.Left="410" Content="Relationen"/>
                 <Label Canvas.Top="50" Canvas.Left="510" Content="Multipolygone:"/>
                 <TextBox x:Name="MultiPolCount" Width="250" Height="25" Canvas.Top="50" Canvas.Left="620" TextAlignment="Right" Text="0"/>
+                <CheckBox x:Name="DisplayMessagesChckBox" Canvas.Top="160" Canvas.Left="510" IsChecked="True">Oracle SQL - Fehlermeldungen anzeigen</CheckBox>
             </Canvas>
         </Grid>
     </Canvas>

@@ -48,7 +48,7 @@ namespace OpenStreetMap2Oracle.businesslogic
         /// </summary>
         public event XMLFinishedHandler OnXMLFinished;
         
-        private ApplicationManager()
+        public ApplicationManager()
         {
         }
 
