@@ -148,7 +148,7 @@ namespace OpenStreetMap2Oracle.oracle
             Point p = null;
             using (dbSqlCmd)
             {
-                string sql = string.Format("select m.ora_geometry.sdo_point.X as X, m." + TableNames.GeomColumName + ".sdo_point.Y as Y, m." + TableNames.GeomColumName + ".sdo_srid as srid from {0} m where m.osm_id = {1}", TableNames.PointTable, id.ToString());
+                string sql = string.Format("select m." + TableNames.GeomColumName + ".sdo_point.X as X, m." + TableNames.GeomColumName + ".sdo_point.Y as Y, m." + TableNames.GeomColumName + ".sdo_srid as srid from {0} m where m.osm_id = {1}", TableNames.PointTable, id.ToString());
                 dbSqlCmd.CommandText = sql;
                 
                 OracleDataReader rdr = dbSqlCmd.ExecuteReader(System.Data.CommandBehavior.Default);
