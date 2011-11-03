@@ -111,11 +111,14 @@ namespace OpenStreetMap2Oracle.oracle
             }
             else
             {
-                while (true)
-                {
-                    if ((++_iterator) < _connectionPool.Count)
+                    _iterator++;
+                    if ((_iterator) < (_connectionPool.Count - 1))
                     {
                         return _connectionPool[_iterator];
+                    }
+                    else
+                    {
+                        _iterator = 0;
                     }
 
                    /* DbExport tmpConn = null;
@@ -144,11 +147,7 @@ namespace OpenStreetMap2Oracle.oracle
                     }
 
                     Thread.Sleep(10);*/
-
-
-                }
                 
-
             }
         }
      }
