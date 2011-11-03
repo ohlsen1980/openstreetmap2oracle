@@ -263,11 +263,13 @@ namespace OpenStreetMap2Oracle.businesslogic
                                 if (_currentElement.GetType() == typeof(Way))
                                 {
                                     Way way = _currentElement as Way;
-                                    using (OracleCommand dbSqlCmd = OpenStreetMap2Oracle.oracle.OracleConnectionFactory.Connection.DbConnection.CreateCommand())
+                                    DbExport conn = OpenStreetMap2Oracle.oracle.OracleConnectionFactory.CreateConnection();
+                                    using (OracleCommand dbSqlCmd = conn.DbConnection.CreateCommand())
                                     {
-                                        dbSqlCmd.Transaction = OracleConnectionFactory.Transaction;
-                                        way.Line.AddVertice(OpenStreetMap2Oracle.oracle.OracleConnectionFactory.Connection.GetNode(nodeRef, dbSqlCmd));
+                                        dbSqlCmd.Transaction = conn.DbConnection.BeginTransaction();
+                                        way.Line.AddVertice(conn.GetNode(nodeRef, dbSqlCmd));
                                     }
+                                    conn.DbConnection.Close();
                                 }
                                 #endregion
                                 break;
