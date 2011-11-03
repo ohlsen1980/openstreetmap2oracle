@@ -106,6 +106,7 @@
     <Compile Include="businesslogic\Tag.cs" />
     <Compile Include="businesslogic\TagKey.cs" />
     <Compile Include="businesslogic\Way.cs" />
+    <Compile Include="businesslogic\Xml\XmlNodeNames.cs" />
     <Compile Include="core\Geometry.cs" />
     <Compile Include="core\LineString.cs" />
     <Compile Include="core\MultiPolygon.cs" />
