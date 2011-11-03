@@ -33,11 +33,13 @@ namespace OpenStreetMap2Oracle.businesslogic.Transaction
             {
                 Parallel.ForEach(this._queue.Data, osmObject =>
                 {
-                    using (OracleCommand sql_cmd = OracleConnectionFactory.Connection.DbConnection.CreateCommand())
+                    DbExport dbHandle = OracleConnectionFactory.CreateConnection();
+
+                    using (OracleCommand sql_cmd = dbHandle.DbConnection.CreateCommand())
                     {
                         sql_cmd.Transaction = OracleConnectionFactory.Transaction;
                         sql_cmd.UpdatedRowSource = System.Data.UpdateRowSource.None;
-                        OracleConnectionFactory.Connection.execSqlCmd(osmObject.Query, sql_cmd);
+                        dbHandle.execSqlCmd(osmObject.Query, sql_cmd);
                     }
 
                 });
