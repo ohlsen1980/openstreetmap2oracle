@@ -36,6 +36,12 @@ namespace OpenStreetMap2Oracle.oracle
         
         private OracleConnection m_dbConnection = null;
 
+        public OracleTransaction Transaction
+        {
+            get;
+            set;
+        }
+
         public DbExport(string schemaName, string sPwd, string sDataSource)
         {           
             OracleConnectionStringBuilder oConnectionBuilder = new OracleConnectionStringBuilder();

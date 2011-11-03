@@ -55,7 +55,7 @@ namespace OpenStreetMap2Oracle
                         displayPolygonCount = 1000, 
                         multipolygonCount   = 0;
 
-        private const int DISPATCHER_FLUSH_THRESHOLD = 100;
+        private const int DISPATCHER_FLUSH_THRESHOLD = 50;
 
         private TransactionDispatcher _mTransactionDisp;
         private TransactionQueue _mTransactionQueue;
@@ -216,9 +216,9 @@ namespace OpenStreetMap2Oracle
                             {
                                 _failedCount++;                                
                                 if (this.DisplayMessagesChckBox.IsChecked == true)
-                                {                                   
+                                {
                                     this.SQLTextBox.Text = SQLTextBox.Text + "\n" + SQL + "\n" + "Fehler Knoten: " + _failedCount.ToString();
-                                    this.SQLTextBox.UpdateLayout();                                    
+                                    this.SQLTextBox.UpdateLayout();
                                 }
                             }
                             if (element.GetType() == typeof(Way))
@@ -228,28 +228,28 @@ namespace OpenStreetMap2Oracle
                                 {
                                     failedLines++;                                    
                                     if (this.DisplayMessagesChckBox.IsChecked == true)
-                                    {                                       
+                                    {
                                         this.SQLTextBox.Text = SQLTextBox.Text + "\n" + SQL + "\n" + "Fehler Linien: " + failedLines.ToString();
-                                        this.SQLTextBox.UpdateLayout();                                        
+                                        this.SQLTextBox.UpdateLayout();
                                     }
                                 }
                                 else
                                 {
-                                    failedPolygons++;
+                                    failedPolygons++;                                    
                                     if (this.DisplayMessagesChckBox.IsChecked == true)
-                                    {                                        
+                                    {
                                         this.SQLTextBox.Text = SQLTextBox.Text + "\n" + SQL + "\n" + "Fehler Polygone: " + failedLines.ToString();
-                                        this.SQLTextBox.UpdateLayout();                                        
+                                        this.SQLTextBox.UpdateLayout();
                                     }
                                 }
                             }
                             if (element.GetType() == typeof(Relation))
                             {
-                                _failedCount++;
+                                _failedCount++;                               
                                 if (this.DisplayMessagesChckBox.IsChecked == true)
-                                {                                   
+                                {
                                     this.SQLTextBox.Text = SQLTextBox.Text + "\n" + SQL + "\n" + "Fehler Relation: " + _failedCount.ToString();
-                                    this.SQLTextBox.UpdateLayout();                                    
+                                    this.SQLTextBox.UpdateLayout();
                                 }
                             }
                         }

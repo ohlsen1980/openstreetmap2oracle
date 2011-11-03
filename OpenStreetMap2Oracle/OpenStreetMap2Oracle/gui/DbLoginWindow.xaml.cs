@@ -67,7 +67,8 @@ namespace OpenStreetMap2Oracle.gui
             this._user = this.UserTxtBox.Text;
             this._passwort = this.PassTxtBox.Password;
             this._service = this.ServTxtBox.Text;
-            DbExport conn = OpenStreetMap2Oracle.oracle.OracleConnectionFactory.CreateConnection(User, Passwort, Service);
+            OracleConnectionFactory.Init(User, Passwort, Service);
+            DbExport conn = OpenStreetMap2Oracle.oracle.OracleConnectionFactory.CreateConnection();
             try
             {
                 conn.openDbConnection();

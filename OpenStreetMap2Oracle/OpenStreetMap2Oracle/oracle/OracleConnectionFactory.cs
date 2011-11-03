@@ -27,29 +27,22 @@ namespace OpenStreetMap2Oracle.oracle
     /// Class to handle Oracle Connections
     /// Singleton Implementation
     /// </summary>
-    public class OracleConnectionFactory
+    public static class OracleConnectionFactory
     {
-        private static OpenStreetMap2Oracle.oracle.OracleConnectionFactory _instance = null;
         private static DbExport exportConnection = null;
         /// <summary>
         /// Transaction object for Oracle
         /// </summary>
         public static OracleTransaction Transaction = null;
+        private static string _user,
+                              _password,
+                              _service;
 
-        private OracleConnectionFactory()
+        public static void Init(string user, string password, string service)
         {
-        }
-
-        /// <summary>
-        /// Instance - Singleton Implementation
-        /// </summary>
-        public OpenStreetMap2Oracle.oracle.OracleConnectionFactory Instance
-        {
-            get {
-                if (_instance == null)
-                    _instance = new OpenStreetMap2Oracle.oracle.OracleConnectionFactory();
-                return _instance; 
-            }            
+            _user = user;
+            _password = password;
+            _service = service;
         }
 
         public static DbExport Connection
@@ -60,6 +53,7 @@ namespace OpenStreetMap2Oracle.oracle
             }
         }
 
+        
         /// <summary>
         /// Creates a new Oracle Connection
         /// </summary>
@@ -67,11 +61,12 @@ namespace OpenStreetMap2Oracle.oracle
         /// <param name="passwort">Password</param>
         /// <param name="service">TNS name of the oracle database</param>
         /// <returns></returns>
-        public static DbExport CreateConnection(String user, String passwort, String service)
+        public static DbExport CreateConnection()
         {
-            exportConnection = new DbExport(user, passwort, service);
+            
+            exportConnection = new DbExport(_user, _password, _service);
             exportConnection.openDbConnection();
-            Transaction = exportConnection.DbConnection.BeginTransaction();
+            exportConnection.Transaction = exportConnection.DbConnection.BeginTransaction();
             return exportConnection;
         }
 
