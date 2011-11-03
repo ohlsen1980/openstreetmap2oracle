@@ -109,7 +109,7 @@ namespace OpenStreetMap2Oracle.oracle
         {
             DbExport _handle;
 
-            if (_connectionPool.Count < (_poolSize - 1) )
+            if (_connectionPool.Count < (_poolSize - 1))
             {
                 lock (_connectionPool)
                 {
@@ -122,40 +122,40 @@ namespace OpenStreetMap2Oracle.oracle
             }
             else
             {
-                while (true) {
-                    lock (_connectionPool)
+                while (true)
+                {
+
+                    DbExport tmpConn = null;
+                    foreach (DbExport conn in _connectionPool.Keys)
                     {
-                        DbExport tmpConn = null;
-                        foreach (DbExport conn in _connectionPool.Keys)
+                        if (!_connectionPool[conn])
                         {
-                            if (!_connectionPool[conn])
-                            {
-                                tmpConn = conn;
-                            }
-                        }
-
-                        _cleanUp = true;
-
-
-                        foreach (DbExport free in _markedForFree)
-                        {
-                            _connectionPool[free] = true;
-                        }
-                        _markedForFree.Clear();
-
-
-                        _cleanUp = false;
-
-
-
-                        if (tmpConn != null)
-                        {
-                            _connectionPool[tmpConn] = true;
-                            return tmpConn;
+                            tmpConn = conn;
                         }
                     }
-                    Thread.Yield();
+
+                    _cleanUp = true;
+
+
+                    foreach (DbExport free in _markedForFree)
+                    {
+                        _connectionPool[free] = true;
+                    }
+                    _markedForFree.Clear();
+
+
+                    _cleanUp = false;
+
+
+
+                    if (tmpConn != null)
+                    {
+                        _connectionPool[tmpConn] = true;
+                        return tmpConn;
+                    }
                 }
+                Thread.Yield();
+
             }
         }
      }
