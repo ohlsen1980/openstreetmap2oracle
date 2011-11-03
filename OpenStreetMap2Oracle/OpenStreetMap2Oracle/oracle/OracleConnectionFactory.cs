@@ -94,7 +94,7 @@ namespace OpenStreetMap2Oracle.oracle
         {
             DbExport _handle;
 
-            if (_connectionPool.Count < _poolSize)
+            if (_connectionPool.Count < (_poolSize - 1) )
             {
                 _handle = new DbExport(_user, _password, _service);
                 _handle.openDbConnection();
