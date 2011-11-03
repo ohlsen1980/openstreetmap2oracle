@@ -157,6 +157,8 @@ namespace OpenStreetMap2Oracle
                                 this._mTransactionDisp.Queue = this._mTransactionQueue;
                                 this._mTransactionDisp.ProcessQueue();
                             }
+
+                            this._mTransactionQueue.Clear();
                             //OracleConnectionFactory.Connection.execSqlCmd(SQL, dbSqlCmd);
 
 

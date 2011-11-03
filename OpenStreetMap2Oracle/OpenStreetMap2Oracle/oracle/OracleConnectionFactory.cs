@@ -38,11 +38,14 @@ namespace OpenStreetMap2Oracle.oracle
                               _password,
                               _service;
 
-        public static void Init(string user, string password, string service)
+        private static int _poolSize;
+
+        public static void Init(string user, string password, string service, int poolSize)
         {
             _user = user;
             _password = password;
             _service = service;
+            _poolSize = poolSize;
         }
 
         public static DbExport Connection
