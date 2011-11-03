@@ -71,15 +71,15 @@ namespace OpenStreetMap2Oracle.businesslogic
                         switch (reader.NodeType)
                         {
                             case XmlNodeType.Element:
-                                if (reader.Name.Equals("gml:LineString"))
+                                if (reader.Name == "gml:LineString")
                                 {
                                     g = new LineString();
                                 }
-                                if (reader.Name.Equals("gml:Polygon"))
+                                if (reader.Name == "gml:Polygon")
                                 {
                                     g = new Polygon();
                                 }
-                                if (reader.Name.Equals("gml:Point"))
+                                if (reader.Name == "gml:Point")
                                 {
                                     g = new Point();
                                 }
@@ -89,7 +89,7 @@ namespace OpenStreetMap2Oracle.businesslogic
                                 g.BuildFromCoordsString(coors);
                                 break;
                             case XmlNodeType.EndElement:
-                                if (reader.Name.Equals("gml:LineString"))
+                                if (reader.Name == "gml:LineString")
                                 {
                                 }
                                 break;

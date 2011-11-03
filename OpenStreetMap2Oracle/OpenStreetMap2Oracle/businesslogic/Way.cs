@@ -122,9 +122,9 @@ namespace OpenStreetMap2Oracle.businesslogic
             bool retVal = false;
             foreach (Tag t in tagList)
             {
-                if (t.Key.ToString().Equals("boundary"))
+                if (t.Key.ToString() == "boundary")
                 {
-                    if (t.Value.Equals("'administrative'"))
+                    if (t.Value == "'administrative'")
                         retVal = true;
                 }
             }

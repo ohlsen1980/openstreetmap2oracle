@@ -127,7 +127,7 @@ namespace OpenStreetMap2Oracle.businesslogic
             values.Append(",");
             foreach (Tag tag in tagList)
             {
-                if (tag.Key.Equals("name"))
+                if (tag.Key == "name")
                 {
                     String name = tag.Value;
                 }
