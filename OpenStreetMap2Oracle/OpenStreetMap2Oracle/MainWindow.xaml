@@ -1,28 +1,31 @@
-﻿<Window x:Class="OpenStreetMap2Oracle.MainWindow"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" x:Class="OpenStreetMap2Oracle.MainWindow"
         Title="OpenStreetMap2Oracle" WindowState="Normal" Height="700" Width="1024" Background="Silver">
     <Canvas>
-        <Menu Canvas.Top="0" Canvas.Left="0" Width="Auto" Height="27">
-            <MenuItem x:Name="File" Width="Auto" Height="25" Header="Datei">
-                <MenuItem x:Name="FileOpen" Width="Auto" Height="25" Header="Öffnen" Click="FileOpen_Click"></MenuItem>
-                <MenuItem x:Name="Close" Width="Auto" Height="25" Header="Beenden" Click="Close_Click"></MenuItem>
-            </MenuItem>
-            <MenuItem x:Name="Connection" Width="Auto" Height="25" Header="Verbindung">
-                <MenuItem x:Name="ConnOpen" Width="Auto" Height="25" Header="Oracle verbinden" Click="ConnOpen_Click"></MenuItem>
-            </MenuItem>
-        </Menu>
-        <Canvas>
-            <Label Canvas.Top="50" Canvas.Left="10">Anzahl der Knoten</Label>
-            <TextBox x:Name="NodesCount" Width="250" Height="25" Canvas.Top="50" Canvas.Left="140" TextAlignment="Right">0</TextBox>
-            <Label Canvas.Top="100" Canvas.Left="10">Anzahl der Linien</Label>
-            <TextBox x:Name="LinesCount" Width="250" Height="25" Canvas.Top="100" Canvas.Left="140" TextAlignment="Right">0</TextBox>
-            <Label Canvas.Top="150" Canvas.Left="10">Anzahl der Polygone</Label>
-            <TextBox x:Name="PolygonsCount" Width="250" Height="25" Canvas.Top="150" Canvas.Left="140" TextAlignment="Right">0</TextBox>
-            <TextBox x:Name="SQLTextBox" Width="900" Height="400" Canvas.Top="200" Canvas.Left="50" VerticalScrollBarVisibility="Auto"></TextBox>
-            <Label Canvas.Top="50" Canvas.Left="410">Relationen</Label>
-            <Label Canvas.Top="50" Canvas.Left="510">Multipolygone:</Label>
-            <TextBox x:Name="MultiPolCount" Width="250" Height="25" Canvas.Top="50" Canvas.Left="620" TextAlignment="Right">0</TextBox>
-        </Canvas>
+        <Grid Width="1008" Height="662">
+            <Menu Width="120.137" Height="27" HorizontalAlignment="Left" VerticalAlignment="Top" d:LayoutOverrides="Height">
+                <MenuItem x:Name="File" Width="Auto" Height="25" Header="Datei">
+                    <MenuItem x:Name="FileOpen" Width="Auto" Height="25" Header="Öffnen" Click="FileOpen_Click"/>
+                    <MenuItem x:Name="Close" Width="Auto" Height="25" Header="Beenden" Click="Close_Click"/>
+                </MenuItem>
+                <MenuItem x:Name="Connection" Width="Auto" Height="25" Header="Verbindung">
+                    <MenuItem x:Name="ConnOpen" Width="Auto" Height="25" Header="Oracle verbinden" Click="ConnOpen_Click"/>
+                </MenuItem>
+            </Menu>
+            <Canvas HorizontalAlignment="Left" Width="120.137" Height="27" VerticalAlignment="Top">
+                <Label Canvas.Top="50" Canvas.Left="10" Content="Anzahl der Knoten"/>
+                <TextBox x:Name="NodesCount" Width="250" Height="25" Canvas.Top="50" Canvas.Left="140" TextAlignment="Right" Text="0"/>
+                <Label Canvas.Top="100" Canvas.Left="10" Content="Anzahl der Linien"/>
+                <TextBox x:Name="LinesCount" Width="250" Height="25" Canvas.Top="100" Canvas.Left="140" TextAlignment="Right" Text="0"/>
+                <Label Canvas.Top="150" Canvas.Left="10" Content="Anzahl der Polygone"/>
+                <TextBox x:Name="PolygonsCount" Width="250" Height="25" Canvas.Top="150" Canvas.Left="140" TextAlignment="Right" Text="0"/>
+                <TextBox x:Name="SQLTextBox" Width="982" Height="453" Canvas.Top="200" Canvas.Left="10" VerticalScrollBarVisibility="Auto"/>
+                <Label Canvas.Top="50" Canvas.Left="410" Content="Relationen"/>
+                <Label Canvas.Top="50" Canvas.Left="510" Content="Multipolygone:"/>
+                <TextBox x:Name="MultiPolCount" Width="250" Height="25" Canvas.Top="50" Canvas.Left="620" TextAlignment="Right" Text="0"/>
+            </Canvas>
+        </Grid>
     </Canvas>
 </Window>

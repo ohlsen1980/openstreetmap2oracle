@@ -24,7 +24,7 @@
     <PublishUrl>C:\Users\Schoene\Documents\Deploy\OpenStreetMap2Oracle\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
-    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateEnabled>false</UpdateEnabled>
     <UpdateMode>Foreground</UpdateMode>
     <UpdateInterval>7</UpdateInterval>
     <UpdateIntervalUnits>Days</UpdateIntervalUnits>
@@ -34,11 +34,13 @@
     <InstallUrl>http://openstreetmap2oracle.codeplex.com/releases/clickonce/</InstallUrl>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>16</ApplicationRevision>
+    <ApplicationRevision>11</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <Utf8Output>true</Utf8Output>
+    <ExpressionBlendVersion>4.0.20621.0</ExpressionBlendVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -122,6 +124,9 @@
     <Compile Include="gui\DbLoginWindow.xaml.cs">
       <DependentUpon>DbLoginWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MainWindow2.xaml.cs">
+      <DependentUpon>MainWindow2.xaml</DependentUpon>
+    </Compile>
     <Compile Include="oracle\DbExport.cs" />
     <Compile Include="oracle\OracleConnectionFactory.cs" />
     <Compile Include="tools\PathProvider.cs" />
@@ -143,6 +148,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="MainWindow2.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -192,6 +201,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="oralogo-small.gif" />
     <Resource Include="sql\create_LineTable.sql" />
     <Resource Include="sql\create_PointTable.sql" />
     <Resource Include="sql\create_PolygonTable.sql" />
