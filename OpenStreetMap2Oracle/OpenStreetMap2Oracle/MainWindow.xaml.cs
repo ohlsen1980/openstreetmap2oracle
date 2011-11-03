@@ -68,13 +68,14 @@ namespace OpenStreetMap2Oracle
             this.Closed += new EventHandler(MainWindow_Closed);          
         }
 
+        /// <summary>
+        /// Disconnects all connections from the current pool
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void MainWindow_Closed(object sender, EventArgs e)
         {
-            if (OracleConnectionFactory.Transaction != null && OracleConnectionFactory.Connection.DbConnection.State == System.Data.ConnectionState.Open)
-            {
-                OracleConnectionFactory.Transaction.Dispose();
-                OracleConnectionFactory.Connection.closeDbConnection();
-            }
+            OracleConnectionFactory.DisconnectAll();
         }
 
         /// <summary>
@@ -122,7 +123,7 @@ namespace OpenStreetMap2Oracle
 
         void MainWindow_OnXMLFinished(object sender, eventArgs.XMLFinishedEventArgs e)
         {
-            OracleConnectionFactory.Transaction.Commit();           
+            //OracleConnectionFactory.Transaction.Commit();           
             System.GC.Collect();
             this.NodesCount.Text = _elementCount.ToString();
             this.LinesCount.Text = lineCount.ToString();
@@ -206,8 +207,8 @@ namespace OpenStreetMap2Oracle
                             {
                                 System.GC.Collect();
                                 _refreshCount = 0;
-                                OracleConnectionFactory.Transaction.Commit();
-                                OracleConnectionFactory.Transaction = OracleConnectionFactory.Connection.DbConnection.BeginTransaction();
+                                //OracleConnectionFactory.Transaction.Commit();
+                                //OracleConnectionFactory.Transaction = OracleConnectionFactory.Connection.DbConnection.BeginTransaction();
                             }
                         }
                         catch (Exception ex)
