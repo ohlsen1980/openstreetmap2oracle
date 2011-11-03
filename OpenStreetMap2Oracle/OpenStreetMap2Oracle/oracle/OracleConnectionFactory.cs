@@ -83,6 +83,10 @@ namespace OpenStreetMap2Oracle.oracle
         {
             lock (_connectionPool)
             {
+                while (_cleanUp)
+                {
+                    Thread.Yield();
+                }
                 Parallel.ForEach(_connectionPool.Keys, handle =>
                 {
                     handle.Transaction.Commit();
