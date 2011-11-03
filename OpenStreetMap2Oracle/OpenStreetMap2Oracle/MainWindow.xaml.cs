@@ -188,8 +188,8 @@ namespace OpenStreetMap2Oracle
                             {
                                 _failedCount++;
                                 //The next line can be uncommented
-                                this.SQLTextBox.Text = SQLTextBox.Text + "\n" + SQL + "\n" + "Fehler Knoten: " + _failedCount.ToString();
-                                this.SQLTextBox.UpdateLayout();
+                                //this.SQLTextBox.Text = SQLTextBox.Text + "\n" + SQL + "\n" + "Fehler Knoten: " + _failedCount.ToString();
+                                //this.SQLTextBox.UpdateLayout();
                             }
                             if (element.GetType() == typeof(Way))
                             {
@@ -198,23 +198,23 @@ namespace OpenStreetMap2Oracle
                                 {
                                     failedLines++;
                                     //The next line can be uncommented
-                                    this.SQLTextBox.Text = SQLTextBox.Text + "\n" + SQL + "\n" + "Fehler Linien: " + failedLines.ToString();
-                                    this.SQLTextBox.UpdateLayout();
+                                    //this.SQLTextBox.Text = SQLTextBox.Text + "\n" + SQL + "\n" + "Fehler Linien: " + failedLines.ToString();
+                                    //this.SQLTextBox.UpdateLayout();
                                 }
                                 else
                                 {
                                     failedPolygons++;
                                     //The next line can be uncommented
-                                    this.SQLTextBox.Text = SQLTextBox.Text + "\n" + SQL + "\n" + "Fehler Polygone: " + failedLines.ToString();
-                                    this.SQLTextBox.UpdateLayout();
+                                    //this.SQLTextBox.Text = SQLTextBox.Text + "\n" + SQL + "\n" + "Fehler Polygone: " + failedLines.ToString();
+                                    //this.SQLTextBox.UpdateLayout();
                                 }
                             }
                             if (element.GetType() == typeof(Relation))
                             {
                                 _failedCount++;
                                 //The next line can be uncommented
-                                this.SQLTextBox.Text = SQLTextBox.Text + "\n" + SQL + "\n" + "Fehler Relation: " + _failedCount.ToString();
-                                this.SQLTextBox.UpdateLayout();
+                                //this.SQLTextBox.Text = SQLTextBox.Text + "\n" + SQL + "\n" + "Fehler Relation: " + _failedCount.ToString();
+                                //this.SQLTextBox.UpdateLayout();
                             }
                         }
                     }
