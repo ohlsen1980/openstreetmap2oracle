@@ -55,7 +55,7 @@ namespace OpenStreetMap2Oracle
                         displayPolygonCount = 1000, 
                         multipolygonCount   = 0;
 
-        private const int DISPATCHER_FLUSH_THRESHOLD = 500;
+        private const int DISPATCHER_FLUSH_THRESHOLD = 1000;
 
         private TransactionDispatcher _mTransactionDisp;
         private TransactionQueue _mTransactionQueue;
