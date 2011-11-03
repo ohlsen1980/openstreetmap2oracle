@@ -1,7 +1,7 @@
 ﻿//OpenStreetMap2Oracle - A windows application to export OpenStreetMap Data 
 //               (*.osm - files) to an oracle database
 //-------------------------------------------------------------------------------
-//Copyright (C) 2011  Oliver Schöne
+//Copyright (C) 2011  Christian Möller
 //-------------------------------------------------------------------------------
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -17,36 +17,43 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-namespace OpenStreetMap2Oracle.tools
+namespace OpenStreetMap2Oracle.core
 {
-    /// <summary>
-    /// Class to provide the last selected Path to the Application
-    /// Singleton Implementation
-    /// </summary>
-    public class PathProvider : OpenStreetMap2Oracle.core.Singleton<PathProvider>
+    public class Singleton<T>
     {
-        private static String _path = "C:\\";
+        private static T _instance;
 
-        private PathProvider()
+        public Singleton()
         {
         }
 
+
         /// <summary>
-        /// The last selected Path to a file or the standard path C:\
+        /// Creates a new Instance
         /// </summary>
-        public static String Path
+        /// <returns></returns>
+        public static T CreateInstance()
         {
-            get
+            return Activator.CreateInstance<T>();
+        }
+
+        /// <summary>
+        /// Returns the instance for the current object
+        /// </summary>
+        public static T Instance()
+        {
+            if (_instance != null)
             {
-                return _path;
+                return _instance;
             }
-            set
+            else
             {
-                if (value != null && value != String.Empty)
-                    _path = value;
+                return (_instance = CreateInstance());
             }
         }
     }

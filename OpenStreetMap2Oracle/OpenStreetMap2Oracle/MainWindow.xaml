@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="OpenStreetMap2Oracle" WindowState="Normal" Height="700" Width="1024" Background="Silver">
     <Canvas>
-        <Menu Canvas.Top="0" Canvas.Left="0" Width="Auto" Height="25">
+        <Menu Canvas.Top="0" Canvas.Left="0" Width="Auto" Height="27">
             <MenuItem x:Name="File" Width="Auto" Height="25" Header="Datei">
                 <MenuItem x:Name="FileOpen" Width="Auto" Height="25" Header="Öffnen" Click="FileOpen_Click"></MenuItem>
                 <MenuItem x:Name="Close" Width="Auto" Height="25" Header="Beenden" Click="Close_Click"></MenuItem>

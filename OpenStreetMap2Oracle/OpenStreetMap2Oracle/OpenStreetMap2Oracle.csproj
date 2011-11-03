@@ -115,6 +115,7 @@
     <Compile Include="core\PolygonComparer.cs" />
     <Compile Include="core\PolygonOrientation.cs" />
     <Compile Include="core\PolygonType.cs" />
+    <Compile Include="businesslogic\Singleton.cs" />
     <Compile Include="eventArgs\OSMAddedEventArg.cs" />
     <Compile Include="eventArgs\XMLFinishedEventArgs.cs" />
     <Compile Include="gui\DbLoginWindow.xaml.cs">

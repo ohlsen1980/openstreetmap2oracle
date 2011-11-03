@@ -23,6 +23,7 @@ using System.Xml;
 using OpenStreetMap2Oracle.eventArgs;
 using OpenStreetMap2Oracle.oracle;
 using System.Data.OracleClient;
+using OpenStreetMap2Oracle.core;
 
 namespace OpenStreetMap2Oracle.businesslogic
 {
@@ -31,9 +32,9 @@ namespace OpenStreetMap2Oracle.businesslogic
     /// NOTICE
     /// Singleton Implementation
     /// </summary>
-    public class ApplicationManager
+    public class ApplicationManager : Singleton<ApplicationManager>
     {
-        static ApplicationManager _instance;
+        //static ApplicationManager _instance;
         private OSMElement _currentElement;
              
 
@@ -50,7 +51,7 @@ namespace OpenStreetMap2Oracle.businesslogic
         {
         }
 
-        /// <summary>
+      /*  /// <summary>
         /// Singleton Instance of Application Manager
         /// </summary>
         /// <returns></returns>
@@ -59,7 +60,7 @@ namespace OpenStreetMap2Oracle.businesslogic
             if (_instance == null)
                 _instance = new ApplicationManager();
             return _instance;
-        }
+        }*/
 
         /// <summary>
         /// Parses the OSM - File 
