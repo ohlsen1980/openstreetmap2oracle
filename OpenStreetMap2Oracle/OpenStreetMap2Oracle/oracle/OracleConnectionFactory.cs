@@ -73,11 +73,12 @@ namespace OpenStreetMap2Oracle.oracle
 
         public static void CommitAll()
         {
-            Parallel.ForEach(_connectionPool.Keys, dbConnection =>
+            Parallel.ForEach(_connectionPool.Keys, handle =>
             {
-                dbConnection.Transaction.Commit();
-                dbConnection.closeDbConnection();
-                dbConnection.openDbConnection();
+                handle.Transaction.Commit();
+                handle.closeDbConnection();
+                handle.openDbConnection();
+                handle.Transaction = handle.DbConnection.BeginTransaction();
             });
         }
 
