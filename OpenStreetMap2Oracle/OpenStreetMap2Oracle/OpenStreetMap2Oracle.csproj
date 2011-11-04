@@ -225,7 +225,6 @@
     <Resource Include="assets\Image2.png" />
     <Resource Include="assets\Image3.png" />
     <Resource Include="assets\Image4.png" />
-    <Resource Include="Image4.png" />
     <Resource Include="oralogo-small.gif" />
     <Resource Include="sql\create_LineTable.sql" />
     <Resource Include="sql\create_PointTable.sql" />
