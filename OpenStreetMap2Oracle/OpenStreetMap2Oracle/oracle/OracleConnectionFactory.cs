@@ -1,7 +1,7 @@
 ﻿//OpenStreetMap2Oracle - A windows application to export OpenStreetMap Data 
 //               (*.osm - files) to an oracle database
 //-------------------------------------------------------------------------------
-//Copyright (C) 2011  Oliver Schöne
+//Copyright (C) 2011  Oliver Schöne, Christian Möller
 //-------------------------------------------------------------------------------
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
