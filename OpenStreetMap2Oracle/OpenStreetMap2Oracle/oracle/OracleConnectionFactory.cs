@@ -32,14 +32,14 @@ namespace OpenStreetMap2Oracle.oracle
     /// </summary>
     public static class OracleConnectionFactory
     {   
-        private static string _user,
-                              _password,
-                              _service;
+        private static string m_user,
+                              m_password,
+                              m_service;
 
-        private static int _poolSize;
-        private static int _iterator;
+        private static int m_pool_size;
+        private static int m_iterator;
 
-        private static List<DbExport> _connectionPool;
+        private static List<DbExport> m_connection_pool;
 
         /// <summary>
         /// Initializes the ConnectionFactory
@@ -50,11 +50,11 @@ namespace OpenStreetMap2Oracle.oracle
         /// <param name="poolSize">Size of the connection pool</param>
         public static void Init(string user, string password, string service, int poolSize = 30)
         {
-            _user = user;
-            _password = password;
-            _service = service;
-            _poolSize = poolSize;
-            _connectionPool = new List<DbExport>();
+            m_user = user;
+            m_password = password;
+            m_service = service;
+            m_pool_size = poolSize;
+            m_connection_pool = new List<DbExport>();
         }
 
 
@@ -63,15 +63,15 @@ namespace OpenStreetMap2Oracle.oracle
         /// </summary>
         public static void CommitAll()
         {
-            lock (_connectionPool)
+            lock (m_connection_pool)
             {
 
-                Parallel.ForEach(_connectionPool, handle =>
+                Parallel.ForEach(m_connection_pool, _handle =>
                 {
-                    handle.Transaction.Commit();
-                    handle.closeDbConnection();
-                    handle.openDbConnection();
-                    handle.Transaction = handle.DbConnection.BeginTransaction();
+                    _handle.Transaction.Commit();
+                    _handle.closeDbConnection();
+                    _handle.openDbConnection();
+                    _handle.Transaction = _handle.DbConnection.BeginTransaction();
                 });
             }
         }
@@ -82,10 +82,10 @@ namespace OpenStreetMap2Oracle.oracle
         /// </summary>
         public static void DisconnectAll()
         {
-            Parallel.ForEach(_connectionPool, handle =>
+            Parallel.ForEach(m_connection_pool, _handle =>
                 {
-                    handle.Transaction.Dispose();
-                    handle.closeDbConnection();
+                    _handle.Transaction.Dispose();
+                    _handle.closeDbConnection();
                 });
         }
 
@@ -101,26 +101,26 @@ namespace OpenStreetMap2Oracle.oracle
         {
             DbExport _handle;
 
-            if (_connectionPool.Count < (_poolSize - 1))
+            if (m_connection_pool.Count < (m_pool_size - 1))
             {
-                lock (_connectionPool)
+                lock (m_connection_pool)
                 {
-                    _handle = new DbExport(_user, _password, _service);
+                    _handle = new DbExport(m_user, m_password, m_service);
                     _handle.openDbConnection();
                     _handle.Transaction = _handle.DbConnection.BeginTransaction();
-                    _connectionPool.Add(_handle);
+                    m_connection_pool.Add(_handle);
                 }
                 return _handle;
             }
             else
             {
-                _iterator++;
-                if ((_iterator) > (_connectionPool.Count - 1))
+                m_iterator++;
+                if ((m_iterator) > (m_connection_pool.Count - 1))
                 {
-                    _iterator = 0;
+                    m_iterator = 0;
                 }
 
-                return _connectionPool[_iterator];
+                return m_connection_pool[m_iterator];
 
             }
         }

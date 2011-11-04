@@ -33,21 +33,29 @@ namespace OpenStreetMap2Oracle.oracle
     {
        
         private string m_sConnectionString;
-        
         private OracleConnection m_dbConnection = null;
 
+        /// <summary>
+        /// Gets or sets the Transaction object of the current connection
+        /// </summary>
         public OracleTransaction Transaction
         {
             get;
             set;
         }
 
-        public DbExport(string schemaName, string sPwd, string sDataSource)
+        /// <summary>
+        /// Creates a new instance of the DbExport object
+        /// </summary>
+        /// <param name="schema">Name of the schema in your oracle environment</param>
+        /// <param name="password">Password</param>
+        /// <param name="datasource">Datasource</param>
+        public DbExport(string schema, string password, string datasource)
         {           
             OracleConnectionStringBuilder oConnectionBuilder = new OracleConnectionStringBuilder();
-            oConnectionBuilder.DataSource = sDataSource.Replace("/", @"\"); //Replace the / with a \ (standard path);           
-            oConnectionBuilder.Add("Password", sPwd);
-            oConnectionBuilder.Add("User ID", schemaName);
+            oConnectionBuilder.DataSource = datasource.Replace("/", @"\"); //Replace the / with a \ (standard path);           
+            oConnectionBuilder.Add("Password", password);
+            oConnectionBuilder.Add("User ID", schema);
             oConnectionBuilder.Pooling = true;
             oConnectionBuilder.MaxPoolSize = 75;
             oConnectionBuilder.MinPoolSize = 75;
@@ -111,13 +119,13 @@ namespace OpenStreetMap2Oracle.oracle
         /// <summary>
         /// Execucte a SQL command, with open a new connection
         /// </summary>
-        /// <param name="sSqlCmd"></param>
-        public void execSqlCmd(string sSqlCmd)
+        /// <param name="query">The SQL Query</param>
+        public void execSqlCmd(string query)
         {
             openDbConnection();
             using (OracleCommand dbSqlCmd = DbConnection.CreateCommand())
             {
-                dbSqlCmd.CommandText = sSqlCmd;
+                dbSqlCmd.CommandText = query;
                 dbSqlCmd.ExecuteNonQuery();
                 dbSqlCmd.Dispose();
             }
@@ -127,13 +135,13 @@ namespace OpenStreetMap2Oracle.oracle
         /// Execucte a SQL command using the given dbSqlCmd
         /// This is much faster, than execSqlCmd(string sSqlCmd)
         /// </summary>
-        /// <param name="sSqlCmd">The sql syntax</param>
-        /// <param name="dbSqlCmd">The OracleCommand object</param>
-        public void execSqlCmd(string sSqlCmd, OracleCommand dbSqlCmd)
+        /// <param name="query">The sql syntax</param>
+        /// <param name="cmd">The OracleCommand object</param>
+        public void execSqlCmd(string query, OracleCommand cmd)
         {
-            dbSqlCmd.CommandText = sSqlCmd;           
-            dbSqlCmd.ExecuteNonQuery();
-            dbSqlCmd.Dispose();
+            cmd.CommandText = query;           
+            cmd.ExecuteNonQuery();
+            cmd.Dispose();
         }
 
         /// <summary>
@@ -141,23 +149,33 @@ namespace OpenStreetMap2Oracle.oracle
         /// This method is needed, when all nodes are exported to oracle and the ways have to be constructed
         /// </summary>
         /// <param name="id">The OSM_ID of the node</param>
-        /// <param name="dbSqlCmd">The OracleCommand</param>
+        /// <param name="cmd">The OracleCommand</param>
         /// <returns>A Point for contruction of a LineString/Way</returns>
-        public Point GetNode(long id, OracleCommand dbSqlCmd)
+        public Point GetNode(long id, OracleCommand cmd)
         {
+            string query,
+                   x,
+                   y,
+                   srid;
+
             Point p = null;
-            using (dbSqlCmd)
+            OracleDataReader reader;
+
+
+            using (cmd)
             {
-                string sql = string.Format("select m." + TableNames.GeomColumName + ".sdo_point.X as X, m." + TableNames.GeomColumName + ".sdo_point.Y as Y, m." + TableNames.GeomColumName + ".sdo_srid as srid from {0} m where m.osm_id = {1}", TableNames.PointTable, id.ToString());
-                dbSqlCmd.CommandText = sql;
+                query = string.Format("select m." + TableNames.GeomColumName + ".sdo_point.X as X, m." + TableNames.GeomColumName + ".sdo_point.Y as Y, m." + TableNames.GeomColumName + ".sdo_srid as srid from {0} m where m.osm_id = {1}", TableNames.PointTable, id.ToString());
+                cmd.CommandText = query;
                 
-                OracleDataReader rdr = dbSqlCmd.ExecuteReader(System.Data.CommandBehavior.Default);
-                rdr.Read();
-                string x = rdr[0].ToString();
-                string y = rdr[1].ToString();
-                string srid = rdr[2].ToString();
+                reader = cmd.ExecuteReader(System.Data.CommandBehavior.Default);
+                reader.Read();
+
+                x = reader[0].ToString();
+                y = reader[1].ToString();
+                srid = reader[2].ToString();
                 p = new Point(x, y, srid);
-                rdr.Close();               
+
+                reader.Close();               
             }
             return p;
         }
@@ -166,58 +184,78 @@ namespace OpenStreetMap2Oracle.oracle
         /// Get the GML Geometry out of oracle for a given OSM_ID
         /// </summary>
         /// <param name="id">The OSM_ID of the element, it can be a point, line, polygon or road</param>
-        /// <param name="dbSqlCmd">The OracleCommand</param>
+        /// <param name="cmd">The OracleCommand</param>
         /// <returns>A String of coordinates</returns>
-        public String GetGMLGeometry(long id, OracleCommand dbSqlCmd)
+        public String GetGMLGeometry(long id, OracleCommand cmd)
         {
-            String gml = String.Empty;
-            using (dbSqlCmd)
-            {
-                string sql = string.Format("select SDO_UTIL.TO_GMLGEOMETRY(m."+TableNames.GeomColumName +") from {0} m where m.osm_id = {1}", TableNames.LineTable, id.ToString());
-                dbSqlCmd.CommandText = sql;
+            string  query,
+                    gml = string.Empty;
 
-                OracleDataReader rdr = dbSqlCmd.ExecuteReader(System.Data.CommandBehavior.Default);
-                rdr.Read();
-                if (rdr.HasRows)
+            OracleDataReader reader;
+
+            using (cmd)
+            {
+                // @TODO: THIS CAN BE MUCH MORE OPTIMIZED!
+
+
+                query = string.Format("select SDO_UTIL.TO_GMLGEOMETRY(m."+TableNames.GeomColumName +") from {0} m where m.osm_id = {1}", TableNames.LineTable, id.ToString());
+                cmd.CommandText = query;
+
+                reader = cmd.ExecuteReader(CommandBehavior.Default);
+                reader.Read();
+
+                if (reader.HasRows)
                 {
-                    gml = rdr[0].ToString();
+                    gml = reader[0].ToString();
                 }                
                 else
                 {
-                    rdr.Close();
-                    rdr.Dispose();
-                    sql = string.Format("select SDO_UTIL.TO_GMLGEOMETRY(m." + TableNames.GeomColumName + ") from {0} m where m.osm_id = {1}", TableNames.PolygonTable, id.ToString());
-                    dbSqlCmd.CommandText = sql;
+                    reader.Close();
+                    reader.Dispose();
 
-                    rdr = dbSqlCmd.ExecuteReader(System.Data.CommandBehavior.Default);
-                    rdr.Read();
-                    if (rdr.HasRows)
-                        gml = rdr[0].ToString();
+                    query = string.Format("select SDO_UTIL.TO_GMLGEOMETRY(m." + TableNames.GeomColumName + ") from {0} m where m.osm_id = {1}", TableNames.PolygonTable, id.ToString());
+                    cmd.CommandText = query;
+
+                    reader = cmd.ExecuteReader(CommandBehavior.Default);
+                    reader.Read();
+
+                    if (reader.HasRows)
+                    {
+                        gml = reader[0].ToString();
+                    }
                     else
                     {
-                        rdr.Close();
-                        rdr.Dispose();
-                        sql = string.Format("select SDO_UTIL.TO_GMLGEOMETRY(m." + TableNames.GeomColumName + ") from {0} m where m.osm_id = {1}", TableNames.RoadTable, id.ToString());
-                        dbSqlCmd.CommandText = sql;                      
-                        rdr = dbSqlCmd.ExecuteReader(System.Data.CommandBehavior.Default);
-                        rdr.Read();
-                        if (rdr.HasRows)
-                            gml = rdr[0].ToString();
+                        reader.Close();
+                        reader.Dispose();
+
+                        query = string.Format("select SDO_UTIL.TO_GMLGEOMETRY(m." + TableNames.GeomColumName + ") from {0} m where m.osm_id = {1}", TableNames.RoadTable, id.ToString());
+                        cmd.CommandText = query;
+
+                        reader = cmd.ExecuteReader(CommandBehavior.Default);
+                        reader.Read();
+
+                        if (reader.HasRows)
+                        {
+                            gml = reader[0].ToString();
+                        }
                         else
                         {
-                            rdr.Close();
-                            rdr.Dispose();
-                            sql = string.Format("select SDO_UTIL.TO_GMLGEOMETRY(m." + TableNames.GeomColumName + ") from {0} m where m.osm_id = {1}", TableNames.PointTable, id.ToString());
-                            dbSqlCmd.CommandText = sql;
+                            reader.Close();
+                            reader.Dispose();
+                            query = string.Format("select SDO_UTIL.TO_GMLGEOMETRY(m." + TableNames.GeomColumName + ") from {0} m where m.osm_id = {1}", TableNames.PointTable, id.ToString());
+                            cmd.CommandText = query;
 
-                            rdr = dbSqlCmd.ExecuteReader(System.Data.CommandBehavior.Default);
-                            rdr.Read();
-                            if (rdr.HasRows)
-                                gml = rdr[0].ToString();
+                            reader = cmd.ExecuteReader(CommandBehavior.Default);
+                            reader.Read();
+
+                            if (reader.HasRows)
+                            {
+                                gml = reader[0].ToString();
+                            }
                         }
                     }                   
                 }              
-                rdr.Close();                
+                reader.Close();                
             }
             return gml;
         }
