@@ -98,8 +98,8 @@ namespace OpenStreetMap2Oracle.oracle
         /// </summary>
         public void openDbConnection()
         {
-            if (DbConnection.State != ConnectionState.Open)
-                DbConnection.Open();
+            if (DbConnection.State != ConnectionState.Open)          
+                    DbConnection.Open();            
         }
 
         /// <summary>

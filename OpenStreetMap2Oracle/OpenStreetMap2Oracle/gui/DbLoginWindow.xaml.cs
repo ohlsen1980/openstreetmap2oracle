@@ -21,6 +21,7 @@
 using System;
 using System.Windows;
 using OpenStreetMap2Oracle.oracle;
+using System.Windows.Media;
 
 namespace OpenStreetMap2Oracle.gui
 {
@@ -29,6 +30,10 @@ namespace OpenStreetMap2Oracle.gui
     /// </summary>
     public partial class DbLoginWindow : Window
     {
+        private String _errorMessage = String.Empty;
+
+        private bool IsValidCon = false;
+
         private String _user = String.Empty;
         /// <summary>
         /// The oracle user
@@ -58,33 +63,84 @@ namespace OpenStreetMap2Oracle.gui
 
 
 
-        public DbLoginWindow()
+        public DbLoginWindow(Window owner)
         {
-            InitializeComponent();
+            InitializeComponent();            
+            this.Owner = owner;
         }
 
         private void OKBtn_Click(object sender, RoutedEventArgs e)
         {
-            this._user = this.UserTxtBox.Text;
-            this._passwort = this.PassTxtBox.Password;
-            this._service = this.ServTxtBox.Text;
-            OracleConnectionFactory.Init(User, Passwort, Service, 75);
-            DbExport conn = OpenStreetMap2Oracle.oracle.OracleConnectionFactory.CreateConnection();
-            try
+            TestIt();
+            if (IsValidCon)
             {
-                conn.openDbConnection();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            this.Close();
-            MessageBox.Show(conn.DbConnection.State.ToString());
+                //@TODO Set User Credentials in global Class and get poolsize from user
+                OracleConnectionFactory.Init(User, Passwort, Service, 75);
+                OracleConnectionFactory.CreateConnection();
+                this.Close();
+            }           
         }
 
         private void AbbrBtn_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+        private void TestConnection()
+        {
+            DbExport conn = new DbExport(User, Passwort, Service);
+            try
+            {
+                conn.openDbConnection();
+                if (conn.DbConnection.State == System.Data.ConnectionState.Open)
+                    IsValidCon = true;
+                else
+                    IsValidCon = false;
+                conn.closeDbConnection();
+                conn.DbConnection.Dispose();
+                conn.Dispose();
+            }
+            catch (Exception ex)
+            {
+                _errorMessage = ex.Message;
+            }
+           
+
+            
+        }
+
+        private void TestIt()
+        {
+            IsValidCon = false;
+            this._user = this.UserTxtBox.Text;
+            this._passwort = this.PassTxtBox.Password;
+            this._service = this.ServTxtBox.Text;
+            
+            if (User != String.Empty && Passwort != String.Empty && Service != String.Empty)
+            {
+                TestConnection();
+            }
+
+            if (IsValidCon == true)
+            {
+                this.TestConLabel.Text = "OK";
+                this.TestConLabel.Foreground = Brushes.Green;
+                this.TestConLabel.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                if (_errorMessage != String.Empty)
+                    this.TestConLabel.Text = _errorMessage;
+                else
+                    this.TestConLabel.Text = "FAILED";
+                this.TestConLabel.Foreground = Brushes.Red;
+                this.TestConLabel.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void TestBtn_Click(object sender, RoutedEventArgs e)
+        {
+            TestIt();
         }
     }
 }
