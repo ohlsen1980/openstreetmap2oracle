@@ -31,9 +31,7 @@ namespace OpenStreetMap2Oracle.oracle
     /// Singleton Implementation
     /// </summary>
     public static class OracleConnectionFactory
-    {
-        private static DbExport exportConnection = null;
-        
+    {   
         private static string _user,
                               _password,
                               _service;
@@ -43,7 +41,13 @@ namespace OpenStreetMap2Oracle.oracle
 
         private static List<DbExport> _connectionPool;
 
-
+        /// <summary>
+        /// Initializes the ConnectionFactory
+        /// </summary>
+        /// <param name="user">Database Username</param>
+        /// <param name="password">Database Password</param>
+        /// <param name="service">TNS of the oracle instance</param>
+        /// <param name="poolSize">Size of the connection pool</param>
         public static void Init(string user, string password, string service, int poolSize = 30)
         {
             _user = user;
@@ -51,21 +55,8 @@ namespace OpenStreetMap2Oracle.oracle
             _service = service;
             _poolSize = poolSize;
             _connectionPool = new List<DbExport>();
-
         }
 
-        public static DbExport Connection
-        {
-            get
-            {                
-                return exportConnection;
-            }
-        }
-
-        public static void FreeConnection(DbExport connection)
-        {
-
-        }
 
         /// <summary>
         /// Commits all current pending data on all connections
@@ -100,7 +91,7 @@ namespace OpenStreetMap2Oracle.oracle
 
         
         /// <summary>
-        /// Creates a new Oracle Connection
+        /// Returns an instance for a oracle connection
         /// </summary>
         /// <param name="user">Oracle user</param>
         /// <param name="passwort">Password</param>

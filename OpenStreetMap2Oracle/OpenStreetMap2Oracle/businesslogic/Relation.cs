@@ -143,7 +143,7 @@ namespace OpenStreetMap2Oracle.businesslogic
                     using (OracleCommand dbSqlCmd = conn.DbConnection.CreateCommand())
                     {
                         dbSqlCmd.Transaction = conn.Transaction;
-                        String gml = OracleConnectionFactory.Connection.GetGMLGeometry(member.Ref, dbSqlCmd);
+                        String gml = OracleConnectionFactory.CreateConnection().GetGMLGeometry(member.Ref, dbSqlCmd);
                         GMLAnalyzer analyzer = new GMLAnalyzer(gml);
                         Geometry g = analyzer.Analyze();
                         if (g != null)
@@ -173,7 +173,6 @@ namespace OpenStreetMap2Oracle.businesslogic
                             }
                         }
                     }
-                    OracleConnectionFactory.FreeConnection(conn);
                 }
                 String varray = multiPol.ToVarray();
                 StringBuilder builder = new StringBuilder("declare \n varr sdo_ordinate_array; \n BEGIN \n");
