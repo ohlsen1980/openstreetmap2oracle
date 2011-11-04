@@ -65,7 +65,6 @@ namespace OpenStreetMap2Oracle.oracle
         {
             lock (m_connection_pool)
             {
-
                 Parallel.ForEach(m_connection_pool, _handle =>
                 {
                     _handle.Transaction.Commit();

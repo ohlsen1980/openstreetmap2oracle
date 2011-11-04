@@ -63,20 +63,20 @@ namespace OpenStreetMap2Oracle.businesslogic.Transaction
         /// <summary>
         /// Processes the transaction queue.
         /// </summary>
-        public void ProcessQueue() 
+        public void ProcessQueue()
         {
-            DbExport handle;
-            OracleCommand osm_cmd;
-
             lock (_queue)
             {
-                Parallel.ForEach(this._queue.Data, osm_obj =>
+
+                Parallel.ForEach(this._queue.Data, osmObject =>
                 {
-                    handle = OracleConnectionFactory.CreateConnection();
-                    osm_cmd = handle.DbConnection.CreateCommand();
-                    osm_cmd.Transaction = handle.Transaction;
-                    osm_cmd.UpdatedRowSource = System.Data.UpdateRowSource.None;
-                    handle.execSqlCmd(osm_obj.Query, osm_cmd);
+                    DbExport dbHandle = OracleConnectionFactory.CreateConnection();
+                    OracleCommand sql_cmd = dbHandle.DbConnection.CreateCommand();
+
+                    sql_cmd.Transaction = dbHandle.Transaction;
+                    sql_cmd.UpdatedRowSource = System.Data.UpdateRowSource.None;
+                    dbHandle.execSqlCmd(osmObject.Query, sql_cmd);
+
                 });
 
                 OracleConnectionFactory.CommitAll();
