@@ -74,7 +74,7 @@ namespace OpenStreetMap2Oracle.gui
             TestIt();
             if (IsValidCon)
             {
-                //@TODO Set User Credentials in global Class and get poolsize from user
+                //TODO Set User Credentials in global Class and get poolsize from user
                 OracleConnectionFactory.Init(User, Passwort, Service, 75);
                 OracleConnectionFactory.CreateConnection();
                 this.Close();
