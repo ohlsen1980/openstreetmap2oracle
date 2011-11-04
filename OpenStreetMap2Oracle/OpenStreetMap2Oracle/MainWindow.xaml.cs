@@ -267,7 +267,7 @@ namespace OpenStreetMap2Oracle
 
         private void ConnOpen_Click(object sender, RoutedEventArgs e)
         {
-            DbLoginWindow window = new DbLoginWindow();
+            DbLoginWindow window = new DbLoginWindow(this);
             window.ShowDialog();
         }
 
