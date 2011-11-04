@@ -73,12 +73,14 @@
     <SignManifests>false</SignManifests>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Expression.Interactions" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.OracleClient">
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -111,6 +113,7 @@
     <Compile Include="businesslogic\Transaction\TransactionQueue.cs" />
     <Compile Include="businesslogic\Way.cs" />
     <Compile Include="businesslogic\Xml\XmlNodeNames.cs" />
+    <Compile Include="controller\AppManagerController.cs" />
     <Compile Include="core\Geometry.cs" />
     <Compile Include="core\LineString.cs" />
     <Compile Include="core\MultiPolygon.cs" />
@@ -123,8 +126,14 @@
     <Compile Include="businesslogic\Singleton.cs" />
     <Compile Include="eventArgs\OSMAddedEventArg.cs" />
     <Compile Include="eventArgs\XMLFinishedEventArgs.cs" />
+    <Compile Include="gui\Controls\HugeButton.xaml.cs">
+      <DependentUpon>HugeButton.xaml</DependentUpon>
+    </Compile>
     <Compile Include="gui\DbLoginWindow.xaml.cs">
       <DependentUpon>DbLoginWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="gui\ProgressWindow.xaml.cs">
+      <DependentUpon>ProgressWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindow2.xaml.cs">
       <DependentUpon>MainWindow2.xaml</DependentUpon>
@@ -134,7 +143,15 @@
     <Compile Include="tools\PathProvider.cs" />
     <Compile Include="tools\StringTokenizer.cs" />
     <Compile Include="tools\TableNames.cs" />
+    <Page Include="gui\Controls\HugeButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="gui\DbLoginWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="gui\ProgressWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -204,13 +221,15 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="assets\Image1.png" />
+    <Resource Include="Image1.png" />
+    <Resource Include="Image2.png" />
     <Resource Include="oralogo-small.gif" />
     <Resource Include="sql\create_LineTable.sql" />
     <Resource Include="sql\create_PointTable.sql" />
     <Resource Include="sql\create_PolygonTable.sql" />
     <Resource Include="sql\create_RoadsTable.sql" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
