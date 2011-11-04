@@ -271,7 +271,7 @@ namespace OpenStreetMap2Oracle.businesslogic
                                         if (p != null)
                                             way.Line.AddVertice(p);
                                     }
-                                    OracleConnectionFactory.FreeConnection(conn);
+                                    
                                 }
                                 #endregion
                                 break;
