@@ -52,18 +52,18 @@ namespace OpenStreetMap2Oracle.oracle
         /// <param name="datasource">Datasource</param>
         public DbExport(string schema, string password, string datasource)
         {           
-            OracleConnectionStringBuilder oConnectionBuilder = new OracleConnectionStringBuilder();
-            oConnectionBuilder.DataSource = datasource.Replace("/", @"\"); //Replace the / with a \ (standard path);           
-            oConnectionBuilder.Add("Password", password);
-            oConnectionBuilder.Add("User ID", schema);
-            oConnectionBuilder.Pooling = true;
-            oConnectionBuilder.MaxPoolSize = 75;
-            oConnectionBuilder.MinPoolSize = 75;
+            OracleConnectionStringBuilder conn_builder = new OracleConnectionStringBuilder();
+            conn_builder.DataSource = datasource.Replace("/", @"\"); //Replace the / with a \ (standard path);           
+            conn_builder.Add("Password", password);
+            conn_builder.Add("User ID", schema);
+            conn_builder.Pooling = true;
+            conn_builder.MaxPoolSize = 75;
+            conn_builder.MinPoolSize = 75;
             //!!!!!!!!!!!!!!!!!!!!!!!!
             //Unicode=true is much important, so all characters from OSM data are exported right
             //!!!!!!!!!!!!!!!!!!!!!!!!
-            oConnectionBuilder.Unicode = true;
-            m_sConnectionString = oConnectionBuilder.ConnectionString;            
+            conn_builder.Unicode = true;
+            m_sConnectionString = conn_builder.ConnectionString;            
         }
 
         /// <summary>
@@ -161,10 +161,20 @@ namespace OpenStreetMap2Oracle.oracle
             Point p = null;
             OracleDataReader reader;
 
-
             using (cmd)
             {
-                query = string.Format("select m." + TableNames.GeomColumName + ".sdo_point.X as X, m." + TableNames.GeomColumName + ".sdo_point.Y as Y, m." + TableNames.GeomColumName + ".sdo_srid as srid from {0} m where m.osm_id = {1}", TableNames.PointTable, id.ToString());
+                query = string.Format(@"SELECT 
+                                            m.{0}.sdo_point.X as X, 
+                                            m.{0}.sdo_point.Y as Y, 
+                                            m.{0}.sdo_srid as srid 
+                                        FROM 
+                                            {1} m 
+                                        WHERE 
+                                            m.osm_id = {2}", 
+                                            TableNames.GeomColumName,
+                                            TableNames.PointTable, 
+                                            id.ToString()
+                                       );
                 cmd.CommandText = query;
                 
                 reader = cmd.ExecuteReader(System.Data.CommandBehavior.Default);
@@ -191,71 +201,43 @@ namespace OpenStreetMap2Oracle.oracle
             string  query,
                     gml = string.Empty;
 
+            string[] tableArray = new string[] {
+                    TableNames.LineTable,
+                    TableNames.PolygonTable,
+                    TableNames.RoadTable,
+                    TableNames.PointTable
+            };
+
             OracleDataReader reader;
 
             using (cmd)
             {
-                // @TODO: THIS CAN BE MUCH MORE OPTIMIZED!
-
-
-                query = string.Format("select SDO_UTIL.TO_GMLGEOMETRY(m."+TableNames.GeomColumName +") from {0} m where m.osm_id = {1}", TableNames.LineTable, id.ToString());
-                cmd.CommandText = query;
-
-                reader = cmd.ExecuteReader(CommandBehavior.Default);
-                reader.Read();
-
-                if (reader.HasRows)
+                foreach (string tableName in tableArray)
                 {
-                    gml = reader[0].ToString();
-                }                
-                else
-                {
-                    reader.Close();
-                    reader.Dispose();
+                    query = string.Format(@"SELECT
+                                                SDO_UTIL.TO_GMLGEOMETRY(m.{0})
+                                            FROM
+                                                {1}
+                                            WHERE
+                                                m.osm_id = {2}",
+                                            TableNames.GeomColumName,
+                                            tableName,
+                                            id.ToString());
 
-                    query = string.Format("select SDO_UTIL.TO_GMLGEOMETRY(m." + TableNames.GeomColumName + ") from {0} m where m.osm_id = {1}", TableNames.PolygonTable, id.ToString());
                     cmd.CommandText = query;
-
-                    reader = cmd.ExecuteReader(CommandBehavior.Default);
-                    reader.Read();
+                    reader = cmd.ExecuteReader();
 
                     if (reader.HasRows)
                     {
                         gml = reader[0].ToString();
-                    }
-                    else
-                    {
                         reader.Close();
                         reader.Dispose();
+                        break;
+                    }
 
-                        query = string.Format("select SDO_UTIL.TO_GMLGEOMETRY(m." + TableNames.GeomColumName + ") from {0} m where m.osm_id = {1}", TableNames.RoadTable, id.ToString());
-                        cmd.CommandText = query;
-
-                        reader = cmd.ExecuteReader(CommandBehavior.Default);
-                        reader.Read();
-
-                        if (reader.HasRows)
-                        {
-                            gml = reader[0].ToString();
-                        }
-                        else
-                        {
-                            reader.Close();
-                            reader.Dispose();
-                            query = string.Format("select SDO_UTIL.TO_GMLGEOMETRY(m." + TableNames.GeomColumName + ") from {0} m where m.osm_id = {1}", TableNames.PointTable, id.ToString());
-                            cmd.CommandText = query;
-
-                            reader = cmd.ExecuteReader(CommandBehavior.Default);
-                            reader.Read();
-
-                            if (reader.HasRows)
-                            {
-                                gml = reader[0].ToString();
-                            }
-                        }
-                    }                   
-                }              
-                reader.Close();                
+                    reader.Close();
+                    reader.Dispose();
+                }
             }
             return gml;
         }
