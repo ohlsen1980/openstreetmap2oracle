@@ -40,9 +40,14 @@ namespace OpenStreetMap2Oracle.businesslogic
              
 
         public delegate void OnOSMElementAddedHandler(object sender, OSMAddedEventArg e);
+        public delegate void XMLFinishedHandler(object sender, XMLFinishedEventArgs e);
+
+        /// <summary>
+        /// Occurs whenever a new OSMElement was parsed
+        /// </summary>
         public event OnOSMElementAddedHandler OnOSMElementAdded;
 
-        public delegate void XMLFinishedHandler(object sender, XMLFinishedEventArgs e);
+
         /// <summary>
         /// Event Handler for XML parsing is finished
         /// </summary>
@@ -58,48 +63,46 @@ namespace OpenStreetMap2Oracle.businesslogic
         /// <param name="File">The Filename with path to the *.osm file</param>
         public void ParseXML(String File)
         {   
-            //Use XMLTextReader, this class dos not validate XML, so it is recommended in use of large XML files
-            XmlTextReader xmlreader = new XmlTextReader(File);
+            //Use XMLTextReader, this class dos not validate XML, so it is recommended for usage with large XML files
+            XmlTextReader reader = new XmlTextReader(File);
             
-            
-            while (xmlreader.Read())
+            while (reader.Read())
             {
-                switch (xmlreader.NodeType)
+                switch (reader.NodeType)
                 {
-
                     case XmlNodeType.Element: // Der Knoten ist ein Element.
                         #region NodeType Element
-                        switch (xmlreader.Name)
+                        switch (reader.Name)
                         {
                             case XmlNodeNames.NODE:
                                 #region NodeName "node"
 
-                                bool isEmty = (xmlreader.IsEmptyElement) ? true : false;
+                                bool isEmty = (reader.IsEmptyElement) ? true : false;
                                 Node node = new Node();
                                 _currentElement = node;
                                 long tempLong = 0;
 
-                                while (xmlreader.MoveToNextAttribute()) // Lesen der Attribute.
+                                while (reader.MoveToNextAttribute()) // Lesen der Attribute.
                                 {
-                                    switch (xmlreader.Name)
+                                    switch (reader.Name)
                                     {
                                         case "id":
-                                            Int64.TryParse(xmlreader.Value, out tempLong);
+                                            Int64.TryParse(reader.Value, out tempLong);
                                             node.Id = tempLong;
                                             break;
                                         
                                         case "lat":
                                             //Double.TryParse(xmlreader.Value, System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.CultureInfo.InvariantCulture, out tempDouble );
-                                            node.Point.Y = xmlreader.Value;
+                                            node.Point.Y = reader.Value;
                                             break;
                                         
                                         case "lon":
                                             //Double.TryParse(xmlreader.Value, System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.CultureInfo.InvariantCulture, out tempDouble);
-                                            node.Point.X = xmlreader.Value;
+                                            node.Point.X = reader.Value;
                                             break;
                                         
                                         case "timestamp":
-                                            node.Timestamp = DateTime.Parse(xmlreader.Value, System.Globalization.CultureInfo.InvariantCulture);
+                                            node.Timestamp = DateTime.Parse(reader.Value, System.Globalization.CultureInfo.InvariantCulture);
                                             break;
 
                                         default:
@@ -152,16 +155,16 @@ namespace OpenStreetMap2Oracle.businesslogic
                                 String key = String.Empty, 
                                        value = String.Empty;
                                 
-                                while (xmlreader.MoveToNextAttribute()) // Lesen der Attribute.
+                                while (reader.MoveToNextAttribute()) // Lesen der Attribute.
                                 {
-                                    switch (xmlreader.Name)
+                                    switch (reader.Name)
                                     {
                                         case "k":
-                                            key = xmlreader.Value;
+                                            key = reader.Value;
                                             break;
 
                                         case "v":
-                                            value = xmlreader.Value;
+                                            value = reader.Value;
                                             break;
 
                                         default:
@@ -202,17 +205,17 @@ namespace OpenStreetMap2Oracle.businesslogic
                                 _currentElement = _way;
                                 tempLong = 0;
 
-                                while (xmlreader.MoveToNextAttribute()) // Lesen der Attribute.
+                                while (reader.MoveToNextAttribute()) // Lesen der Attribute.
                                 {
-                                    switch (xmlreader.Name)
+                                    switch (reader.Name)
                                     {
                                         case "id":
-                                             Int64.TryParse(xmlreader.Value, out tempLong);
+                                             Int64.TryParse(reader.Value, out tempLong);
                                             _way.Id = tempLong;
                                             break;
 
                                         case "timestamp":
-                                            _way.Timestamp = DateTime.Parse(xmlreader.Value, System.Globalization.CultureInfo.InvariantCulture);
+                                            _way.Timestamp = DateTime.Parse(reader.Value, System.Globalization.CultureInfo.InvariantCulture);
                                             break;
 
                                         default:
@@ -252,11 +255,11 @@ namespace OpenStreetMap2Oracle.businesslogic
                             case XmlNodeNames.ND:
                                 #region NodeName "nd"
                                 long nodeRef = 0;
-                                while (xmlreader.MoveToNextAttribute()) // Lesen der Attribute.
+                                while (reader.MoveToNextAttribute()) // Lesen der Attribute.
                                 {
-                                    if (xmlreader.Name == "ref")
+                                    if (reader.Name == "ref")
                                     {
-                                        Int64.TryParse(xmlreader.Value, out nodeRef);
+                                        Int64.TryParse(reader.Value, out nodeRef);
                                     }
                                 }
 
@@ -282,17 +285,17 @@ namespace OpenStreetMap2Oracle.businesslogic
                                 _currentElement = relation;
                                 tempLong = 0;
 
-                                while (xmlreader.MoveToNextAttribute()) // Lesen der Attribute.
+                                while (reader.MoveToNextAttribute()) // Lesen der Attribute.
                                 {
-                                    switch (xmlreader.Name)
+                                    switch (reader.Name)
                                     {
                                         case "id":
-                                            Int64.TryParse(xmlreader.Value, out tempLong);
+                                            Int64.TryParse(reader.Value, out tempLong);
                                             relation.Id = tempLong;
                                             break;
 
                                         case "timestamp":
-                                            relation.Timestamp = DateTime.Parse(xmlreader.Value, System.Globalization.CultureInfo.InvariantCulture);
+                                            relation.Timestamp = DateTime.Parse(reader.Value, System.Globalization.CultureInfo.InvariantCulture);
                                             break;
 
                                         default:
@@ -307,21 +310,21 @@ namespace OpenStreetMap2Oracle.businesslogic
                                 RelationMember member = new RelationMember();
                                 tempLong = 0;
 
-                                while (xmlreader.MoveToNextAttribute()) // Lesen der Attribute.
+                                while (reader.MoveToNextAttribute()) // Lesen der Attribute.
                                 {
-                                    switch (xmlreader.Name)
+                                    switch (reader.Name)
                                     {
                                         case "type":
-                                            member.Type = xmlreader.Value;
+                                            member.Type = reader.Value;
                                             break;
 
                                         case "ref":
-                                            Int64.TryParse(xmlreader.Value, out tempLong);
+                                            Int64.TryParse(reader.Value, out tempLong);
                                             member.Ref = tempLong;
                                             break;
 
                                         case "role":
-                                            member.Role = xmlreader.Value;
+                                            member.Role = reader.Value;
                                             break;
 
                                         default:
@@ -343,7 +346,7 @@ namespace OpenStreetMap2Oracle.businesslogic
 
                     case XmlNodeType.EndElement: //Anzeigen des Endes des Elements.
                         #region NodeType EndElement
-                        switch (xmlreader.Name)
+                        switch (reader.Name)
                         {
                             case XmlNodeNames.NODE:
                                 if (OnOSMElementAdded != null)
@@ -364,7 +367,7 @@ namespace OpenStreetMap2Oracle.businesslogic
                 }              
 
             }
-            if (xmlreader.EOF)
+            if (reader.EOF)
             {
                 if (OnXMLFinished != null)
                     OnXMLFinished(this, new XMLFinishedEventArgs());

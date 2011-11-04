@@ -20,6 +20,7 @@
 
 using System;
 using System.Text;
+using System.Linq;
 using OpenStreetMap2Oracle.core;
 using OpenStreetMap2Oracle.tools;
 
@@ -125,6 +126,8 @@ namespace OpenStreetMap2Oracle.businesslogic
             StringBuilder values = new StringBuilder(" values(");
             values.Append(this.Id);
             values.Append(",");
+
+          
             foreach (Tag tag in tagList)
             {
                 if (tag.Key == "name")

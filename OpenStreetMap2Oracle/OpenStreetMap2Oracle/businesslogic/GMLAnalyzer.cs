@@ -60,10 +60,12 @@ namespace OpenStreetMap2Oracle.businesslogic
         public Geometry Analyze()
         {
             Geometry g = null;
-            if (String.IsNullOrEmpty(Gml)==false)
+
+            if (!String.IsNullOrEmpty(Gml))
             {
                 XmlTextReader reader = new XmlTextReader(new StringReader(Gml));
-                reader.WhitespaceHandling = WhitespaceHandling.None;                
+                reader.WhitespaceHandling = WhitespaceHandling.None;      
+          
                 try
                 {
                     while (reader.Read())
@@ -71,27 +73,40 @@ namespace OpenStreetMap2Oracle.businesslogic
                         switch (reader.NodeType)
                         {
                             case XmlNodeType.Element:
-                                if (reader.Name == "gml:LineString")
+
+                                switch (reader.Name)
                                 {
-                                    g = new LineString();
+                                    case "gml:LineString":
+                                        g = new LineString();
+                                        break;
+
+                                    case "gml:Polygon":
+                                        g = new Polygon();
+                                        break;
+
+                                    case "gml:Point":
+                                        g = new Point();
+                                        break;
+
+                                    default:
+                                        break;
                                 }
-                                if (reader.Name == "gml:Polygon")
-                                {
-                                    g = new Polygon();
-                                }
-                                if (reader.Name == "gml:Point")
-                                {
-                                    g = new Point();
-                                }
+
                                 break;
+
                             case XmlNodeType.Text:
+
                                 String coors = reader.Value;
                                 g.BuildFromCoordsString(coors);
+                                
                                 break;
+
                             case XmlNodeType.EndElement:
+                                
                                 if (reader.Name == "gml:LineString")
                                 {
                                 }
+                                
                                 break;
                         }
                     }
