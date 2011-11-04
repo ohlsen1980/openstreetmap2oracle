@@ -19,13 +19,14 @@
 				<DropShadowEffect BlurRadius="9" ShadowDepth="0" Opacity="0.555"/>
 			</Label.Effect>
 		</Label>
-		<Grid HorizontalAlignment="Left" Margin="8,8,0,0" Width="297" Height="120" VerticalAlignment="Top">
-			<Label Content="OpenStreetMap" Height="34" Margin="23,20,107,0" VerticalAlignment="Top" FontSize="18.667" FontWeight="Bold"/>
-			<Label Content="to" HorizontalAlignment="Left" Margin="100,42.44,0,51.56" Width="23" FontSize="13.333" FontWeight="Bold" Background="#00898989" Foreground="#FF858585"/>
-			<Label Content="Oracle" Margin="117,41,120,43" FontSize="14.667" FontWeight="Bold" Foreground="#FF8D0E0E"/>
+		<Grid HorizontalAlignment="Left" Margin="7,4,0,0" Width="297" Height="120" VerticalAlignment="Top">
+			<Image Source="assets/Image3.png" Stretch="Fill" HorizontalAlignment="Left" Width="59" Margin="8,19.17,0,42"/>
+			<Label Content="OpenStreetMap" Height="34" Margin="61,20,69,0" VerticalAlignment="Top" FontSize="18.667" FontWeight="Bold"/>
+			<Label Content="to" Margin="136,43.44,138,50.56" FontSize="13.333" FontWeight="Bold" Background="#00898989" Foreground="#FF858585"/>
+			<Label Content="Oracle" Margin="0,42,84,42" FontSize="14.667" FontWeight="Bold" Foreground="#FF8D0E0E" HorizontalAlignment="Right" Width="60"/>
 		</Grid>
 		<local:HugeButton x:Name="btnCreateConnection" Margin="184,128,160,0" VerticalAlignment="Top" Header="Create Database Connection" ImageSource="assets/Image1.png" BodyContent="Set up your connection parameters here." MouseUp="btnCreateDBConnection"/>
-		<local:HugeButton x:Name="btnSelectFile" Margin="184,233,160,244" Header="Select OSM File" ImageSource="Image1.png" BodyContent="Select the OSM file you want to migrate to your Oracle database." d:LayoutOverrides="Height" MouseUp="btnSelectFile_MouseUp" Disabled="True"/>
-		<local:HugeButton x:Name="btnStartMigration" Margin="184,0,160,136.666" Header="Start Migration" ImageSource="Image2.png" BodyContent="Starts the migration process. This may take a while." VerticalAlignment="Bottom" MouseUp="btnStartMigration_MouseUp" Disabled="True"/>
+		<local:HugeButton x:Name="btnSelectFile" Margin="184,233,160,244" Header="Select OSM File" ImageSource="assets/Image4.png" BodyContent="Select the OSM file you want to migrate to your Oracle database." d:LayoutOverrides="Height" MouseUp="btnSelectFile_MouseUp" Disabled="True"/>
+		<local:HugeButton x:Name="btnStartMigration" Margin="184,0,160,136.666" Header="Start Migration" ImageSource="assets/Image2.png" BodyContent="Starts the migration process. This may take a while." VerticalAlignment="Bottom" MouseUp="btnStartMigration_MouseUp" Disabled="True"/>
     </Grid>
 </Window>
