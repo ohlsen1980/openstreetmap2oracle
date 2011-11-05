@@ -22,6 +22,7 @@ using System;
 using System.Windows;
 using OpenStreetMap2Oracle.oracle;
 using System.Windows.Media;
+using OpenStreetMap2Oracle.Properties;
 
 namespace OpenStreetMap2Oracle.gui
 {
@@ -67,13 +68,42 @@ namespace OpenStreetMap2Oracle.gui
         {
             InitializeComponent();            
             this.Owner = owner;
+
+            try
+            {
+                if (Settings.Default["default_user"] != null)
+                {
+                    this.UserTxtBox.Text = Settings.Default["default_user"].ToString();
+                }
+
+                if (Settings.Default["default_password"] != null)
+                {
+                    this.PassTxtBox.Password = Settings.Default["default_password"].ToString();
+                }
+
+                if (Settings.Default["default_service"] != null)
+                {
+                    this.ServTxtBox.Text = Settings.Default["default_service"].ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                // this is dirty! 
+            }
+
         }
 
         private void OKBtn_Click(object sender, RoutedEventArgs e)
         {
+
             TestIt();
             if (IsValidCon)
             {
+                Settings.Default["default_user"] = User;
+                Settings.Default["default_password"] = Passwort;
+                Settings.Default["default_service"] = Service;
+                Settings.Default.Save();
+
                 //TODO Set User Credentials in global Class and get poolsize from user
                 OracleConnectionFactory.Init(User, Passwort, Service, 75);
                 OracleConnectionFactory.CreateConnection();
