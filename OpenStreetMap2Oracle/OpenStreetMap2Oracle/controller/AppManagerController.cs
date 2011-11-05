@@ -14,7 +14,13 @@ namespace OpenStreetMap2Oracle.controller
     public class AppManagerController
     {
         private BackgroundWorker parseXMLWorker;
-        string xmlPath = String.Empty;
+        static string xmlPath = String.Empty;
+
+        public static string XmlPath
+        {
+            get { return xmlPath; }
+            set { xmlPath = value; }
+        }
         private String sql = String.Empty;
         private ProgressWindow _mProgressWindow;
 

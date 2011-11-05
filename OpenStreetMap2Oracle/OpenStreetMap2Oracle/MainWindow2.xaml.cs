@@ -48,6 +48,7 @@ namespace OpenStreetMap2Oracle
             if (dialog.ShowDialog() == true)
             {
                 PathProvider.Path = new FileInfo(dialog.FileName).DirectoryName;
+                AppManagerController.XmlPath = dialog.FileName;
                 btnStartMigration.Disabled = false;
             }
 			
