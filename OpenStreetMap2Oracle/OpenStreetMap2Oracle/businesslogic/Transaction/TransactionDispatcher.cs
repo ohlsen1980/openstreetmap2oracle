@@ -26,6 +26,8 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenStreetMap2Oracle.oracle;
 using System.Data.OracleClient;
+using System.Threading;
+using OpenStreetMap2Oracle.controller;
 
 namespace OpenStreetMap2Oracle.businesslogic.Transaction
 {
@@ -34,6 +36,8 @@ namespace OpenStreetMap2Oracle.businesslogic.Transaction
     /// </summary>
     public class TransactionDispatcher
     {
+        private bool _mIsActive = false;
+
         private TransactionQueue _queue;
         /// <summary>
         /// Sets the transaction queue
@@ -43,11 +47,18 @@ namespace OpenStreetMap2Oracle.businesslogic.Transaction
             set { this._queue = value; }
         }
 
+        public Thread DispatcherThread
+        {
+            get;
+            set;
+        }
+
         /// <summary>
         /// Creates a new instance of the transaction dispatcher
         /// </summary>
         public TransactionDispatcher()
         {
+            this._queue = new TransactionQueue();
         }
 
         /// <summary>
@@ -59,11 +70,62 @@ namespace OpenStreetMap2Oracle.businesslogic.Transaction
             this._queue = queue;
         }
 
+        /// <summary>
+        /// Adds a new object to the queue
+        /// </summary>
+        /// <param name="obj"></param>
+        public void Add(OSMTransactionObject obj)
+        {
+            _queue.Data.Add(obj);
+        }
+
+        /// <summary>
+        /// Starts the dispatching Thread
+        /// </summary>
+        public void Start()
+        {
+            this._mIsActive = true;
+            this.DispatcherThread = new Thread(new ThreadStart(dataDispatcher));
+            this.DispatcherThread.Start();
+        }
+
+        /// <summary>
+        /// Stops the dispatching Thread
+        /// </summary>
+        public void Stop()
+        {
+            this._mIsActive = false;
+            this.DispatcherThread.Abort();
+        }
+
+        /// <summary>
+        /// Dispatches the queue
+        /// </summary>
+        private void dataDispatcher()
+        {
+            try
+            {
+                while (this._mIsActive)
+                {
+                    if (this._queue.Data.Count > AppManagerController.DISPATCHER_FLUSH_THRESHOLD)
+                    {
+                        TransactionQueue tmpQueue = ((TransactionQueue)this._queue.Clone());
+                        this._queue.Clear();
+                        ProcessQueue(tmpQueue);
+                    }
+                    Thread.Sleep(100);
+                }
+            }
+            catch (ThreadAbortException)
+            {
+            }
+        }
+
 
         /// <summary>
         /// Processes the transaction queue.
         /// </summary>
-        public void ProcessQueue()
+        public void ProcessQueue(TransactionQueue queue)
         {
             lock (_queue)
             {

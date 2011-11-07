@@ -48,7 +48,7 @@ namespace OpenStreetMap2Oracle.controller
 
         private DateTime _mLastDispatchItem;
 
-        private const int DISPATCHER_FLUSH_THRESHOLD = 100;
+        public const int DISPATCHER_FLUSH_THRESHOLD = 100;
 
         private TransactionDispatcher _mTransactionDisp;
         private TransactionQueue _mTransactionQueue;
@@ -67,9 +67,10 @@ namespace OpenStreetMap2Oracle.controller
             if (OwnerWindow != null)
             {
                 this._mProgressWindow.Owner = OwnerWindow;
-                this.OwnerWindow.IsBackgrounded = true;
-                
+                this.OwnerWindow.IsBackgrounded = true;  
             }
+
+            this._mTransactionDisp.Start();
             this._mProgressWindow.Show();
             parseXMLWorker = new BackgroundWorker();
             parseXMLWorker.WorkerReportsProgress = true;
@@ -124,16 +125,6 @@ namespace OpenStreetMap2Oracle.controller
 
                             this._mTransactionQueue.Add(new OSMTransactionObject(SQL));
 
-                            if (this._mTransactionQueue.Data.Count >= DISPATCHER_FLUSH_THRESHOLD)
-                            {
-                                lock (this._mTransactionQueue)
-                                {
-                                    this._mTransactionDisp.Queue = (TransactionQueue)this._mTransactionQueue.Clone();
-                                }
-                                this._mTransactionQueue.Clear();
-                                this._mTransactionDisp.ProcessQueue();
-                            }
-         
                             if (element.GetType() == typeof(Node))
                             {
                                 _elementCount++;
