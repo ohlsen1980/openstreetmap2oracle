@@ -32,6 +32,7 @@ namespace OpenStreetMap2Oracle.gui
     public partial class DbLoginWindow : Window
     {
         private String _errorMessage = String.Empty;
+        private MainWindow2 _window = null;
 
         private bool IsValidCon = false;
 
@@ -68,7 +69,8 @@ namespace OpenStreetMap2Oracle.gui
         {
             InitializeComponent();            
             this.Owner = owner;
-
+            if (owner.GetType() == typeof(MainWindow2))
+                _window = owner as MainWindow2;
             try
             {
                 if (Settings.Default["default_user"] != null)
@@ -98,11 +100,15 @@ namespace OpenStreetMap2Oracle.gui
 
             TestIt();
             if (IsValidCon)
-            {
-                Settings.Default["default_user"] = User;
-                Settings.Default["default_password"] = Passwort;
-                Settings.Default["default_service"] = Service;
-                Settings.Default.Save();
+            {                
+                //Settings.Default["default_user"] = User;
+                //Settings.Default["default_password"] = Passwort;
+                //Settings.Default["default_service"] = Service;
+                //Settings.Default.Save();
+                if (_window != null)
+                {
+                    _window.btnSelectFile.Disabled = false;
+                }
 
                 //TODO Set User Credentials in global Class and get poolsize from user
                 OracleConnectionFactory.Init(User, Passwort, Service, 75);

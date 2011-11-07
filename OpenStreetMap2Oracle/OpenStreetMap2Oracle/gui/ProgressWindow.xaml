@@ -1,7 +1,7 @@
 ﻿<Window x:Class="OpenStreetMap2Oracle.gui.ProgressWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Migrating ..." Height="265" Width="476" ResizeMode="NoResize" WindowStyle="None">
+        Title="Migrating ..." Height="265" Width="476" ResizeMode="NoResize" WindowStyle="None" WindowStartupLocation="CenterOwner">
     <Grid>
     	<Grid.Background>
     		<RadialGradientBrush RadiusY="0.738" RadiusX="0.873" GradientOrigin="-0.005,0.017" Center="0.458,0.571">
