@@ -47,6 +47,9 @@ namespace OpenStreetMap2Oracle.businesslogic.Transaction
             set { this._queue = value; }
         }
 
+        /// <summary>
+        /// Gets or sets the Dispatching Thread
+        /// </summary>
         public Thread DispatcherThread
         {
             get;
@@ -136,7 +139,6 @@ namespace OpenStreetMap2Oracle.businesslogic.Transaction
         {
             lock (_queue)
             {
-
                 Parallel.ForEach(this._queue.Data, osmObject =>
                 {
                     DbExport dbHandle = OracleConnectionFactory.CreateConnection();

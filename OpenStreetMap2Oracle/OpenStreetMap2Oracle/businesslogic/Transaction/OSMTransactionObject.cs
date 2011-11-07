@@ -48,6 +48,10 @@ namespace OpenStreetMap2Oracle.businesslogic.Transaction
             this.Query = query;
         }
 
+        /// <summary>
+        /// Clones the object
+        /// </summary>
+        /// <returns></returns>
         public object Clone()
         {
             return new OSMTransactionObject(this.Query);
