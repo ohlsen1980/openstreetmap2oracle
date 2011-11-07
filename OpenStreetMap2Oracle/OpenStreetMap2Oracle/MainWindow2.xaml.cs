@@ -59,6 +59,7 @@ namespace OpenStreetMap2Oracle
             this.IsEnabled = false;
 
             AppManagerController controller = new AppManagerController();
+            controller.OwnerWindow = this;
             controller.Start();
         }
 	}

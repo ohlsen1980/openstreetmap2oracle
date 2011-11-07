@@ -16,6 +16,12 @@ namespace OpenStreetMap2Oracle.controller
         private BackgroundWorker parseXMLWorker;
         static string xmlPath = String.Empty;
 
+        public MainWindow2 OwnerWindow
+        {
+            get;
+            set;
+        }
+
         public static string XmlPath
         {
             get { return xmlPath; }
@@ -52,6 +58,10 @@ namespace OpenStreetMap2Oracle.controller
 
         public void Start()
         {
+            if (OwnerWindow != null)
+            {
+                this._mProgressWindow.Owner = OwnerWindow;
+            }
             this._mProgressWindow.Show();
             parseXMLWorker = new BackgroundWorker();
             parseXMLWorker.WorkerReportsProgress = true;
