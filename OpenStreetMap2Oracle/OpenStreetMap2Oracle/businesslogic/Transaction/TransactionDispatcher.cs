@@ -48,6 +48,15 @@ namespace OpenStreetMap2Oracle.businesslogic.Transaction
         }
 
         /// <summary>
+        /// Gets or sets the transaction error queue
+        /// </summary>
+        public TransactionQueue ErrorQueue
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Gets or sets the Dispatching Thread
         /// </summary>
         public Thread DispatcherThread
@@ -62,6 +71,7 @@ namespace OpenStreetMap2Oracle.businesslogic.Transaction
         public TransactionDispatcher()
         {
             this._queue = new TransactionQueue();
+            this.ErrorQueue = new TransactionQueue();
         }
 
         /// <summary>
@@ -141,13 +151,19 @@ namespace OpenStreetMap2Oracle.businesslogic.Transaction
             {
                 Parallel.ForEach(this._queue.Data, osmObject =>
                 {
-                    DbExport dbHandle = OracleConnectionFactory.CreateConnection();
-                    OracleCommand sql_cmd = dbHandle.Connection.CreateCommand();
+                    try
+                    {
+                        DbExport dbHandle = OracleConnectionFactory.CreateConnection();
+                        OracleCommand sql_cmd = dbHandle.Connection.CreateCommand();
 
-                    sql_cmd.Transaction = dbHandle.Transaction;
-                    sql_cmd.UpdatedRowSource = System.Data.UpdateRowSource.None;
-                    dbHandle.Execute(osmObject.Query, sql_cmd);
-
+                        sql_cmd.Transaction = dbHandle.Transaction;
+                        sql_cmd.UpdatedRowSource = System.Data.UpdateRowSource.None;
+                        dbHandle.Execute(osmObject.Query, sql_cmd);
+                    }
+                    catch (Exception)
+                    {
+                        this.ErrorQueue.Add(osmObject);
+                    }
                 });
 
                 OracleConnectionFactory.CommitAll();
