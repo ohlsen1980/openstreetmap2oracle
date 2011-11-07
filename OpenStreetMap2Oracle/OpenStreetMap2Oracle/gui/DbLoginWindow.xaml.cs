@@ -121,13 +121,13 @@ namespace OpenStreetMap2Oracle.gui
             DbExport conn = new DbExport(User, Passwort, Service);
             try
             {
-                conn.openDbConnection();
-                if (conn.DbConnection.State == System.Data.ConnectionState.Open)
+                conn.Open();
+                if (conn.Connection.State == System.Data.ConnectionState.Open)
                     IsValidCon = true;
                 else
                     IsValidCon = false;
-                conn.closeDbConnection();
-                conn.DbConnection.Dispose();
+                conn.Close();
+                conn.Connection.Dispose();
                 conn.Dispose();
             }
             catch (Exception ex)

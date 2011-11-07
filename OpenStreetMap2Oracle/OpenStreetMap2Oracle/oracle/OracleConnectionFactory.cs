@@ -68,9 +68,9 @@ namespace OpenStreetMap2Oracle.oracle
                 Parallel.ForEach(m_connection_pool, _handle =>
                 {
                     _handle.Transaction.Commit();
-                    _handle.closeDbConnection();
-                    _handle.openDbConnection();
-                    _handle.Transaction = _handle.DbConnection.BeginTransaction();
+                    _handle.Close();
+                    _handle.Open();
+                    _handle.Transaction = _handle.Connection.BeginTransaction();
                 });
             }
         }
@@ -84,7 +84,7 @@ namespace OpenStreetMap2Oracle.oracle
             Parallel.ForEach(m_connection_pool, _handle =>
                 {
                     _handle.Transaction.Dispose();
-                    _handle.closeDbConnection();
+                    _handle.Close();
                 });
         }
 
@@ -105,8 +105,8 @@ namespace OpenStreetMap2Oracle.oracle
                 lock (m_connection_pool)
                 {
                     _handle = new DbExport(m_user, m_password, m_service);
-                    _handle.openDbConnection();
-                    _handle.Transaction = _handle.DbConnection.BeginTransaction();
+                    _handle.Open();
+                    _handle.Transaction = _handle.Connection.BeginTransaction();
                     m_connection_pool.Add(_handle);
                 }
                 return _handle;
