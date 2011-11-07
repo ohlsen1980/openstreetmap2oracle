@@ -153,12 +153,12 @@ namespace OpenStreetMap2Oracle.businesslogic.Transaction
                 {
                     try
                     {
-                        DbExport dbHandle = OracleConnectionFactory.CreateConnection();
-                        OracleCommand sql_cmd = dbHandle.Connection.CreateCommand();
+                        DbExport handle = OracleConnectionFactory.CreateConnection();
+                        OracleCommand sql_cmd = handle.Connection.CreateCommand();
 
-                        sql_cmd.Transaction = dbHandle.Transaction;
+                        sql_cmd.Transaction = handle.Transaction;
                         sql_cmd.UpdatedRowSource = System.Data.UpdateRowSource.None;
-                        dbHandle.Execute(osmObject.Query, sql_cmd);
+                        handle.Execute(osmObject.Query, sql_cmd);
                     }
                     catch (Exception)
                     {
