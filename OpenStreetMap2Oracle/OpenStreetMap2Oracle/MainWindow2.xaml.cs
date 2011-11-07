@@ -37,11 +37,13 @@ namespace OpenStreetMap2Oracle
 
 		private void btnCreateDBConnection(object sender, System.Windows.Input.MouseButtonEventArgs e)
 		{
+            this.IsBackgrounded = true;
             DbLoginWindow dbDialog = new DbLoginWindow(this);
             if (dbDialog.ShowDialog() == true)
             {
                 btnSelectFile.Disabled = false;
             }
+            this.IsBackgrounded = false;
 		}
 
         public bool IsBackgrounded
@@ -59,6 +61,7 @@ namespace OpenStreetMap2Oracle
 
 		private void btnSelectFile_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
 		{
+            this.IsBackgrounded = true;
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.Filter = "OpenStreetMap Dateien (*.osm)|*.OSM|" +
                             "Alle Dateien (*.*)|*.*";
@@ -79,6 +82,8 @@ namespace OpenStreetMap2Oracle
 
                 Settings.Default.Save();
             }
+
+            this.IsBackgrounded = false;
 			
 		}
 
