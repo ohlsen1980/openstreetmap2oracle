@@ -8,6 +8,7 @@ using OpenStreetMap2Oracle.tools;
 using OpenStreetMap2Oracle.businesslogic;
 using System.Windows.Threading;
 using OpenStreetMap2Oracle.gui;
+using System.Windows;
 
 namespace OpenStreetMap2Oracle.controller
 {
@@ -43,7 +44,7 @@ namespace OpenStreetMap2Oracle.controller
                         displayPolygonCount = 1000,
                         multipolygonCount = 0;
 
-        private long dispInc = 0, dispTotal = 0;
+        private long dispInc = 0;
 
         private DateTime _mLastDispatchItem;
 
@@ -66,6 +67,8 @@ namespace OpenStreetMap2Oracle.controller
             if (OwnerWindow != null)
             {
                 this._mProgressWindow.Owner = OwnerWindow;
+                this.OwnerWindow.IsBackgrounded = true;
+                
             }
             this._mProgressWindow.Show();
             parseXMLWorker = new BackgroundWorker();
@@ -180,8 +183,8 @@ namespace OpenStreetMap2Oracle.controller
                             {
                                 TimeSpan ts = new TimeSpan(DateTime.Now.Ticks - _mLastDispatchItem.Ticks);
 
-                                float itemsPerSecond = dispInc / ts.Seconds;
-                                this._mProgressWindow.CurrentItemsPerSecond = (long)itemsPerSecond;
+                                float itemsPerSecond = ((float)dispInc) /  ((float)ts.Milliseconds);
+                                this._mProgressWindow.CurrentItemsPerSecond = (long)(itemsPerSecond * 1000);
 
                                 _mLastDispatchItem = DateTime.Now;
                                 dispInc = 0;
@@ -190,6 +193,8 @@ namespace OpenStreetMap2Oracle.controller
                         catch (Exception ex)
                         {
                             this._mProgressWindow.CurrentErrors++;
+
+                            
                             //NOTICE: If you export multiple osm extracts in 1 schema, there can be errors in primary key OSM_ID because
                             //the extracts in boundary regions are never exact, there can be double elements, for this case there is
                             //the DisplayMessagesChkBox, because the application crashes when there are about 10000 error messages in the SQLTextBox!!!

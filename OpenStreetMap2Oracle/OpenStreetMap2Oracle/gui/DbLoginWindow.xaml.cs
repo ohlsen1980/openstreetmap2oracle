@@ -67,30 +67,24 @@ namespace OpenStreetMap2Oracle.gui
 
         public DbLoginWindow(Window owner)
         {
-            InitializeComponent();            
+            InitializeComponent();
             this.Owner = owner;
             if (owner.GetType() == typeof(MainWindow2))
                 _window = owner as MainWindow2;
-            try
+
+            if (!String.IsNullOrEmpty(Settings.Default.default_user))
             {
-                if (Settings.Default["default_user"] != null)
-                {
-                    this.UserTxtBox.Text = Settings.Default["default_user"].ToString();
-                }
-
-                if (Settings.Default["default_password"] != null)
-                {
-                    this.PassTxtBox.Password = Settings.Default["default_password"].ToString();
-                }
-
-                if (Settings.Default["default_service"] != null)
-                {
-                    this.ServTxtBox.Text = Settings.Default["default_service"].ToString();
-                }
+                this.UserTxtBox.Text = Settings.Default.default_user;
             }
-            catch (Exception ex)
+
+            if (!String.IsNullOrEmpty(Settings.Default.default_password))
             {
-                // this is dirty! 
+                this.PassTxtBox.Password = Settings.Default.default_password;
+            }
+
+            if (!String.IsNullOrEmpty(Settings.Default.default_service))
+            {
+                this.ServTxtBox.Text = Settings.Default.default_service;
             }
 
         }
@@ -100,17 +94,17 @@ namespace OpenStreetMap2Oracle.gui
 
             TestIt();
             if (IsValidCon)
-            {                
-                //Settings.Default["default_user"] = User;
-                //Settings.Default["default_password"] = Passwort;
-                //Settings.Default["default_service"] = Service;
-                //Settings.Default.Save();
+            {
+                Settings.Default.default_user = User;
+                Settings.Default.default_password = Passwort;
+                Settings.Default.default_service = Service;
+                Settings.Default.Save();
+
                 if (_window != null)
                 {
                     _window.btnSelectFile.Disabled = false;
                 }
 
-                //TODO Set User Credentials in global Class and get poolsize from user
                 OracleConnectionFactory.Init(User, Passwort, Service, 70);
                 OracleConnectionFactory.CreateConnection();
                 this.Close();

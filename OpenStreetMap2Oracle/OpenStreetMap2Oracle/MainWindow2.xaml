@@ -28,5 +28,6 @@
 		<local:HugeButton x:Name="btnCreateConnection" Margin="184,128,160,0" VerticalAlignment="Top" Header="Create Database Connection" ImageSource="assets/Image1.png" BodyContent="Set up your connection parameters here." MouseUp="btnCreateDBConnection"/>
 		<local:HugeButton x:Name="btnSelectFile" Margin="184,233,160,244" Header="Select OSM File" ImageSource="assets/Image4.png" BodyContent="Select the OSM file you want to migrate to your Oracle database." d:LayoutOverrides="Height" MouseUp="btnSelectFile_MouseUp" Disabled="True"/>
 		<local:HugeButton x:Name="btnStartMigration" Margin="184,0,160,136.666" Header="Start Migration" ImageSource="assets/Image2.png" BodyContent="Starts the migration process. This may take a while." VerticalAlignment="Bottom" MouseUp="btnStartMigration_MouseUp" Disabled="True"/>
+		<Canvas OpacityMask="#FF434343" Background="Black" Opacity="0.40" Visibility="Hidden" x:Name="overlayDark"/>
     </Grid>
 </Window>

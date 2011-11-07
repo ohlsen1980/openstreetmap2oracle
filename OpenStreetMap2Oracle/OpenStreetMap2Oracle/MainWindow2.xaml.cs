@@ -14,6 +14,8 @@ using Microsoft.Win32;
 using OpenStreetMap2Oracle.tools;
 using System.IO;
 using OpenStreetMap2Oracle.controller;
+using OpenStreetMap2Oracle.Properties;
+using System.Windows.Media.Effects;
 
 namespace OpenStreetMap2Oracle
 {
@@ -22,10 +24,14 @@ namespace OpenStreetMap2Oracle
 	/// </summary>
 	public partial class MainWindow2 : Window
 	{
+        BlurEffect blur;
+
 		public MainWindow2()
 		{
 			this.InitializeComponent();
-			
+            blur = new BlurEffect();
+            blur.Radius = 5;
+            blur.KernelType = KernelType.Gaussian;
 			// Fügen Sie Code, der bei der Objekterstellung erforderlich ist, unter diesem Punkt ein.
 		}
 
@@ -38,18 +44,40 @@ namespace OpenStreetMap2Oracle
             }
 		}
 
+        public bool IsBackgrounded
+        {
+            get
+            {
+                return (overlayDark.Visibility == System.Windows.Visibility.Hidden);
+            }
+            set
+            {
+                overlayDark.Visibility = (value) ? Visibility.Visible : Visibility.Hidden;
+                LayoutRoot.Effect = (value) ? blur : null;
+            }
+        }
+
 		private void btnSelectFile_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
 		{
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.Filter = "OpenStreetMap Dateien (*.osm)|*.OSM|" +
                             "Alle Dateien (*.*)|*.*";
-            dialog.InitialDirectory = PathProvider.Path;
+            if (!String.IsNullOrEmpty(Settings.Default.last_path))
+            {
+                dialog.InitialDirectory = Settings.Default.last_path;
+            }
+            else
+            {
+                dialog.InitialDirectory = PathProvider.Path;
+            }
 
             if (dialog.ShowDialog() == true)
             {
-                PathProvider.Path = new FileInfo(dialog.FileName).DirectoryName;
+                Settings.Default.last_path = PathProvider.Path = new FileInfo(dialog.FileName).DirectoryName;
                 AppManagerController.XmlPath = dialog.FileName;
                 btnStartMigration.Disabled = false;
+
+                Settings.Default.Save();
             }
 			
 		}
