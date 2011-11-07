@@ -109,9 +109,16 @@ namespace OpenStreetMap2Oracle.businesslogic.Transaction
                 {
                     if (this._queue.Data.Count > AppManagerController.DISPATCHER_FLUSH_THRESHOLD)
                     {
-                        TransactionQueue tmpQueue = ((TransactionQueue)this._queue.Clone());
-                        this._queue.Clear();
-                        ProcessQueue(tmpQueue);
+                        TransactionQueue tmpQueue = null;
+                        lock (_queue)
+                        {
+                            tmpQueue = ((TransactionQueue)this._queue.Clone());
+                            this._queue.Clear();
+                        }
+                        if (tmpQueue != null)
+                        {
+                            ProcessQueue(tmpQueue);
+                        }
                     }
                     Thread.Sleep(100);
                 }
