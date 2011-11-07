@@ -43,7 +43,11 @@ namespace OpenStreetMap2Oracle.controller
                         displayPolygonCount = 1000,
                         multipolygonCount = 0;
 
-        private const int DISPATCHER_FLUSH_THRESHOLD = 1000;
+        private long dispInc = 0, dispTotal = 0;
+
+        private DateTime _mLastDispatchItem;
+
+        private const int DISPATCHER_FLUSH_THRESHOLD = 100;
 
         private TransactionDispatcher _mTransactionDisp;
         private TransactionQueue _mTransactionQueue;
@@ -54,6 +58,7 @@ namespace OpenStreetMap2Oracle.controller
             this._mTransactionDisp = new TransactionDispatcher();
             this._mTransactionQueue = new TransactionQueue();
             this._mProgressWindow = new ProgressWindow();
+            this._mLastDispatchItem = DateTime.Now;
         }
 
         public void Start()
@@ -161,11 +166,25 @@ namespace OpenStreetMap2Oracle.controller
                                 this._mProgressWindow.CurrentMultiPolygons = multipolygonCount;
 
                             }
+
                             _refreshCount++;
                             if (_refreshCount == 10000)
                             {
                                 System.GC.Collect();
                                 _refreshCount = 0;
+                            }
+
+                            dispInc++;
+
+                            if (dispInc >= 1000)
+                            {
+                                TimeSpan ts = new TimeSpan(DateTime.Now.Ticks - _mLastDispatchItem.Ticks);
+
+                                float itemsPerSecond = dispInc / ts.Seconds;
+                                this._mProgressWindow.CurrentItemsPerSecond = (long)itemsPerSecond;
+
+                                _mLastDispatchItem = DateTime.Now;
+                                dispInc = 0;
                             }
                         }
                         catch (Exception ex)

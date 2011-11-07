@@ -111,7 +111,7 @@ namespace OpenStreetMap2Oracle.gui
                 }
 
                 //TODO Set User Credentials in global Class and get poolsize from user
-                OracleConnectionFactory.Init(User, Passwort, Service, 75);
+                OracleConnectionFactory.Init(User, Passwort, Service, 70);
                 OracleConnectionFactory.CreateConnection();
                 this.Close();
             }           

@@ -113,14 +113,30 @@ namespace OpenStreetMap2Oracle.oracle
             }
             else
             {
-                m_iterator++;
-                if ((m_iterator) > (m_connection_pool.Count - 1))
+                //lock (m_connection_pool)
+                //{
+                try
                 {
-                    m_iterator = 0;
+                    m_iterator++;
+                    if ((m_iterator) > (m_connection_pool.Count - 1))
+                    {
+                        m_iterator = 0;
+                    }
+
+                    return m_connection_pool[m_iterator];
                 }
-
-                return m_connection_pool[m_iterator];
-
+                catch (Exception ex)
+                {
+                    if (m_connection_pool[0] != null)
+                    {
+                        return m_connection_pool[0];
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                //}
             }
         }
      }
