@@ -14,10 +14,7 @@ namespace OpenStreetMap2Oracle.controller
 {
     public class AppManagerController
     {
-        
-        private BackgroundWorker xml_worker;
- 
-        static string xmlPath = String.Empty;
+        #region Properties 
 
         /// <summary>
         /// Gets or sets the owner window
@@ -37,32 +34,37 @@ namespace OpenStreetMap2Oracle.controller
             set { xmlPath = value; }
         }
 
-        private String sql = String.Empty;
-        private ProgressWindow _mProgressWindow;
+        #endregion     
 
-        // some longs to count the elements, report only every 1000 points lines and polygons progress, this is much faster
-        private long node_count = 0,
-                        _failedCount = 0,
-                        _refreshCount = 0,
-                        line_count = 0,
-                        failedLines = 0,
-                        polygon_count = 0,
-                        failedPolygons = 0,
-                        displayPointCount = 1000,
-                        displayLineCount = 1000,
-                        displayPolygonCount = 1000,
-                        mpolygon_count = 0;
-
-        private long dispInc = 0;
-
-        private DateTime _mLastDispatchItem;
+        #region Constants
 
         public const int DISPATCHER_FLUSH_THRESHOLD = 100;
         public const int GUI_REFRESH_ITEMS = 1000;
+        
+        #endregion
 
+        #region Types
+
+        static string xmlPath = String.Empty;
+        private String sql = String.Empty;
+        private ProgressWindow _mProgressWindow;
+        private DateTime _mLastDispatchItem;
         private TransactionDispatcher _mTransactionDisp;
         private TransactionQueue _mTransactionQueue;
+        private BackgroundWorker xml_worker;
 
+        private long node_count = 0,
+                       failed_count = 0,
+                       failed_polygons = 0,
+                       failed_lines = 0,
+                       line_count = 0,
+                       polygon_count = 0,
+                       mpolygon_count = 0,
+                       disp_count = 0;
+
+        #endregion
+
+        #region .ctor
         /// <summary>
         /// Initializes the Controller
         /// </summary>
@@ -73,6 +75,7 @@ namespace OpenStreetMap2Oracle.controller
             this._mProgressWindow = new ProgressWindow();
             this._mLastDispatchItem = DateTime.Now;
         }
+        #endregion
 
         /// <summary>
         /// Starts the Controlling Process
@@ -94,6 +97,7 @@ namespace OpenStreetMap2Oracle.controller
             xml_worker.RunWorkerAsync();  
         }
 
+        #region Event Methods
 
         /// <summary>
         /// Async Work has to be done
@@ -122,6 +126,10 @@ namespace OpenStreetMap2Oracle.controller
             System.GC.Collect();
             System.Windows.MessageBox.Show("OSM Daten in Datenbank übertragen\nPunkte: " + node_count + "\nLinien: " + line_count + "\nPolygone: " + polygon_count + "\nMultipolygone: " + mpolygon_count);
         }
+
+        #endregion
+
+        #region Main Event Method
 
         /// <summary>
         /// An Element is analyzed an was added to the export queue
@@ -171,15 +179,15 @@ namespace OpenStreetMap2Oracle.controller
                             this._mProgressWindow.CurrentMultiPolygons = mpolygon_count;
                         }
 
-                        if ((++dispInc) >= GUI_REFRESH_ITEMS)
+                        if ((++disp_count) >= GUI_REFRESH_ITEMS)
                         {
-                            dispInc = 0;
+                            disp_count = 0;
 
                             float millis = (new TimeSpan(DateTime.Now.Ticks - _mLastDispatchItem.Ticks)).Milliseconds;
 
                             if (millis > 0)
                             {
-                                this._mProgressWindow.CurrentItemsPerSecond = (long)(((float)dispInc) / millis) * 1000;
+                                this._mProgressWindow.CurrentItemsPerSecond = (long)(((float)disp_count) / millis) * 1000;
                             }
 
                             _mLastDispatchItem = DateTime.Now;
@@ -239,5 +247,7 @@ namespace OpenStreetMap2Oracle.controller
             }), null);
 
         }
+
+        #endregion
     }
 }
