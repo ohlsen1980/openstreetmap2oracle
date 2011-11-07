@@ -140,7 +140,7 @@ namespace OpenStreetMap2Oracle.businesslogic
                 foreach (RelationMember member in RelationMembers)
                 {
                     DbExport conn = OpenStreetMap2Oracle.oracle.OracleConnectionFactory.CreateConnection();
-                    using (OracleCommand dbSqlCmd = conn.DbConnection.CreateCommand())
+                    using (OracleCommand dbSqlCmd = conn.Connection.CreateCommand())
                     {
                         dbSqlCmd.Transaction = conn.Transaction;
                         String gml = OracleConnectionFactory.CreateConnection().GetGMLGeometry(member.Ref, dbSqlCmd);

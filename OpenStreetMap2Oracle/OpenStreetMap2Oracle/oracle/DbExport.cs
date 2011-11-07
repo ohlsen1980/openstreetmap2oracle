@@ -81,7 +81,7 @@ namespace OpenStreetMap2Oracle.oracle
         /// <summary>
         /// The DBConnection object to oracle
         /// </summary>
-        public OracleConnection DbConnection
+        public OracleConnection Connection
         {
             get
             {
@@ -96,16 +96,16 @@ namespace OpenStreetMap2Oracle.oracle
         /// <summary>
         /// Open the connection
         /// </summary>
-        public void openDbConnection()
+        public void Open()
         {
-            if (DbConnection.State != ConnectionState.Open)          
-                    DbConnection.Open();            
+            if (Connection.State != ConnectionState.Open)          
+                    Connection.Open();            
         }
 
         /// <summary>
         /// Close the connection
         /// </summary>
-        public void closeDbConnection()
+        public void Close()
         {
             try
             {
@@ -120,10 +120,10 @@ namespace OpenStreetMap2Oracle.oracle
         /// Execucte a SQL command, with open a new connection
         /// </summary>
         /// <param name="query">The SQL Query</param>
-        public void execSqlCmd(string query)
+        public void Execute(string query)
         {
-            openDbConnection();
-            using (OracleCommand dbSqlCmd = DbConnection.CreateCommand())
+            Open();
+            using (OracleCommand dbSqlCmd = Connection.CreateCommand())
             {
                 dbSqlCmd.CommandText = query;
                 dbSqlCmd.ExecuteNonQuery();
@@ -137,7 +137,7 @@ namespace OpenStreetMap2Oracle.oracle
         /// </summary>
         /// <param name="query">The sql syntax</param>
         /// <param name="cmd">The OracleCommand object</param>
-        public void execSqlCmd(string query, OracleCommand cmd)
+        public void Execute(string query, OracleCommand cmd)
         {
             cmd.CommandText = query;           
             cmd.ExecuteNonQuery();

@@ -267,7 +267,7 @@ namespace OpenStreetMap2Oracle.businesslogic
                                 {
                                     Way way = _currentElement as Way;
                                     DbExport conn = OpenStreetMap2Oracle.oracle.OracleConnectionFactory.CreateConnection();
-                                    using (OracleCommand dbSqlCmd = conn.DbConnection.CreateCommand())
+                                    using (OracleCommand dbSqlCmd = conn.Connection.CreateCommand())
                                     {
                                         dbSqlCmd.Transaction = conn.Transaction;
                                         Point p = conn.GetNode(nodeRef, dbSqlCmd);
