@@ -126,9 +126,12 @@ namespace OpenStreetMap2Oracle.controller
 
                             if (this._mTransactionQueue.Data.Count >= DISPATCHER_FLUSH_THRESHOLD)
                             {
-                                this._mTransactionDisp.Queue = this._mTransactionQueue;
-                                this._mTransactionDisp.ProcessQueue();
+                                lock (this._mTransactionQueue)
+                                {
+                                    this._mTransactionDisp.Queue = (TransactionQueue)this._mTransactionQueue.Clone();
+                                }
                                 this._mTransactionQueue.Clear();
+                                this._mTransactionDisp.ProcessQueue();
                             }
          
                             if (element.GetType() == typeof(Node))
