@@ -217,7 +217,7 @@ namespace OpenStreetMap2Oracle.oracle
                     query = string.Format(@"SELECT
                                                 SDO_UTIL.TO_GMLGEOMETRY(m.{0})
                                             FROM
-                                                {1}
+                                                {1} m
                                             WHERE
                                                 m.osm_id = {2}",
                                             TableNames.GeomColumName,
