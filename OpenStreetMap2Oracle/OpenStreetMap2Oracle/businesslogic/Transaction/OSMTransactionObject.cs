@@ -29,7 +29,7 @@ namespace OpenStreetMap2Oracle.businesslogic.Transaction
     /// <summary>
     /// Object for transaction purposes
     /// </summary>
-    public class OSMTransactionObject
+    public class OSMTransactionObject : ICloneable
     {
         /// <summary>
         /// Gets or sets the query string
@@ -46,6 +46,11 @@ namespace OpenStreetMap2Oracle.businesslogic.Transaction
         /// <param name="query">Query string</param>
         public OSMTransactionObject(string query) {
             this.Query = query;
+        }
+
+        public object Clone()
+        {
+            return new OSMTransactionObject(this.Query);
         }
     }
 }

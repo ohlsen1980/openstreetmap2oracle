@@ -29,7 +29,7 @@ namespace OpenStreetMap2Oracle.businesslogic.Transaction
     /// <summary>
     /// A Queue holding OSMTransactionObjects
     /// </summary>
-    public class TransactionQueue : ICollection<OSMTransactionObject>
+    public class TransactionQueue : ICollection<OSMTransactionObject>, ICloneable
     {
         private List<OSMTransactionObject> _queue;
         /// <summary>
@@ -170,5 +170,15 @@ namespace OpenStreetMap2Oracle.businesslogic.Transaction
         }
 
 
+
+        public object Clone()
+        {
+            TransactionQueue queue = new TransactionQueue();
+            foreach (OSMTransactionObject obj in this._queue)
+            {
+                queue._queue.Add(((OSMTransactionObject)obj.Clone()));
+            }
+            return queue;
+        }
     }
 }
