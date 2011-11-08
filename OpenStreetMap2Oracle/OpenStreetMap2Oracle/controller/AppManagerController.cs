@@ -54,6 +54,7 @@ namespace OpenStreetMap2Oracle.controller
         private TransactionDispatcher _mTransactionDisp;
         private TransactionQueue _mTransactionQueue;
         private BackgroundWorker xml_worker;
+        private TransactionStats trans_stats;
 
         private long node_count = 0,
                        failed_count = 0,
@@ -91,7 +92,7 @@ namespace OpenStreetMap2Oracle.controller
                 this._mProgressWindow.Owner = OwnerWindow;
                 this.OwnerWindow.IsBackgrounded = true;  
             }
-
+            this.trans_stats = new TransactionStats();
             this._mProgressWindow.Show();
             this._mDispatchStarted = DateTime.Now;
             xml_worker = new BackgroundWorker();
@@ -128,8 +129,21 @@ namespace OpenStreetMap2Oracle.controller
         {
             //OracleConnectionFactory.Transaction.Commit();           
             System.GC.Collect();
-            System.Windows.MessageBox.Show("OSM Daten in Datenbank übertragen\nPunkte: " + node_count + "\nLinien: " + line_count + "\nPolygone: " + polygon_count + "\nMultipolygone: " + mpolygon_count);
-            this._mProgressWindow.Close();
+
+            this._mProgressWindow.Dispatcher.Invoke(DispatcherPriority.Send, new DispatcherOperationCallback(
+                delegate
+                {
+                    this._mProgressWindow.Close();
+                    return null;
+                }), null);
+
+            OwnerWindow.Dispatcher.Invoke(DispatcherPriority.Send, new DispatcherOperationCallback(
+                delegate
+                {
+                    TransactionSummary summary = new TransactionSummary(trans_stats, this.OwnerWindow);
+                    summary.Show();
+                    return null;
+                }), null);
         }
 
         #endregion
@@ -168,6 +182,7 @@ namespace OpenStreetMap2Oracle.controller
                             {
                                 this._mProgressWindow.CurrentNodes = node_count;
                             }
+                            this.trans_stats.Nodes = node_count;
                         }
                         else
                         {
@@ -184,6 +199,7 @@ namespace OpenStreetMap2Oracle.controller
                                     {
                                         this._mProgressWindow.CurrentLines = line_count;
                                     }
+                                    this.trans_stats.Lines = line_count;
                                 }
                                 else
                                 {
@@ -191,6 +207,7 @@ namespace OpenStreetMap2Oracle.controller
                                     {
                                         this._mProgressWindow.CurrentPolygons = polygon_count;
                                     }
+                                    this.trans_stats.Polygones = polygon_count;
                                 }
                             }
                             else if (element.GetType() == typeof(Relation))
@@ -198,18 +215,31 @@ namespace OpenStreetMap2Oracle.controller
                                 mpolygon_count++;
                                 this._mProgressWindow.CurrentMultiPolygons = mpolygon_count;
                             }
+                            this.trans_stats.Multipolygons = mpolygon_count;
                         }
+
+                        
 
                         if ((++disp_count) >= GUI_REFRESH_ITEMS)
                         {
                             float millis = (float)(new TimeSpan(DateTime.Now.Ticks - _mLastDispatchItem.Ticks)).Milliseconds;
+                            long itemsPerSecond = (long)((((float)disp_count) / (float)millis) * (float)1000);
 
                             if (millis > 0)
                             {
-                                this._mProgressWindow.CurrentItemsPerSecond = (long)((((float)disp_count) / (float)millis) * (float)1000);
+                                this._mProgressWindow.CurrentItemsPerSecond = itemsPerSecond;
                             }
 
                             this._mProgressWindow.CurrentTimeElapsed = new TimeSpan(DateTime.Now.Ticks - _mDispatchStarted.Ticks);
+
+                            if (this.trans_stats.AverageIps == 0)
+                            {
+                                this.trans_stats.AverageIps = itemsPerSecond;
+                            }
+                            else
+                            {
+                                this.trans_stats.AverageIps = (this.trans_stats.AverageIps + itemsPerSecond) / 2;
+                            }
 
                             _mLastDispatchItem = DateTime.Now;
                             disp_count = 0;
@@ -218,6 +248,7 @@ namespace OpenStreetMap2Oracle.controller
                     catch (Exception ex)
                     {
                         this._mProgressWindow.CurrentErrors++;
+                        this.trans_stats.Errors++;
 
                         //NOTICE: If you export multiple osm extracts in 1 schema, there can be errors in primary key OSM_ID because
                         //the extracts in boundary regions are never exact, there can be double elements, for this case there is
