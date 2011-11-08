@@ -21,14 +21,16 @@
 		<Label Content="Nodes transferred:" Margin="51,167.332,0,0" Height="31.334" VerticalAlignment="Top" HorizontalAlignment="Left" Width="111.333"/>
 		<Label Content="Lines transferred:" Margin="51,198.666,0,0" HorizontalAlignment="Left" Width="145.333" Height="30.334" VerticalAlignment="Top"/>
 		<Label Content="Polygones transferred:" Margin="51,262.332,533.667,210.668"/>
-		<Label Content="Multipolygones transferred:" Margin="51,233,0,0" Height="29.332" VerticalAlignment="Top" HorizontalAlignment="Left" Width="173.333"/>
+		<Label Content="Multipolygones transferred:" Margin="51,229,0,0" Height="29.332" VerticalAlignment="Top" HorizontalAlignment="Left" Width="173.333"/>
 		<Label Content="Average Items per Second:" Margin="51,0,522.667,155" Height="30.334" VerticalAlignment="Bottom"/>
 		<Label Content="Errors:" Margin="51,0,522.667,125" Height="26" VerticalAlignment="Bottom" RenderTransformOrigin="0.538,0.979"/>
-		<Label x:Name="lblNodes" Content="0" HorizontalAlignment="Left" Height="31.334" Margin="248.333,167.332,0,0" VerticalAlignment="Top" Width="44"/>
-		<Label x:Name="lblLines" Content="0" HorizontalAlignment="Left" Margin="248.333,200.998,0,0" Width="44" Height="30.334" VerticalAlignment="Top"/>
-		<Label x:Name="lblMultiPolygones" Content="0" HorizontalAlignment="Left" Margin="248.333,231.332,0,0" Width="44" Height="27" VerticalAlignment="Top"/>
-		<Label x:Name="lblPolygones" Content="0" Margin="248.333,262.332,0,210.668" RenderTransformOrigin="4.023,0.404" HorizontalAlignment="Left" Width="44"/>
-		<Label x:Name="lblItemsPS" Content="0" Margin="248.333,0,0,155" HorizontalAlignment="Left" Width="44" Height="30.334" VerticalAlignment="Bottom"/>
-		<Label x:Name="lblErrors" Content="0" Margin="248.333,0,0,125" Height="26" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="44" RenderTransformOrigin="1.106,0.423"/>
+		<Label x:Name="lblNodes" Content="0" Height="31.334" Margin="248.333,167.332,255.667,0" VerticalAlignment="Top"/>
+		<Label x:Name="lblLines" Content="0" Margin="248.333,200.998,255.667,0" Height="30.334" VerticalAlignment="Top"/>
+		<Label x:Name="lblMultiPolygones" Content="0" Margin="248.333,229,255.667,0" Height="27" VerticalAlignment="Top"/>
+		<Label x:Name="lblPolygones" Content="0" Margin="248.333,262.332,255.667,210.668" RenderTransformOrigin="4.023,0.404"/>
+		<Label x:Name="lblItemsPS" Content="0" Margin="248.333,0,255.667,155" Height="30.334" VerticalAlignment="Bottom"/>
+		<Label x:Name="lblErrors" Content="0" Margin="248.333,0,255.667,125" Height="26" VerticalAlignment="Bottom" RenderTransformOrigin="1.106,0.423"/>
+		<Label Content="Duration:" HorizontalAlignment="Right" Height="30" Margin="0,89,79,0" VerticalAlignment="Top" Width="60"/>
+		<Label x:Name="lblDuration" Content="00:00:00" HorizontalAlignment="Right" Height="30" Margin="0,89,20,0" VerticalAlignment="Top" Width="59"/>
 	</Grid>
 </Window>

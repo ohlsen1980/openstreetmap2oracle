@@ -13,6 +13,7 @@ namespace OpenStreetMap2Oracle.businesslogic.Transaction
         public long Multipolygons { get; set; }
         public long Errors { get; set; }
         public long AverageIps { get; set; }
+        public TimeSpan Duration { get; set; }
 
         public TransactionStats()
         {
@@ -23,6 +24,7 @@ namespace OpenStreetMap2Oracle.businesslogic.Transaction
                 this.Errors =
                 this.AverageIps =
                 0;
+            this.Duration = new TimeSpan(0);
         }
     }
 }

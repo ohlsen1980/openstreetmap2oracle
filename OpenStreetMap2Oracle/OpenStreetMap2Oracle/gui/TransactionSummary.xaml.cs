@@ -28,6 +28,7 @@ namespace OpenStreetMap2Oracle
             this.lblMultiPolygones.Content = stats.Multipolygons;
             this.lblErrors.Content = stats.Errors;
             this.lblItemsPS.Content = stats.AverageIps;
+            this.lblDuration.Content = String.Format("{0:D2}:{1:D2}:{2:D2}", stats.Duration.Hours, stats.Duration.Minutes, stats.Duration.Seconds);
 			// Fügen Sie Code, der bei der Objekterstellung erforderlich ist, unter diesem Punkt ein.
 		}
 

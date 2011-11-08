@@ -129,6 +129,7 @@ namespace OpenStreetMap2Oracle.controller
         {
             //OracleConnectionFactory.Transaction.Commit();           
             System.GC.Collect();
+            trans_stats.Duration = new TimeSpan(DateTime.Now.Ticks - _mDispatchStarted.Ticks);
 
             this._mProgressWindow.Dispatcher.Invoke(DispatcherPriority.Send, new DispatcherOperationCallback(
                 delegate
@@ -143,6 +144,7 @@ namespace OpenStreetMap2Oracle.controller
                     TransactionSummary summary = new TransactionSummary(trans_stats, this.OwnerWindow);
                     summary.ShowDialog();
                     OwnerWindow.IsBackgrounded = false;
+                    OwnerWindow.IsEnabled = true;
                     return null;
                 }), null);
         }
