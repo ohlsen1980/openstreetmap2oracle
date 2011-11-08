@@ -13,7 +13,7 @@
     	<TextBlock Height="47" Margin="19,21,243,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="21.333" FontWeight="Bold" Text="Migrating Data ..." FontFamily="Segoe UI Light"/>
     	<Label Content="Nodes:" HorizontalAlignment="Left" Margin="29,76.332,0,0" Width="87.333" Height="31.334" VerticalAlignment="Top"/>
     	<Label Content="Lines:" HorizontalAlignment="Left" Margin="29,107.666,0,0" Width="87.333" Height="30.334" VerticalAlignment="Top"/>
-    	<Label Content="Polygones:" Margin="234.667,76.332,159,0" Height="31.334" VerticalAlignment="Top" d:LayoutOverrides="HorizontalAlignment"/>
+    	<Label Content="Polygones:" Margin="261.667,76.332,132,0" Height="31.334" VerticalAlignment="Top"/>
     	<Label Content="Multipolygones:" Margin="29,142,0,97" HorizontalAlignment="Left" Width="99.333"/>
     	<ProgressBar x:Name="progress" Height="19" Margin="26,0,17,60" VerticalAlignment="Bottom" IsIndeterminate="True">
     		<ProgressBar.Background>
@@ -34,16 +34,16 @@
     			</LinearGradientBrush>
     		</Button.Background>
     	</Button>
-    	<Label Content="Items/s:" Margin="234.667,107.666,159,0" Height="30.334" VerticalAlignment="Top" d:LayoutOverrides="HorizontalAlignment"/>
-    	<Label Content="Errors:" Margin="234.667,142,191,97" d:LayoutOverrides="HorizontalAlignment"/>
-    	<Label x:Name="lblNodes" Content="0" HorizontalAlignment="Left" Height="31.334" Margin="149,76.332,0,0" VerticalAlignment="Top" Width="44"/>
-    	<Label x:Name="lblLines" Content="0" HorizontalAlignment="Left" Margin="149,107.666,0,0" Width="44" Height="30.334" VerticalAlignment="Top"/>
-    	<Label x:Name="lblMultiPolygones" Content="0" HorizontalAlignment="Left" Margin="147,142,0,93" Width="44"/>
-    	<Label x:Name="lblPolygones" Content="0" HorizontalAlignment="Right" Height="31.334" Margin="0,76.332,99,0" VerticalAlignment="Top" Width="44" RenderTransformOrigin="4.023,0.404"/>
-    	<Label x:Name="lblItemsPS" Content="0" HorizontalAlignment="Right" Margin="0,107.666,99,0" Width="44" Height="30.334" VerticalAlignment="Top"/>
-    	<Label x:Name="lblErrors" Content="0" HorizontalAlignment="Right" Margin="0,142,99,97" Width="44"/>
+    	<Label Content="Items/s:" Margin="261.667,107.666,132,0" Height="30.334" VerticalAlignment="Top"/>
+    	<Label Content="Errors:" Margin="261.667,142,164,97"/>
+    	<Label x:Name="lblNodes" Content="0" Height="31.334" Margin="134.333,76.332,216.333,0" VerticalAlignment="Top" RenderTransformOrigin="0.583,0.915"/>
+    	<Label x:Name="lblLines" Content="0" Margin="134.333,107.666,216.333,0" Height="30.334" VerticalAlignment="Top"/>
+    	<Label x:Name="lblMultiPolygones" Content="0" Margin="134.333,142,216.333,115"/>
+    	<Label x:Name="lblPolygones" Content="0" HorizontalAlignment="Right" Height="31.334" Margin="0,76.332,17,0" VerticalAlignment="Top" Width="115" RenderTransformOrigin="4.023,0.404"/>
+    	<Label x:Name="lblItemsPS" Content="0" HorizontalAlignment="Right" Margin="0,107.666,17,0" Width="115" Height="30.334" VerticalAlignment="Top"/>
+    	<Label x:Name="lblErrors" Content="0" HorizontalAlignment="Right" Margin="0,142,17,115" Width="115"/>
     	<Label Content="Elapsed:" HorizontalAlignment="Left" Height="31" Margin="26,0,0,13" VerticalAlignment="Bottom" Width="52.333"/>
-    	<Label x:Name="lblTimeSpan" Content="0" HorizontalAlignment="Left" Height="31" Margin="75.333,0,0,13" VerticalAlignment="Bottom" Width="114.667"/>
+    	<Label x:Name="lblTimeSpan" Content="00:00:00" HorizontalAlignment="Left" Height="31" Margin="75.333,0,0,13" VerticalAlignment="Bottom" Width="114.667"/>
         
     </Grid>
 </Window>
