@@ -9,6 +9,7 @@ using OpenStreetMap2Oracle.businesslogic;
 using System.Windows.Threading;
 using OpenStreetMap2Oracle.gui;
 using System.Windows;
+using OpenStreetMap2Oracle.oracle;
 
 namespace OpenStreetMap2Oracle.controller
 {
@@ -39,7 +40,7 @@ namespace OpenStreetMap2Oracle.controller
         #region Constants
 
         public const int DISPATCHER_FLUSH_THRESHOLD = 100;
-        public const int GUI_REFRESH_ITEMS = 1000;
+        public const int GUI_REFRESH_ITEMS = 100;
         
         #endregion
 
@@ -49,6 +50,7 @@ namespace OpenStreetMap2Oracle.controller
         private String sql = String.Empty;
         private ProgressWindow _mProgressWindow;
         private DateTime _mLastDispatchItem;
+        private DateTime _mDispatchStarted;
         private TransactionDispatcher _mTransactionDisp;
         private TransactionQueue _mTransactionQueue;
         private BackgroundWorker xml_worker;
@@ -61,6 +63,8 @@ namespace OpenStreetMap2Oracle.controller
                        polygon_count = 0,
                        mpolygon_count = 0,
                        disp_count = 0;
+
+        private bool nodes_finished = false;
 
         #endregion
 
@@ -88,8 +92,8 @@ namespace OpenStreetMap2Oracle.controller
                 this.OwnerWindow.IsBackgrounded = true;  
             }
 
-            this._mTransactionDisp.Start();
             this._mProgressWindow.Show();
+            this._mDispatchStarted = DateTime.Now;
             xml_worker = new BackgroundWorker();
             xml_worker.WorkerReportsProgress = true;
             xml_worker.WorkerSupportsCancellation = true;
@@ -114,7 +118,7 @@ namespace OpenStreetMap2Oracle.controller
             else
             {
                 // Perform a time consuming operation and report progress.
-                ApplicationManager.Instance().OnOSMElementAdded += new ApplicationManager.OnOSMElementAddedHandler(OnOSMElementAdded);
+                ApplicationManager.Instance().OSMElementDelegate = OnOSMElementAdded; // OnOSMElementAdded += new ApplicationManager.OnOSMElementAddedHandler(OnOSMElementAdded);
                 ApplicationManager.Instance().OnXMLFinished += new ApplicationManager.XMLFinishedHandler(OnXMLFinished);
                 ApplicationManager.Instance().ParseXML(xmlPath);
             }
@@ -125,6 +129,7 @@ namespace OpenStreetMap2Oracle.controller
             //OracleConnectionFactory.Transaction.Commit();           
             System.GC.Collect();
             System.Windows.MessageBox.Show("OSM Daten in Datenbank übertragen\nPunkte: " + node_count + "\nLinien: " + line_count + "\nPolygone: " + polygon_count + "\nMultipolygone: " + mpolygon_count);
+            this._mProgressWindow.Close();
         }
 
         #endregion
@@ -146,7 +151,15 @@ namespace OpenStreetMap2Oracle.controller
                     try
                     {
                         // add the element to the dispatcher
-                        this._mTransactionDisp.Add(new OSMTransactionObject(sql_query));
+                        this._mTransactionQueue.Add(new OSMTransactionObject(sql_query));
+
+                        if (this._mTransactionQueue.Data.Count >= DISPATCHER_FLUSH_THRESHOLD)
+                        {
+                            TransactionDispatcher tmpDisp = new TransactionDispatcher();
+                            TransactionQueue tmpQueue = (TransactionQueue)this._mTransactionQueue.Clone();
+                            this._mTransactionQueue.Clear();
+                            tmpDisp.ProcessQueue(tmpQueue);
+                        }
 
                         // refresh the UI data
                         if (element.GetType() == typeof(Node))
@@ -156,41 +169,50 @@ namespace OpenStreetMap2Oracle.controller
                                 this._mProgressWindow.CurrentNodes = node_count;
                             }
                         }
-                        else if (element.GetType() == typeof(Way))
+                        else
                         {
-                            if (!((Way)element).Line.IsPolygon())
+                            if (!nodes_finished)
                             {
-                                if (((++line_count) % GUI_REFRESH_ITEMS) == 0)
+                                nodes_finished = true;
+                                OracleConnectionFactory.CommitAll();
+                            }
+                            if (element.GetType() == typeof(Way))
+                            {
+                                if (!((Way)element).Line.IsPolygon())
                                 {
-                                    this._mProgressWindow.CurrentLines = line_count;
+                                    if (((++line_count) % GUI_REFRESH_ITEMS) == 0)
+                                    {
+                                        this._mProgressWindow.CurrentLines = line_count;
+                                    }
+                                }
+                                else
+                                {
+                                    if (((++polygon_count) % GUI_REFRESH_ITEMS) == 0)
+                                    {
+                                        this._mProgressWindow.CurrentPolygons = polygon_count;
+                                    }
                                 }
                             }
-                            else
+                            else if (element.GetType() == typeof(Relation))
                             {
-                                if (((++polygon_count) % GUI_REFRESH_ITEMS) == 0)
-                                {
-                                    this._mProgressWindow.CurrentPolygons = polygon_count;
-                                }
+                                mpolygon_count++;
+                                this._mProgressWindow.CurrentMultiPolygons = mpolygon_count;
                             }
-                        }
-                        else if (element.GetType() == typeof(Relation))
-                        {
-                            mpolygon_count++;
-                            this._mProgressWindow.CurrentMultiPolygons = mpolygon_count;
                         }
 
                         if ((++disp_count) >= GUI_REFRESH_ITEMS)
                         {
-                            disp_count = 0;
-
-                            float millis = (new TimeSpan(DateTime.Now.Ticks - _mLastDispatchItem.Ticks)).Milliseconds;
+                            float millis = (float)(new TimeSpan(DateTime.Now.Ticks - _mLastDispatchItem.Ticks)).Milliseconds;
 
                             if (millis > 0)
                             {
-                                this._mProgressWindow.CurrentItemsPerSecond = (long)(((float)disp_count) / millis) * 1000;
+                                this._mProgressWindow.CurrentItemsPerSecond = (long)((((float)disp_count) / (float)millis) * (float)1000);
                             }
 
+                            this._mProgressWindow.CurrentTimeElapsed = new TimeSpan(DateTime.Now.Ticks - _mDispatchStarted.Ticks);
+
                             _mLastDispatchItem = DateTime.Now;
+                            disp_count = 0;
                         }
                     }
                     catch (Exception ex)

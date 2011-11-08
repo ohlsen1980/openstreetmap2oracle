@@ -229,10 +229,17 @@ namespace OpenStreetMap2Oracle.oracle
 
                     if (reader.HasRows)
                     {
-                        gml = reader[0].ToString();
-                        reader.Close();
-                        reader.Dispose();
-                        break;
+                        try
+                        {
+                            gml = reader[0].ToString();
+                            reader.Close();
+                            reader.Dispose();
+                            return gml;
+                        }
+                        catch (InvalidOperationException)
+                        {
+                            
+                        }
                     }
 
                     reader.Close();

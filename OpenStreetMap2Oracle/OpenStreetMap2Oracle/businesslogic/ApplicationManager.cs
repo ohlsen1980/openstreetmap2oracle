@@ -45,8 +45,13 @@ namespace OpenStreetMap2Oracle.businesslogic
         /// <summary>
         /// Occurs whenever a new OSMElement was parsed
         /// </summary>
-        public event OnOSMElementAddedHandler OnOSMElementAdded;
+        //public event OnOSMElementAddedHandler OnOSMElementAdded;
 
+        public OnOSMElementAddedHandler OSMElementDelegate
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Event Handler for XML parsing is finished
@@ -142,8 +147,12 @@ namespace OpenStreetMap2Oracle.businesslogic
 
                                 if (isEmty)
                                 {
-                                    if (OnOSMElementAdded != null)
-                                        OnOSMElementAdded(this, new OSMAddedEventArg(_currentElement));
+                                    if (OSMElementDelegate != null)
+                                    {
+                                        OSMElementDelegate(this, new OSMAddedEventArg(_currentElement));
+                                    }
+                                    //if (OnOSMElementAdded != null)
+                                    //    OnOSMElementAdded(this, new OSMAddedEventArg(_currentElement));
                                 }
 
                                 #endregion
@@ -349,16 +358,25 @@ namespace OpenStreetMap2Oracle.businesslogic
                         switch (reader.Name)
                         {
                             case XmlNodeNames.NODE:
-                                if (OnOSMElementAdded != null)
-                                    OnOSMElementAdded(this, new OSMAddedEventArg(_currentElement));
+                                if (OSMElementDelegate != null)
+                                {
+                                    OSMElementDelegate(this, new OSMAddedEventArg(_currentElement));
+                                }
+                               
                                 break;
                             case XmlNodeNames.WAY:
-                                if (OnOSMElementAdded != null)
-                                    OnOSMElementAdded(this, new OSMAddedEventArg(_currentElement));
+                                if (OSMElementDelegate != null)
+                                {
+                                    OSMElementDelegate(this, new OSMAddedEventArg(_currentElement));
+                                }
+                                
                                 break;
                             case XmlNodeNames.RELATION:
-                                if (OnOSMElementAdded != null)
-                                    OnOSMElementAdded(this, new OSMAddedEventArg(_currentElement));
+                                if (OSMElementDelegate != null)
+                                {
+                                    OSMElementDelegate(this, new OSMAddedEventArg(_currentElement));
+                                }
+                               
                                 break;
                         }
                         #endregion

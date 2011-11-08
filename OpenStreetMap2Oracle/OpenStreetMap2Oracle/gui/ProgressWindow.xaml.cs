@@ -33,6 +33,14 @@ namespace OpenStreetMap2Oracle.gui
             }
 		}
 
+        public TimeSpan CurrentTimeElapsed
+        {
+            set
+            {
+                lblTimeSpan.Content = String.Format("{0:D2}:{1:D2}:{2:D2}", value.Hours, value.Minutes, value.Seconds);
+            }
+        }
+
         public long CurrentLines
         {
             set
