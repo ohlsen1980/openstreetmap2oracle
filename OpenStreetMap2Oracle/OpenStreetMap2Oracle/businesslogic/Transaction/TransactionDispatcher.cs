@@ -28,6 +28,7 @@ using OpenStreetMap2Oracle.oracle;
 using System.Data.OracleClient;
 using System.Threading;
 using OpenStreetMap2Oracle.controller;
+using System.Windows;
 
 namespace OpenStreetMap2Oracle.businesslogic.Transaction
 {
@@ -133,7 +134,7 @@ namespace OpenStreetMap2Oracle.businesslogic.Transaction
                             ProcessQueue(tmpQueue);
                         }
                     }
-                    Thread.Sleep(100);
+                    Thread.Sleep(50);
                 }
             }
             catch (ThreadAbortException)
@@ -147,9 +148,9 @@ namespace OpenStreetMap2Oracle.businesslogic.Transaction
         /// </summary>
         public void ProcessQueue(TransactionQueue queue)
         {
-            lock (_queue)
+            lock (queue)
             {
-                Parallel.ForEach(this._queue.Data, osmObject =>
+                Parallel.ForEach(queue.Data, osmObject =>
                 {
                     try
                     {
@@ -160,9 +161,10 @@ namespace OpenStreetMap2Oracle.businesslogic.Transaction
                         sql_cmd.UpdatedRowSource = System.Data.UpdateRowSource.None;
                         handle.Execute(osmObject.Query, sql_cmd);
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         this.ErrorQueue.Add(osmObject);
+                        MessageBox.Show(ex.Message);
                     }
                 });
 

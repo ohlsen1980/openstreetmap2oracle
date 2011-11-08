@@ -173,12 +173,16 @@ namespace OpenStreetMap2Oracle.businesslogic.Transaction
 
         public object Clone()
         {
-            TransactionQueue queue = new TransactionQueue();
-            foreach (OSMTransactionObject obj in this._queue)
+            TransactionQueue tmpQueue = new TransactionQueue();
+            lock (this.Data)
             {
-                queue._queue.Add(((OSMTransactionObject)obj.Clone()));
+                for (int i = 0; i < this.Data.Count; i++)
+                {
+                    OSMTransactionObject obj = this.Data[i];
+                    tmpQueue.Data.Add(((OSMTransactionObject)obj.Clone()));
+                }
             }
-            return queue;
+            return tmpQueue;
         }
     }
 }

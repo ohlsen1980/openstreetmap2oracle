@@ -42,6 +42,8 @@
     	<Label x:Name="lblPolygones" Content="0" HorizontalAlignment="Right" Height="31.334" Margin="0,76.332,99,0" VerticalAlignment="Top" Width="44" RenderTransformOrigin="4.023,0.404"/>
     	<Label x:Name="lblItemsPS" Content="0" HorizontalAlignment="Right" Margin="0,107.666,99,0" Width="44" Height="30.334" VerticalAlignment="Top"/>
     	<Label x:Name="lblErrors" Content="0" HorizontalAlignment="Right" Margin="0,142,99,97" Width="44"/>
+    	<Label Content="Elapsed:" HorizontalAlignment="Left" Height="31" Margin="26,0,0,13" VerticalAlignment="Bottom" Width="52.333"/>
+    	<Label x:Name="lblTimeSpan" Content="0" HorizontalAlignment="Left" Height="31" Margin="75.333,0,0,13" VerticalAlignment="Bottom" Width="114.667"/>
         
     </Grid>
 </Window>
