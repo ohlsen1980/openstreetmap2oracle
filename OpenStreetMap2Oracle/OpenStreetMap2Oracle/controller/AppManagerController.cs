@@ -141,7 +141,8 @@ namespace OpenStreetMap2Oracle.controller
                 delegate
                 {
                     TransactionSummary summary = new TransactionSummary(trans_stats, this.OwnerWindow);
-                    summary.Show();
+                    summary.ShowDialog();
+                    OwnerWindow.IsBackgrounded = false;
                     return null;
                 }), null);
         }
