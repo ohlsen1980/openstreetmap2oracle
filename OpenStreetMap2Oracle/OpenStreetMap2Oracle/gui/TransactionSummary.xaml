@@ -5,7 +5,7 @@
 	x:Class="OpenStreetMap2Oracle.TransactionSummary"
 	x:Name="Window"
 	Title="TransactionSummary"
-	Width="746" Height="564" WindowStyle="None" ShowInTaskbar="False" AllowsTransparency="True" WindowStartupLocation="CenterOwner" BorderBrush="#FF373737" BorderThickness="1">
+	Width="746" Height="503" WindowStyle="None" ShowInTaskbar="False" AllowsTransparency="True" WindowStartupLocation="CenterOwner" BorderBrush="#FF373737" BorderThickness="1">
 
 	<Grid x:Name="LayoutRoot">
 		<Grid.Background>
@@ -15,20 +15,20 @@
 			</RadialGradientBrush>
 		</Grid.Background>
 		<Button x:Name="btnDone" Content="Done" HorizontalAlignment="Right" Height="31" Margin="0,0,20,8" VerticalAlignment="Bottom" Width="106" Click="btnDone_Click"/>
-		<Border BorderBrush="Black" BorderThickness="1" Margin="19,113,20,55.666" CornerRadius="5" Background="#FF666666" Opacity="0.09"/>
+		<Border BorderBrush="Black" BorderThickness="1" Margin="19,114,20,53.666" CornerRadius="5" Background="#FF666666" Opacity="0.09"/>
 		<Label Content="Conversion Summary" Height="42" Margin="8,8,274,0" VerticalAlignment="Top" FontFamily="Segoe UI Light" FontSize="24"/>
 		<Label Content="Your data have been transmitted to the Oracle database. " Height="35" Margin="19,54,183,0" VerticalAlignment="Top" Background="{x:Null}" Foreground="#FF3F8043"/>
 		<Label Content="Nodes transferred:" Margin="51,167.332,0,0" Height="31.334" VerticalAlignment="Top" HorizontalAlignment="Left" Width="111.333"/>
 		<Label Content="Lines transferred:" Margin="51,198.666,0,0" HorizontalAlignment="Left" Width="145.333" Height="30.334" VerticalAlignment="Top"/>
-		<Label Content="Polygones transferred:" Margin="51,0,533.667,228.334" Height="31.334" VerticalAlignment="Bottom"/>
+		<Label Content="Polygones transferred:" Margin="51,262.332,533.667,210.668"/>
 		<Label Content="Multipolygones transferred:" Margin="51,233,0,0" Height="29.332" VerticalAlignment="Top" HorizontalAlignment="Left" Width="173.333"/>
-		<Label Content="Average Items per Second:" Margin="51,0,522.667,165" Height="30.334" VerticalAlignment="Bottom"/>
-		<Label Content="Errors:" Margin="51,0,522.667,135" Height="26" VerticalAlignment="Bottom" RenderTransformOrigin="0.538,0.979"/>
+		<Label Content="Average Items per Second:" Margin="51,0,522.667,155" Height="30.334" VerticalAlignment="Bottom"/>
+		<Label Content="Errors:" Margin="51,0,522.667,125" Height="26" VerticalAlignment="Bottom" RenderTransformOrigin="0.538,0.979"/>
 		<Label x:Name="lblNodes" Content="0" HorizontalAlignment="Left" Height="31.334" Margin="248.333,167.332,0,0" VerticalAlignment="Top" Width="44"/>
 		<Label x:Name="lblLines" Content="0" HorizontalAlignment="Left" Margin="248.333,200.998,0,0" Width="44" Height="30.334" VerticalAlignment="Top"/>
 		<Label x:Name="lblMultiPolygones" Content="0" HorizontalAlignment="Left" Margin="248.333,231.332,0,0" Width="44" Height="27" VerticalAlignment="Top"/>
-		<Label x:Name="lblPolygones" Content="0" Margin="248.333,0,0,228.334" RenderTransformOrigin="4.023,0.404" HorizontalAlignment="Left" Width="44" Height="31.334" VerticalAlignment="Bottom"/>
-		<Label x:Name="lblItemsPS" Content="0" Margin="248.333,0,0,165" HorizontalAlignment="Left" Width="44" Height="30.334" VerticalAlignment="Bottom"/>
-		<Label x:Name="lblErrors" Content="0" Margin="248.333,0,0,135" Height="26" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="44" RenderTransformOrigin="1.106,0.423"/>
+		<Label x:Name="lblPolygones" Content="0" Margin="248.333,262.332,0,210.668" RenderTransformOrigin="4.023,0.404" HorizontalAlignment="Left" Width="44"/>
+		<Label x:Name="lblItemsPS" Content="0" Margin="248.333,0,0,155" HorizontalAlignment="Left" Width="44" Height="30.334" VerticalAlignment="Bottom"/>
+		<Label x:Name="lblErrors" Content="0" Margin="248.333,0,0,125" Height="26" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="44" RenderTransformOrigin="1.106,0.423"/>
 	</Grid>
 </Window>

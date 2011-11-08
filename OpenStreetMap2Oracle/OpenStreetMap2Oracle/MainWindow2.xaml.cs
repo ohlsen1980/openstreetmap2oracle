@@ -33,8 +33,21 @@ namespace OpenStreetMap2Oracle
             blur.Radius = 5;
             blur.KernelType = KernelType.Gaussian;
 			// Fügen Sie Code, der bei der Objekterstellung erforderlich ist, unter diesem Punkt ein.
+            this.gridMoveHeader.MouseLeftButtonDown +=new System.Windows.Input.MouseButtonEventHandler(gridMoveHeader_MouseLeftButtonDown);
+            this.btnClose.MouseLeftButtonDown += new MouseButtonEventHandler(btnClose_MouseLeftButtonDown);
+            this.btnClose.MouseEnter += new MouseEventHandler(btnClose_MouseEnter);
 		}
 
+        void btnClose_MouseEnter(object sender, MouseEventArgs e)
+        {
+           
+        }
+
+        void btnClose_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            this.Close();
+        }
+		
 		private void btnCreateDBConnection(object sender, System.Windows.Input.MouseButtonEventArgs e)
 		{
             this.IsBackgrounded = true;
@@ -94,6 +107,17 @@ namespace OpenStreetMap2Oracle
             AppManagerController controller = new AppManagerController();
             controller.OwnerWindow = this;
             controller.Start();
+        }
+
+        private void gridMoveHeader_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            try
+            {
+                this.DragMove();
+            }
+            catch (Exception ex)
+            {
+            }
         }
 	}
 }
