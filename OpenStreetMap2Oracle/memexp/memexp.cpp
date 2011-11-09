@@ -15,7 +15,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	char *buffer_id = (char*) malloc(sizeof(char) * 64);
 	char *buffer_data = (char*) malloc(sizeof(char) * 128);
 	char *buffer_cmd = (char*) malloc(sizeof(char) * 10);
-	float _id;
+	long _id;
 
 	while (true) {
 		cin >> buffer_cmd;
