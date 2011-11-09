@@ -29,6 +29,15 @@ namespace OpenStreetMap2Oracle
 			blur.KernelType = KernelType.Gaussian;
 		}
 		
+		public string Number {
+			get {
+				return lblNumber.Content.ToString();
+			}
+			set {
+				lblNumber.Content = value;
+			}
+		}
+		
 		public string Header {
 			get {
 				return lblHeader.Content.ToString();
@@ -44,10 +53,12 @@ namespace OpenStreetMap2Oracle
 			set {
 				disabled = value;
 				if (disabled) {
-					canvasOverlay.Opacity = 0.50;
+					canvasOverlay.Opacity = 0.70;
+					overlayGlass.Opacity = 0;
 					grid.Effect = blur;
 				} else {
 					canvasOverlay.Opacity = 0;
+					overlayGlass.Opacity = 0.23;
 					grid.Effect = null;
 				}
 			}

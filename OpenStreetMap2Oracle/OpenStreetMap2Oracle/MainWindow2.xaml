@@ -8,28 +8,36 @@
 	Width="814" Height="595" WindowStyle="None" AllowsTransparency="True" WindowStartupLocation="CenterOwner" BorderBrush="#FF373737" BorderThickness="1">
 
 	<Grid x:Name="LayoutRoot">
+		<Grid.Effect>
+			<DropShadowEffect Direction="305" BlurRadius="27"/>
+		</Grid.Effect>
 		<Grid.Background>
-			<RadialGradientBrush RadiusY="0.632" RadiusX="0.692" GradientOrigin="0.099,-0.085" Center="0.465,0.456">
-				<GradientStop Color="White" Offset="0.728"/>
-				<GradientStop Color="#FFCAA703" Offset="0.996"/>
-			</RadialGradientBrush>
+			<ImageBrush ImageSource="pack://siteoforigin:,,,/assets/BG.png" Stretch="None"/>
 		</Grid.Background>
-		<Label Content="General Purpose Licence" HorizontalAlignment="Right" Height="27" Margin="0,0,8,8" VerticalAlignment="Bottom" Width="143" FontStyle="Italic">
+		<Rectangle Height="74" Stroke="Black" VerticalAlignment="Top" StrokeThickness="0" Opacity="0.475" Visibility="Hidden">
+			<Rectangle.Fill>
+				<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+					<GradientStop Color="Black" Offset="1"/>
+					<GradientStop Color="#FF747474"/>
+				</LinearGradientBrush>
+			</Rectangle.Fill>
+		</Rectangle>
+		<Label Content="General Purpose Licence" HorizontalAlignment="Right" Height="27" Margin="0,0,8,8" VerticalAlignment="Bottom" Width="143" FontStyle="Italic" Foreground="White">
 			<Label.Effect>
 				<DropShadowEffect BlurRadius="9" ShadowDepth="0" Opacity="0.555"/>
 			</Label.Effect>
 		</Label>
-		<Grid HorizontalAlignment="Left" Margin="7,4,0,0" Width="297" Height="120" VerticalAlignment="Top">
-			<Image Source="assets/Image3.png" Stretch="Fill" HorizontalAlignment="Left" Width="59" Margin="8,19.17,0,42"/>
-			<Label Content="OpenStreetMap" Height="34" Margin="61,20,69,0" VerticalAlignment="Top" FontSize="18.667" FontWeight="Bold"/>
+		<Grid HorizontalAlignment="Left" Margin="-43,-10,0,0" Width="297" Height="120" VerticalAlignment="Top">
+			<Image Source="assets/Image3.png" Stretch="Fill" HorizontalAlignment="Left" Width="59" Margin="8,19.17,0,42" Visibility="Hidden"/>
+			<Label Content="OpenStreetMap" Height="34" Margin="61,20,69,0" VerticalAlignment="Top" FontSize="18.667" FontWeight="Bold" Background="#00000000" Foreground="White"/>
 			<Label Content="to" Margin="136,43.44,138,50.56" FontSize="13.333" FontWeight="Bold" Background="#00898989" Foreground="#FF858585"/>
 			<Label Content="Oracle" Margin="0,42,84,42" FontSize="14.667" FontWeight="Bold" Foreground="#FF8D0E0E" HorizontalAlignment="Right" Width="60"/>
 		</Grid>
 		<local:HugeButton x:Name="btnCreateConnection" Margin="184,128,160,0" VerticalAlignment="Top" Header="Create Database Connection" ImageSource="assets/Image1.png" BodyContent="Set up your connection parameters here." MouseUp="btnCreateDBConnection"/>
-		<local:HugeButton x:Name="btnSelectFile" Margin="184,233,160,271" Header="Select OSM File" ImageSource="assets/Image4.png" BodyContent="Select the OSM file you want to migrate to your Oracle database." MouseUp="btnSelectFile_MouseUp" Disabled="True"/>
-		<local:HugeButton x:Name="btnStartMigration" Margin="184,0,160,162.666" Header="Start Migration" ImageSource="assets/Image2.png" BodyContent="Starts the migration process. This may take a while." VerticalAlignment="Bottom" MouseUp="btnStartMigration_MouseUp" Disabled="True"/>
+		<local:HugeButton x:Name="btnSelectFile" Margin="184,233,160,270" Header="Select OSM File" ImageSource="assets/Image4.png" BodyContent="Select the OSM file you want to migrate to your Oracle database." MouseUp="btnSelectFile_MouseUp" Disabled="True" Number="2"/>
+		<local:HugeButton x:Name="btnStartMigration" Margin="184,0,160,162.666" Header="Start Migration" ImageSource="assets/Image2.png" BodyContent="Starts the migration process. This may take a while." VerticalAlignment="Bottom" MouseUp="btnStartMigration_MouseUp" Disabled="True" Number="3"/>
 		<Canvas OpacityMask="#FF434343" Background="Black" Opacity="0.40" Visibility="Hidden" x:Name="overlayDark"/>
-		<Label x:Name="gridMoveHeader" Height="101" Margin="0,0,53,0" VerticalAlignment="Top" MouseLeftButtonDown="gridMoveHeader_MouseLeftButtonDown"/>
+		<Label x:Name="gridMoveHeader" Height="101" Margin="0,0,34,0" VerticalAlignment="Top" MouseLeftButtonDown="gridMoveHeader_MouseLeftButtonDown"/>
 		<Label x:Name="btnClose" Content="x" HorizontalAlignment="Right" Height="38" Margin="0,0,5,0" VerticalAlignment="Top" Width="25" FontSize="21.333" FontFamily="Arial" Background="{x:Null}" Foreground="#FF2F2F2F"/>
     </Grid>
 </Window>

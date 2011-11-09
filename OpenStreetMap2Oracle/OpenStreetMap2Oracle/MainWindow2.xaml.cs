@@ -29,6 +29,7 @@ namespace OpenStreetMap2Oracle
 		public MainWindow2()
 		{
 			this.InitializeComponent();
+            this.btnStartMigration.Disabled = true;
             blur = new BlurEffect();
             blur.Radius = 5;
             blur.KernelType = KernelType.Gaussian;
