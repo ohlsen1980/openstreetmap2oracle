@@ -9,10 +9,9 @@ namespace OpenStreetMap2Oracle.businesslogic.Transaction
     public class TransactionObjectCache
     {
         private static Dictionary<long, Point> _items = new Dictionary<long, Point>();
-       
 
         public static void AddNodeItem(Node n)
-        {            
+        {
             if (n != null)
                 _items.Add(n.Id, n.Point);
         }
