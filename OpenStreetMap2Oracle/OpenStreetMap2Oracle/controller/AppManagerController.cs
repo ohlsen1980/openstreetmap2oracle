@@ -39,7 +39,7 @@ namespace OpenStreetMap2Oracle.controller
 
         #region Constants
 
-        public const int DISPATCHER_FLUSH_THRESHOLD = 1000;
+        public const int DISPATCHER_FLUSH_THRESHOLD = 100;
         public const int GUI_REFRESH_ITEMS = 1000;
         
         #endregion
