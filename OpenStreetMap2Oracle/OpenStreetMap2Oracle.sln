@@ -3,25 +3,58 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenStreetMap2Oracle", "OpenStreetMap2Oracle\OpenStreetMap2Oracle.csproj", "{084FCC43-F097-4C95-A746-FDF0C81F92AD}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "memexp", "memexp\memexp.vcxproj", "{A9F21FB3-6A11-4962-8A14-96B1BF9AF75E}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 2
+		SccNumberOfProjects = 3
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs37
 		SccLocalPath0 = .
 		SccProjectUniqueName1 = OpenStreetMap2Oracle\\OpenStreetMap2Oracle.csproj
 		SccProjectName1 = OpenStreetMap2Oracle
 		SccLocalPath1 = OpenStreetMap2Oracle
+		SccProjectUniqueName2 = memexp\\memexp.vcxproj
+		SccProjectName2 = memexp
+		SccLocalPath2 = memexp
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{084FCC43-F097-4C95-A746-FDF0C81F92AD}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{084FCC43-F097-4C95-A746-FDF0C81F92AD}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{084FCC43-F097-4C95-A746-FDF0C81F92AD}.Debug|Win32.ActiveCfg = Debug|x86
+		{084FCC43-F097-4C95-A746-FDF0C81F92AD}.Debug|x64.ActiveCfg = Debug|x86
 		{084FCC43-F097-4C95-A746-FDF0C81F92AD}.Debug|x86.ActiveCfg = Debug|x86
 		{084FCC43-F097-4C95-A746-FDF0C81F92AD}.Debug|x86.Build.0 = Debug|x86
+		{084FCC43-F097-4C95-A746-FDF0C81F92AD}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{084FCC43-F097-4C95-A746-FDF0C81F92AD}.Release|Mixed Platforms.Build.0 = Release|x86
+		{084FCC43-F097-4C95-A746-FDF0C81F92AD}.Release|Win32.ActiveCfg = Release|x86
+		{084FCC43-F097-4C95-A746-FDF0C81F92AD}.Release|x64.ActiveCfg = Release|x86
 		{084FCC43-F097-4C95-A746-FDF0C81F92AD}.Release|x86.ActiveCfg = Release|x86
 		{084FCC43-F097-4C95-A746-FDF0C81F92AD}.Release|x86.Build.0 = Release|x86
+		{A9F21FB3-6A11-4962-8A14-96B1BF9AF75E}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{A9F21FB3-6A11-4962-8A14-96B1BF9AF75E}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{A9F21FB3-6A11-4962-8A14-96B1BF9AF75E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A9F21FB3-6A11-4962-8A14-96B1BF9AF75E}.Debug|Win32.Build.0 = Debug|Win32
+		{A9F21FB3-6A11-4962-8A14-96B1BF9AF75E}.Debug|x64.ActiveCfg = Debug|x64
+		{A9F21FB3-6A11-4962-8A14-96B1BF9AF75E}.Debug|x64.Build.0 = Debug|x64
+		{A9F21FB3-6A11-4962-8A14-96B1BF9AF75E}.Debug|x86.ActiveCfg = Debug|Win32
+		{A9F21FB3-6A11-4962-8A14-96B1BF9AF75E}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{A9F21FB3-6A11-4962-8A14-96B1BF9AF75E}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{A9F21FB3-6A11-4962-8A14-96B1BF9AF75E}.Release|Win32.ActiveCfg = Release|Win32
+		{A9F21FB3-6A11-4962-8A14-96B1BF9AF75E}.Release|Win32.Build.0 = Release|Win32
+		{A9F21FB3-6A11-4962-8A14-96B1BF9AF75E}.Release|x64.ActiveCfg = Release|x64
+		{A9F21FB3-6A11-4962-8A14-96B1BF9AF75E}.Release|x64.Build.0 = Release|x64
+		{A9F21FB3-6A11-4962-8A14-96B1BF9AF75E}.Release|x86.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

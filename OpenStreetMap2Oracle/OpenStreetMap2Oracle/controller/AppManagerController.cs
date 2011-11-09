@@ -43,6 +43,7 @@ namespace OpenStreetMap2Oracle.controller
         public const int GUI_REFRESH_ITEMS = 1000;
         public static bool RUN_SLIM_MODE = true;
         
+        
         #endregion
 
         #region Types
