@@ -12,7 +12,7 @@
 			<DropShadowEffect Direction="305" BlurRadius="27"/>
 		</Grid.Effect>
 		<Grid.Background>
-			<ImageBrush ImageSource="pack://siteoforigin:,,,/assets/BG.png" Stretch="None"/>
+			<ImageBrush ImageSource="assets/background.png" Stretch="None"/>
 		</Grid.Background>
 		<Rectangle Stroke="#FF686868" Opacity="0.395" Margin="8,86,8,8" RadiusX="10" RadiusY="10" Fill="#FF505050"/>
 		<Label Content="General Purpose Licence" HorizontalAlignment="Right" Height="23" Margin="0,0,14,10" VerticalAlignment="Bottom" Width="112" FontStyle="Italic" Foreground="#FF505050" FontSize="9.333">
