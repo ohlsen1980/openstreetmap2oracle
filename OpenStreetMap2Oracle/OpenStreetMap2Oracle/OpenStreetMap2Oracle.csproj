@@ -191,9 +191,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="app.config" />
-    <None Include="assets\BG.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="assets\wsCarbonFiber.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -235,6 +232,9 @@
     <Resource Include="sql\create_PointTable.sql" />
     <Resource Include="sql\create_PolygonTable.sql" />
     <Resource Include="sql\create_RoadsTable.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="assets\background.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
