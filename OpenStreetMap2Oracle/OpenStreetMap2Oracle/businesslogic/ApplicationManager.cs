@@ -26,6 +26,7 @@ using System.Data.OracleClient;
 using OpenStreetMap2Oracle.core;
 using OpenStreetMap2Oracle.businesslogic.Xml;
 using System.Threading.Tasks;
+using OpenStreetMap2Oracle.controller;
 
 namespace OpenStreetMap2Oracle.businesslogic
 {
@@ -145,14 +146,21 @@ namespace OpenStreetMap2Oracle.businesslogic
 
                                 }
 
+                                if (AppManagerController.RUN_SLIM_MODE)
+                                {
+                                    Transaction.TransactionObjectCache.AddNodeItem(node);
+                                }
+
                                 if (isEmty)
                                 {
-                                    if (OSMElementDelegate != null)
+                                    //This is not a real node, so only export it when App runs not in slim mode
+                                    if (AppManagerController.RUN_SLIM_MODE == false)
                                     {
-                                        OSMElementDelegate(this, new OSMAddedEventArg(_currentElement));
+                                        if (OSMElementDelegate != null)
+                                        {
+                                            OSMElementDelegate(this, new OSMAddedEventArg(_currentElement));
+                                        }
                                     }
-                                    //if (OnOSMElementAdded != null)
-                                    //    OnOSMElementAdded(this, new OSMAddedEventArg(_currentElement));
                                 }
 
                                 #endregion
@@ -275,13 +283,23 @@ namespace OpenStreetMap2Oracle.businesslogic
                                 if (_currentElement.GetType() == typeof(Way))
                                 {
                                     Way way = _currentElement as Way;
-                                    DbExport conn = OpenStreetMap2Oracle.oracle.OracleConnectionFactory.CreateConnection();
-                                    using (OracleCommand dbSqlCmd = conn.Connection.CreateCommand())
+                                    if (AppManagerController.RUN_SLIM_MODE == false)
                                     {
-                                        dbSqlCmd.Transaction = conn.Transaction;
-                                        Point p = conn.GetNode(nodeRef, dbSqlCmd);
+                                        DbExport conn = OpenStreetMap2Oracle.oracle.OracleConnectionFactory.CreateConnection();
+                                        using (OracleCommand dbSqlCmd = conn.Connection.CreateCommand())
+                                        {
+                                            dbSqlCmd.Transaction = conn.Transaction;
+                                            Point p = conn.GetNode(nodeRef, dbSqlCmd);
+                                            if (p != null)
+                                                way.Line.AddVertice(p);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        //Compute Nodes in RAM                                        
+                                        Point p = Transaction.TransactionObjectCache.GetVertice(nodeRef);
                                         if (p != null)
-                                            way.Line.AddVertice(p);
+                                            way.Line.AddVertice(p);                                        
                                     }
                                     
                                 }
@@ -360,7 +378,14 @@ namespace OpenStreetMap2Oracle.businesslogic
                             case XmlNodeNames.NODE:
                                 if (OSMElementDelegate != null)
                                 {
-                                    OSMElementDelegate(this, new OSMAddedEventArg(_currentElement));
+                                    if (AppManagerController.RUN_SLIM_MODE == true)
+                                    {
+                                        //export only "real" nodes
+                                        if (_currentElement.tagList.Count > 0)
+                                            OSMElementDelegate(this, new OSMAddedEventArg(_currentElement));
+                                    }
+                                    else
+                                        OSMElementDelegate(this, new OSMAddedEventArg(_currentElement));
                                 }
                                
                                 break;

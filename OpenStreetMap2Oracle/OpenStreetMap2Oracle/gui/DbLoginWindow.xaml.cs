@@ -105,7 +105,7 @@ namespace OpenStreetMap2Oracle.gui
                     _window.btnSelectFile.Disabled = false;
                 }
 
-                OracleConnectionFactory.Init(User, Passwort, Service, 70);
+                OracleConnectionFactory.Init(User, Passwort, Service, 40);
                 OracleConnectionFactory.CreateConnection();
                 this.Close();
             }           
