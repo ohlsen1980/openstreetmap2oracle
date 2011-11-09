@@ -108,6 +108,7 @@
     <Compile Include="businesslogic\RelationType.cs" />
     <Compile Include="businesslogic\Tag.cs" />
     <Compile Include="businesslogic\TagKey.cs" />
+    <Compile Include="businesslogic\Transaction\TransactionObjectCache.cs" />
     <Compile Include="businesslogic\Transaction\OSMTransactionObject.cs" />
     <Compile Include="businesslogic\Transaction\TransactionDispatcher.cs" />
     <Compile Include="businesslogic\Transaction\TransactionQueue.cs" />
