@@ -62,6 +62,16 @@ namespace OpenStreetMap2Oracle
             this.IsBackgrounded = false;
 		}
 
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+        }
+
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            TransactionObjectCache.Stop();
+        }
+
         public bool IsBackgrounded
         {
             get
