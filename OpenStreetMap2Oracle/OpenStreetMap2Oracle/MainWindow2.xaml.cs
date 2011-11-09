@@ -16,6 +16,7 @@ using System.IO;
 using OpenStreetMap2Oracle.controller;
 using OpenStreetMap2Oracle.Properties;
 using System.Windows.Media.Effects;
+using OpenStreetMap2Oracle.businesslogic.Transaction;
 
 namespace OpenStreetMap2Oracle
 {
@@ -37,6 +38,7 @@ namespace OpenStreetMap2Oracle
             this.gridMoveHeader.MouseLeftButtonDown +=new System.Windows.Input.MouseButtonEventHandler(gridMoveHeader_MouseLeftButtonDown);
             this.btnClose.MouseLeftButtonDown += new MouseButtonEventHandler(btnClose_MouseLeftButtonDown);
             this.btnClose.MouseEnter += new MouseEventHandler(btnClose_MouseEnter);
+            TransactionObjectCache.Init();
 		}
 
         void btnClose_MouseEnter(object sender, MouseEventArgs e)
