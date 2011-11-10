@@ -39,11 +39,13 @@ namespace OpenStreetMap2Oracle.businesslogic.Transaction
 
             _mWriter.Write(
                 String.Format("PUT\r\n{0}\r\n{1}:{2}\r\n", n.Id, n.Point.X, n.Point.Y));
-            _mWriter.Flush();            
+            _mWriter.Flush();
         }
 
         public static Point GetVertice(long id)
         {
+            
+
             _mWriter.Write(
                 String.Format("GET\r\n{0}\r\n", id));
             _mWriter.Flush();
