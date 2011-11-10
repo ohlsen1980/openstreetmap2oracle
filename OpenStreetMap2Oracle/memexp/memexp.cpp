@@ -32,6 +32,8 @@
 
 using namespace std;
 
+
+
 long _cin_PUT(char* buffer_id, char* buffer_data) {
 	long _id;
 
@@ -46,6 +48,8 @@ long _cin_PUT(char* buffer_id, char* buffer_data) {
 	_id = atol(buffer_id);
 	return _id;
 }
+
+
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -81,7 +85,7 @@ int _tmain(int argc, _TCHAR* argv[])
 				t_cachemap_iter iterator;
 				t_cachemap_iter end = mbase->end();
 				for (iterator = mbase->first(); iterator != end; ++iterator) {
-					cout << iterator->first << " : " << iterator->second << endl;
+					cout << iterator->first << "::" << iterator->second << endl;
 				}
 			}
 		} else {
