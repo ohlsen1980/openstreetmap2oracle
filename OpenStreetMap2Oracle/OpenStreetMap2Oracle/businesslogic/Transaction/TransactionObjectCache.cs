@@ -32,11 +32,6 @@ namespace OpenStreetMap2Oracle.businesslogic.Transaction
 
         public static void AddNodeItem(Node n)
         {
-            /*
-            if (n != null)
-                _items.Add(n.Id, n.Point);
-             */
-
             _mWriter.Write(
                 String.Format("PUT\r\n{0}\r\n{1}:{2}\r\n", n.Id, n.Point.X, n.Point.Y));
             _mWriter.Flush();
