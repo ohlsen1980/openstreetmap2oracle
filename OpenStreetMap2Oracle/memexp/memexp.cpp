@@ -34,23 +34,6 @@ using namespace std;
 
 
 
-long _cin_PUT(char* buffer_id, char* buffer_data) {
-	long _id;
-
-	cin >> buffer_id;
-
-	if (strcmp(buffer_id, COMMAND_COMMIT) == 0) {
-		return 0;
-	}
-
-	cin >> buffer_data;
-
-	_id = atol(buffer_id);
-	return _id;
-}
-
-
-
 int _tmain(int argc, _TCHAR* argv[])
 {
 	mem_base *mbase = new mem_base();
@@ -65,13 +48,17 @@ int _tmain(int argc, _TCHAR* argv[])
 		
 		if (buffer_cmd != NULL) {
 			if (strcmp(buffer_cmd, COMMAND_PUT) == 0) {
-				_id = _cin_PUT(buffer_id, buffer_data);
-				mbase->mem_base_set(_id, buffer_data);
-			} else if (strcmp(buffer_cmd, COMMAND_PUTA) == 0) {
+					cin >> buffer_id;
+					buffer_data = (char*) malloc(sizeof(char)*64);
+					cin >> buffer_data;
+					_id = atol(buffer_id);
+					mbase->mem_base_set(_id, buffer_data);
+
+			} /*else if (strcmp(buffer_cmd, COMMAND_PUTA) == 0) {
 				while ((_id = _cin_PUT(buffer_id, buffer_data)) > 0) {
 					mbase->mem_base_set(_id, buffer_data);
 				} 
-			} else if (strcmp(buffer_cmd, COMMAND_GET) == 0) {
+			}*/ else if (strcmp(buffer_cmd, COMMAND_GET) == 0) {
 				cin >> buffer_id;
 				_id = atol(buffer_id);
 				cout << mbase->mem_base_get(_id) << endl;
