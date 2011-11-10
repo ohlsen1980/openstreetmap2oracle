@@ -28,6 +28,7 @@
 #define COMMAND_EXIT	"EXIT"
 #define COMMAND_COUNT	"COUNT"
 #define COMMAND_CLEAR	"CLEAR"
+#define COMMAND_LIST	"LIST"
 
 using namespace std;
 
@@ -75,7 +76,14 @@ int _tmain(int argc, _TCHAR* argv[])
 			} else if (strcmp(buffer_cmd, COMMAND_COUNT) == 0) {
 				
 			} else if (strcmp(buffer_cmd, COMMAND_CLEAR) == 0) {
-			} 
+				mbase->mem_base_clear();
+			} else if (strcmp(buffer_cmd, COMMAND_LIST) == 0) {
+				t_cachemap_iter iterator;
+				t_cachemap_iter end = mbase->end();
+				for (iterator = mbase->first(); iterator != end; ++iterator) {
+					cout << iterator->first << " : " << iterator->second << endl;
+				}
+			}
 		} else {
 			exit(0);
 		}

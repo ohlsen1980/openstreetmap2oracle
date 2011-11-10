@@ -45,3 +45,15 @@ char *mem_base::mem_base_get(long _id) {
 	}
 
 }
+
+void mem_base::mem_base_clear() {
+	_data.clear();
+}
+
+t_cachemap_iter mem_base::first() {
+	return _data.begin();
+}
+
+t_cachemap_iter mem_base::end() {
+	return _data.end();
+}

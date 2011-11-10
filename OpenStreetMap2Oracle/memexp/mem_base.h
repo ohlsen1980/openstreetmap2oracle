@@ -26,17 +26,23 @@
 
 using namespace std;
 
+typedef map<long, char*> t_cachemap;
+typedef map<long, char*>::iterator t_cachemap_iter;
+
 class mem_base
 {
 	
 private:
-	map<long, char*> _data;
-	map<long, char*>::iterator _iterator;
+	t_cachemap _data;
+	t_cachemap_iter _iterator;
 
 public:
 	mem_base(void);
 	~mem_base(void);
 	void mem_base_set(long _id, char* data);
 	char* mem_base_get(long _id);
+	void mem_base_clear();
+	t_cachemap_iter first();
+	t_cachemap_iter end();
 };
 
