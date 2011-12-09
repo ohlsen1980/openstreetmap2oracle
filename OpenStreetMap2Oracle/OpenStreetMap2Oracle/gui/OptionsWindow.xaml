@@ -1,0 +1,17 @@
+﻿<Window
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	x:Class="OpenStreetMap2Oracle.OptionsWindow"
+	x:Name="Window"
+	Title="OptionsWindow"
+	Width="832" Height="573">
+
+	<Grid x:Name="LayoutRoot">
+		<Grid.Background>
+			<LinearGradientBrush EndPoint="0.004,-0.001" StartPoint="0.991,0.994">
+				<GradientStop Color="#FF121212"/>
+				<GradientStop Color="#FF313030" Offset="1"/>
+			</LinearGradientBrush>
+		</Grid.Background>
+	</Grid>
+</Window>
