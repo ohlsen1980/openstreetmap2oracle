@@ -135,6 +135,9 @@
     <Compile Include="gui\DbLoginWindow.xaml.cs">
       <DependentUpon>DbLoginWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="gui\OptionsWindow.xaml.cs">
+      <DependentUpon>OptionsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="gui\ProgressWindow.xaml.cs">
       <DependentUpon>ProgressWindow.xaml</DependentUpon>
     </Compile>
@@ -156,6 +159,10 @@
     <Page Include="gui\DbLoginWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="gui\OptionsWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="gui\ProgressWindow.xaml">
       <SubType>Designer</SubType>
