@@ -1,0 +1,77 @@
+﻿
+namespace OpenStreetMap2Oracle.businesslogic
+{
+    /// <summary>
+    /// This enum lists all currently allowed Tags in OpenStreetMap Data
+    /// NOTICE
+    /// : is replaced with _ e.g. ADDR_HOUSENUMBER, in names which
+    /// are ORACLE keywords, there is added a _OSM e.g. OPERATOR_OSM or REF_OSM 
+    /// </summary>
+    public enum AllowedTagKeys 
+    {
+        POWER_SOURCE,
+        Z_ORDER,
+        HORSE,
+        ACCESS_OSM,
+        ADDR_HOUSENUMBER,
+        RESIDENCE,
+        CAPITAL,
+        OPERATOR_OSM,
+        ELE,
+        SPORT,
+        MILITARY,
+        POI,
+        PLACE,
+        TOURISM,
+        WOOD,
+        ADMIN_LEVEL,
+        AREA,
+        FOOT,
+        RELIGION,
+        ROUTE,
+        DISUSED,
+        ADDR_FLATS,
+        BOUNDARY,
+        LANDUSE,
+        LEISURE,
+        POWER_OSM,
+        AEROWAY,
+        EMBANKMENT,
+        LAYER_OSM,
+        HIGHWAY,
+        NATURAL_OSM,
+        CONSTRUCTION,
+        CUTTING,
+        WATERWAY,
+        REF_OSM,
+        SERVICE,
+        LEARNING,
+        TUNNEL,
+        OSM_ID,
+        BRIDGE,
+        ONEWAY,
+        RAILWAY,
+        WIDTH,
+        ADDR_INTERPOLATION,
+        MOTORCAR,
+        BARRIER,
+        LOCK_OSM,
+        SHOP,
+        AERIALWAY,
+        JUNCTION,
+        BUILDING,
+        BICYCLE,
+        MAN_MADE,
+        NAME,
+        AMENITY,
+        HISTORIC,
+        WAY_AREA,
+        TRACKTYPE,
+        ORA_GEOMETRY,
+        ADDR_STREET,
+        ADDR_CITY,
+        ADDR_FULL,
+        ADDR_POSTCODE,
+        ADDR_COUNTRY
+    }
+}

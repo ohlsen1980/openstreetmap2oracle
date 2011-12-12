@@ -1,0 +1,219 @@
+﻿using System;
+using System.Windows;
+using OpenStreetMap2Oracle.tools;
+using System.Windows.Forms;
+using System.IO;
+using OpenStreetMap2Oracle.businesslogic;
+using System.ComponentModel;
+using OpenStreetMap2Oracle.gui;
+using OpenStreetMap2Oracle.oracle;
+using System.Data.OracleClient;
+
+namespace OpenStreetMap2Oracle
+{
+    /// <summary>
+    /// Interaktionslogik für MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
+    {
+        private BackgroundWorker parseXMLWorker;
+        string xmlPath = String.Empty;
+        // some longs to count the elements, report only every 1000 points lines and polygons progress, this is much faster
+        private long _elementCount = 0, _failedCount = 0, _refreshCount = 0, lineCount = 0, failedLines = 0, polygonCount = 0, 
+            failedPolygons = 0, displayPointCount = 1000, displayLineCount = 1000, displayPolygonCount = 1000, multipolygonCount = 0;
+        private String sql = String.Empty;        
+
+        public MainWindow()
+        {
+            InitializeComponent();
+            this.Closed += new EventHandler(MainWindow_Closed);          
+        }
+
+        void MainWindow_Closed(object sender, EventArgs e)
+        {
+            //if (OracleConnectionFactory.Transaction != null && OracleConnectionFactory.Connection.DbConnection.State == System.Data.ConnectionState.Open)
+            //{
+               
+               
+            //}
+        }
+
+        /// <summary>
+        /// The file open menu was clicked
+        /// </summary>
+        private void FileOpen_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Filter = "OpenStreetMap Dateien (*.osm)|*.OSM|" +
+                            "Alle Dateien (*.*)|*.*";
+            dialog.InitialDirectory = PathProvider.Path;
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                parseXMLWorker = new BackgroundWorker();
+                parseXMLWorker.WorkerReportsProgress = true;
+                parseXMLWorker.WorkerSupportsCancellation = true;
+                parseXMLWorker.DoWork += new DoWorkEventHandler(parseXMLWorker_DoWork);                             
+                parseXMLWorker.RunWorkerAsync();               
+                xmlPath = dialog.FileName;
+                PathProvider.Path = new FileInfo(dialog.FileName).DirectoryName;                
+                
+            }
+        }
+     
+        /// <summary>
+        /// Async Work has to be done
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void parseXMLWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker bw = sender as BackgroundWorker;
+            if ((bw.CancellationPending == true))
+            {
+                e.Cancel = true;
+            }
+            else
+            {
+                // Perform a time consuming operation and report progress.
+                ApplicationManager.Instance().OnOSMElementAdded += new ApplicationManager.OnOSMElementAddedHandler(MainWindow_OnOSMElementAdded);
+                ApplicationManager.Instance().OnXMLFinished += new ApplicationManager.XMLFinishedHandler(MainWindow_OnXMLFinished);
+                ApplicationManager.Instance().ParseXML(xmlPath);
+            }
+        }
+
+        void MainWindow_OnXMLFinished(object sender, eventArgs.XMLFinishedEventArgs e)
+        {                 
+            System.GC.Collect();
+            this.NodesCount.Text = _elementCount.ToString();
+            this.LinesCount.Text = lineCount.ToString();
+            this.PolygonsCount.Text = polygonCount.ToString();
+            this.MultiPolCount.Text = multipolygonCount.ToString();
+            System.Windows.MessageBox.Show("OSM Daten in Datenbank übertragen\nPunkte: "+ _elementCount +"\nLinien: "+ lineCount + "\nPolygone: "+polygonCount + "\nMultipolygone: "+multipolygonCount);
+        }
+     
+        /// <summary>
+        /// An Element is analyzed an was added to the export queue
+        /// </summary>       
+        void MainWindow_OnOSMElementAdded(object sender, eventArgs.OSMAddedEventArg e)
+        {
+            this.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Send, new System.Windows.Threading.DispatcherOperationCallback(delegate
+            {
+                OSMElement element = e.Element;
+                String SQL = element.ToSQL();
+                if(String.IsNullOrEmpty(SQL)== false)
+                {
+                    DbExport conn = OpenStreetMap2Oracle.oracle.OracleConnectionFactory.Instance.GetFreeConnection();
+                    using (OracleCommand dbSqlCmd = conn.DbConnection.CreateCommand())
+                    {
+
+                        dbSqlCmd.Transaction = conn.DbConnection.BeginTransaction();
+                        dbSqlCmd.UpdatedRowSource = System.Data.UpdateRowSource.None;
+                        try
+                        {
+                            //Insert into oracle Database
+                            conn.execSqlCmd(SQL, dbSqlCmd);
+
+                            if (element.GetType() == typeof(Node))
+                            {
+                                _elementCount++;
+                                //report only every 1000 objects progress, this is much faster!
+                                if (_elementCount == displayPointCount)
+                                {
+                                    this.NodesCount.Text = _elementCount.ToString();
+                                    displayPointCount = displayPointCount + 1000;
+                                }
+                            }
+                            if (element.GetType() == typeof(Way))
+                            {
+                                Way way = element as Way;
+                                if (way.Line.IsPolygon() == false)
+                                {
+                                    lineCount++;
+                                    if (lineCount == displayLineCount)
+                                    {
+                                        this.LinesCount.Text = lineCount.ToString();
+                                        displayLineCount = 1000 + displayLineCount;
+                                    }
+                                }
+                                else
+                                {
+                                    polygonCount++;
+                                    if (polygonCount == displayPolygonCount)
+                                    {
+                                        this.PolygonsCount.Text = polygonCount.ToString();
+                                        displayPolygonCount = displayPolygonCount + 1000;
+                                    }
+                                }
+                            }
+                            if (element.GetType() == typeof(Relation))
+                            {
+                                multipolygonCount++;
+                                this.MultiPolCount.Text = multipolygonCount.ToString();
+
+                            }
+                            _refreshCount++;
+                            if (_refreshCount == 10000)
+                            {
+                                System.GC.Collect();
+                                _refreshCount = 0;
+                                dbSqlCmd.Transaction.Commit();
+                                OracleConnectionFactory.Instance.CloseConnection(conn);
+                            }
+                        }
+                        catch (Exception ex)
+                        {                    
+                            //NOTICE: If you export multiple osm extracts in 1 schema, there can be errors in primary key OSM_ID because
+                            //the extracts in boundary regions are never exact, there can be double elements, for this case the error reports 
+                            //have to be uncommented in code, because the application crashes at about 10000 error messages in SQLTextBox!!!
+                            if (element.GetType() == typeof(Node))
+                            {
+                                _failedCount++;
+                                //The next line can be uncommented
+                                this.SQLTextBox.Text = SQLTextBox.Text + "\n" + SQL + "\n" + "Fehler Knoten: " + _failedCount.ToString();
+                                this.SQLTextBox.UpdateLayout();
+                            }
+                            if (element.GetType() == typeof(Way))
+                            {
+                                Way way = element as Way;
+                                if (way.Line.IsPolygon() == false)
+                                {
+                                    failedLines++;
+                                    //The next line can be uncommented
+                                    this.SQLTextBox.Text = SQLTextBox.Text + "\n" + SQL + "\n" + "Fehler Linien: " + failedLines.ToString();
+                                    this.SQLTextBox.UpdateLayout();
+                                }
+                                else
+                                {
+                                    failedPolygons++;
+                                    //The next line can be uncommented
+                                    this.SQLTextBox.Text = SQLTextBox.Text + "\n" + SQL + "\n" + "Fehler Polygone: " + failedLines.ToString();
+                                    this.SQLTextBox.UpdateLayout();
+                                }
+                            }
+                            if (element.GetType() == typeof(Relation))
+                            {
+                                _failedCount++;
+                                //The next line can be uncommented
+                                this.SQLTextBox.Text = SQLTextBox.Text + "\n" + SQL + "\n" + "Fehler Relation: " + _failedCount.ToString();
+                                this.SQLTextBox.UpdateLayout();
+                            }
+                        }
+                    }
+                }
+                return null;
+            }), null);
+
+        }
+
+        private void ConnOpen_Click(object sender, RoutedEventArgs e)
+        {
+            DbLoginWindow window = new DbLoginWindow();
+            window.ShowDialog();
+        }
+
+        private void Close_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+    }
+}
