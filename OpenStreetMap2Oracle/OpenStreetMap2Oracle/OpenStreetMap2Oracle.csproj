@@ -17,6 +17,12 @@
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <IsWebBootstrapper>false</IsWebBootstrapper>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <Utf8Output>true</Utf8Output>
+    <ExpressionBlendVersion>4.0.20621.0</ExpressionBlendVersion>
     <PublishUrl>C:\Users\Schoene\Documents\Deploy\OpenStreetMap2Oracle\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -27,15 +33,14 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>8</ApplicationRevision>
+    <WebPage>publish.htm</WebPage>
+    <AutorunEnabled>true</AutorunEnabled>
+    <ApplicationRevision>14</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
+    <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -69,12 +74,14 @@
     <SignManifests>false</SignManifests>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Expression.Interactions" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.OracleClient">
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -102,7 +109,14 @@
     <Compile Include="businesslogic\RelationType.cs" />
     <Compile Include="businesslogic\Tag.cs" />
     <Compile Include="businesslogic\TagKey.cs" />
+    <Compile Include="businesslogic\Transaction\TransactionObjectCache.cs" />
+    <Compile Include="businesslogic\Transaction\OSMTransactionObject.cs" />
+    <Compile Include="businesslogic\Transaction\TransactionDispatcher.cs" />
+    <Compile Include="businesslogic\Transaction\TransactionQueue.cs" />
+    <Compile Include="businesslogic\Transaction\TransactionStats.cs" />
     <Compile Include="businesslogic\Way.cs" />
+    <Compile Include="businesslogic\Xml\XmlNodeNames.cs" />
+    <Compile Include="controller\AppManagerController.cs" />
     <Compile Include="core\Geometry.cs" />
     <Compile Include="core\LineString.cs" />
     <Compile Include="core\MultiPolygon.cs" />
@@ -110,34 +124,55 @@
     <Compile Include="core\PointComparer.cs" />
     <Compile Include="core\Polygon.cs" />
     <Compile Include="core\PolygonComparer.cs" />
+    <Compile Include="core\PolygonOrientation.cs" />
     <Compile Include="core\PolygonType.cs" />
+    <Compile Include="businesslogic\Singleton.cs" />
     <Compile Include="eventArgs\OSMAddedEventArg.cs" />
     <Compile Include="eventArgs\XMLFinishedEventArgs.cs" />
+    <Compile Include="gui\Controls\HugeButton.xaml.cs">
+      <DependentUpon>HugeButton.xaml</DependentUpon>
+    </Compile>
     <Compile Include="gui\DbLoginWindow.xaml.cs">
       <DependentUpon>DbLoginWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="gui\ProgressWindow.xaml.cs">
+      <DependentUpon>ProgressWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="gui\TransactionSummary.xaml.cs">
+      <DependentUpon>TransactionSummary.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MainWindow2.xaml.cs">
+      <DependentUpon>MainWindow2.xaml</DependentUpon>
+    </Compile>
     <Compile Include="oracle\DbExport.cs" />
     <Compile Include="oracle\OracleConnectionFactory.cs" />
-    <Compile Include="oracle\UserCredentials.cs" />
     <Compile Include="tools\PathProvider.cs" />
     <Compile Include="tools\StringTokenizer.cs" />
     <Compile Include="tools\TableNames.cs" />
+    <Page Include="gui\Controls\HugeButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="gui\DbLoginWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Page Include="gui\ProgressWindow.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
+    <Page Include="gui\TransactionSummary.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MainWindow2.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -158,6 +193,10 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="app.config" />
+    <None Include="assets\wsCarbonFiber.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\faroe_islands.osm" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -187,12 +226,22 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="assets\Image1.png" />
+    <Resource Include="assets\Image2.png" />
+    <Resource Include="assets\Image3.png" />
+    <Resource Include="assets\Image4.png" />
     <Resource Include="sql\create_LineTable.sql" />
     <Resource Include="sql\create_PointTable.sql" />
     <Resource Include="sql\create_PolygonTable.sql" />
     <Resource Include="sql\create_RoadsTable.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="assets\background.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy /Y "$(SolutionDir)x64\Debug\memexp.exe" "$(TargetDir)"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
