@@ -43,7 +43,7 @@ The login screen appears, enter your oracle username (schema), the password and 
 Login.png
 The Message "Open" appears, if the user credentials for connections are ok. After this, you can click on Datei - öffnen to open a *.osm - file. After opening the file, the application should start to export the points, lines and polygons of the file into the oracle database. Optionally you can enable/disable the checkbox Oracle SQL Fehlermeldungen anzeigen, this controls, if the sql errors from the database are displayed in the textbox of the application.
 
-<b>Performance<b/>
+<b>Performance</b>
 
 Currently, no threading of export is supported. We are on the way to speed up the export queue. Multithreading comes within the next versions. The speed of export depends on the hardware of the database server and the connection between the export client and the server. There is the option to run the software directly on the oracle database server. Furthermore, the time needed to export a file depends on the size of the OSM - file as well. If it is a large file, the time to compute it is longer than a small file. We don't have any performance tests yet, so we can not give any information how long computing data sets may take. We suggest to start with smaller extracts. The export time does not depend on the RAM of the exporting client, because nothing is stored or computed in memory. The application works with a minimum of available memory.
 
